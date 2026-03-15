@@ -18,6 +18,7 @@ export const publications: Publication[] = [
     year: "2024",
     description:
       "Registered intellectual property for a novel approach to emoji-aware hate speech classification using deep learning architectures.",
+    link: "https://iprsearch.ipindia.gov.in/PublicSearch/PublicationSearch/PatentSearch",
   },
   {
     id: "ieee-comparative",
@@ -28,6 +29,7 @@ export const publications: Publication[] = [
     year: "2024",
     description:
       "Comprehensive benchmarking of feature extraction methods and classification architectures for toxicity detection.",
+    link: "https://ieeexplore.ieee.org/search/searchresult.jsp?queryText=Comparative+Analysis+Vectorization+Techniques+ML+Models+Hate+Speech+Detection",
   },
   {
     id: "ieee-emoji",
@@ -38,5 +40,6 @@ export const publications: Publication[] = [
     year: "2024",
     description:
       "Novel deep learning approach integrating emoji semantics into hate speech classification pipelines for improved moderation.",
+    link: "https://ieeexplore.ieee.org/search/searchresult.jsp?queryText=Enhancing+Hate+Speech+Detection+Emoji+Classification+Bi-LSTM+GloVe",
   },
 ]
