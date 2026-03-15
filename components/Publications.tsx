@@ -23,11 +23,17 @@ function PubCard({ pub }: { pub: (typeof publications)[number] }) {
   return (
     <motion.article
       variants={itemVariants}
-      className="group p-5 md:p-6 rounded-xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/25 hover:shadow-[0_0_30px_rgba(255,215,0,0.04)] transition-all duration-500"
-      onMouseMove={(e) => setTilt(getTiltTransform(e as never))}
+      className="card-glow group p-5 md:p-6 rounded-xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/25 hover:shadow-[0_0_30px_var(--accent-glow-val)] transition-all duration-500"
+      onMouseMove={(e) => {
+        const r = e.currentTarget.getBoundingClientRect()
+        e.currentTarget.style.setProperty("--mouse-x", `${((e.clientX - r.left) / r.width) * 100}%`)
+        e.currentTarget.style.setProperty("--mouse-y", `${((e.clientY - r.top) / r.height) * 100}%`)
+        setTilt(getTiltTransform(e as never))
+      }}
       onMouseLeave={() => setTilt("")}
       style={{ transform: tilt, transition: "transform 0.15s ease-out" }}
     >
+      <div className="card-spotlight" />
       <div className="flex items-start gap-4">
         <motion.div
           className="p-2 rounded-lg bg-accent/10 shrink-0 mt-0.5"
@@ -86,7 +92,7 @@ function PubCard({ pub }: { pub: (typeof publications)[number] }) {
 
 export default function Publications() {
   return (
-    <section id="publications" className="py-24 md:py-32 px-6 relative">
+    <section id="publications" className="py-16 md:py-24 px-6 relative">
       <div className="max-w-6xl mx-auto relative">
         <SectionHeading
           label="Publications & IP"

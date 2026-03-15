@@ -46,15 +46,21 @@ export default function ProjectCard({
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
       <article
-        className={`group relative rounded-2xl bg-foreground/[0.025] border hover:border-accent/30 hover:shadow-[0_0_40px_rgba(255,215,0,0.05)] transition-all duration-500 overflow-hidden ${
+        className={`group relative rounded-2xl bg-foreground/[0.025] border hover:border-accent/30 hover:shadow-[0_0_40px_var(--accent-glow-val)] transition-all duration-500 overflow-hidden ${
           isFeatured
             ? "p-6 md:p-8 border-accent/15 animate-border-glow"
             : "p-5 md:p-6 border-foreground/[0.06]"
         }`}
-        onMouseMove={(e) => setTilt(getTiltTransform(e))}
+        onMouseMove={(e) => {
+          const r = e.currentTarget.getBoundingClientRect()
+          e.currentTarget.style.setProperty("--mouse-x", `${((e.clientX - r.left) / r.width) * 100}%`)
+          e.currentTarget.style.setProperty("--mouse-y", `${((e.clientY - r.top) / r.height) * 100}%`)
+          setTilt(getTiltTransform(e))
+        }}
         onMouseLeave={() => setTilt("")}
         style={{ transform: tilt, transition: "transform 0.15s ease-out" }}
       >
+        <div className="card-spotlight" />
         <div className="absolute inset-0 bg-gradient-to-br from-accent/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
         <div className="relative z-10">

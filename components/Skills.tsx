@@ -58,11 +58,17 @@ function SkillCard({ group }: { group: (typeof skillGroups)[number] }) {
   return (
     <motion.div variants={cardVariants}>
       <div
-        className="group p-5 rounded-xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/25 hover:shadow-[0_0_30px_rgba(255,215,0,0.04)] transition-all duration-500 h-full"
-        onMouseMove={(e) => setTilt(getTiltTransform(e, 8))}
+        className="card-glow group p-5 rounded-xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/25 hover:shadow-[0_0_30px_var(--accent-glow-val)] transition-all duration-500 h-full"
+        onMouseMove={(e) => {
+          const r = e.currentTarget.getBoundingClientRect()
+          e.currentTarget.style.setProperty("--mouse-x", `${((e.clientX - r.left) / r.width) * 100}%`)
+          e.currentTarget.style.setProperty("--mouse-y", `${((e.clientY - r.top) / r.height) * 100}%`)
+          setTilt(getTiltTransform(e, 8))
+        }}
         onMouseLeave={() => setTilt("")}
         style={{ transform: tilt, transition: "transform 0.15s ease-out" }}
       >
+        <div className="card-spotlight" />
         <div className="flex items-center gap-3 mb-4">
           <motion.div
             className="p-2 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors duration-300"
@@ -88,7 +94,7 @@ function SkillCard({ group }: { group: (typeof skillGroups)[number] }) {
 
 export default function Skills() {
   return (
-    <section id="skills" className="py-24 md:py-32 px-6 relative">
+    <section id="skills" className="py-16 md:py-24 px-6 relative">
       <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-secondary/[0.04] rounded-full blur-[128px] pointer-events-none" />
 
       <div className="max-w-6xl mx-auto relative">

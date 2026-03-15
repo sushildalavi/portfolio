@@ -47,6 +47,12 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+/* Sidebar width token used by page layout */
+:root {
+  --sidebar-w: 268px;
 }
 
 body {
@@ -55,6 +61,7 @@ body {
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
   transition:
     background-color 0.4s ease,
     color 0.4s ease;
@@ -76,13 +83,12 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--accent-val);
+  background: color-mix(in srgb, var(--accent-val) 50%, transparent);
   border-radius: 3px;
-  opacity: 0.5;
 }
 
 ::selection {
-  background: rgba(255, 215, 0, 0.3);
+  background: color-mix(in srgb, var(--accent-val) 30%, transparent);
 }
 
 /* Hide default cursor on devices with fine pointer */
@@ -197,10 +203,10 @@ body {
 @keyframes border-glow {
   0%,
   100% {
-    border-color: rgba(255, 215, 0, 0.12);
+    border-color: color-mix(in srgb, var(--accent-val) 12%, transparent);
   }
   50% {
-    border-color: rgba(255, 215, 0, 0.35);
+    border-color: color-mix(in srgb, var(--accent-val) 35%, transparent);
   }
 }
 
@@ -225,4 +231,49 @@ body {
   100% {
     transform: translateX(0);
   }
+}
+
+/* ── Aptifolio-style floating gradient orbs ── */
+@keyframes orb-drift {
+  0%   { transform: translate(0px, 0px) scale(1); }
+  25%  { transform: translate(60px, -40px) scale(1.06); }
+  50%  { transform: translate(30px, 70px) scale(0.94); }
+  75%  { transform: translate(-50px, 20px) scale(1.04); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+.orb-float {
+  animation: orb-drift linear infinite;
+  will-change: transform;
+  filter: blur(80px);
+}
+
+/* ── Card spotlight hover (aptifolio) ── */
+.card-glow {
+  position: relative;
+  isolation: isolate;
+}
+
+.card-spotlight {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    280px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    color-mix(in srgb, var(--accent-val) 18%, transparent) 0%,
+    color-mix(in srgb, var(--accent-val) 7%, transparent) 45%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card-glow:hover .card-spotlight {
+  opacity: 1;
+}
+
+.card-glow:hover {
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.15s ease-out;
 }

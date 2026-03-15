@@ -51,10 +51,10 @@ export default function RootLayout({
             __html: `(function(){try{var t=localStorage.getItem('portfolio-theme');if(t){document.documentElement.setAttribute('data-theme',t)}else if(!window.matchMedia('(prefers-color-scheme:dark)').matches){document.documentElement.setAttribute('data-theme','light')}}catch(e){}})();`,
           }}
         />
-              <a href="#hero" className="skip-to-content">
-                Skip to content
-              </a>
-              <ThemeProvider>{children}</ThemeProvider>
+        <a href="#hero" className="skip-to-content">
+          Skip to content
+        </a>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   )

@@ -24,18 +24,51 @@ export const profile = {
     {
       degree: "MS in Computer Science",
       school: "University of Southern California",
+      shortName: "USC",
       location: "Los Angeles, CA",
+      logo: "/logos/usc.png",
+      accentColor: "#ffffff",
     },
     {
       degree: "BE in Computer Engineering",
       school: "University of Mumbai",
+      shortName: "MU",
       location: "Mumbai, India",
+      logo: "/logos/mumbai.jpeg",
+      accentColor: "#ffffff",
     },
   ],
   links: {
     email: "sdalavi@usc.edu",
+    email2: "sushildalavi@gmail.com",
     github: "https://github.com/sushildalavi",
     linkedin: "https://linkedin.com/in/sushildalavi",
     resume: "/resume.pdf",
+    spotify: "https://open.spotify.com/user/0q7aeehtv582g9ua2qwl2k62g",
+  },
+  stats: [
+    { value: "2+", label: "Years Research" },
+    { value: "10+", label: "Projects Built" },
+    { value: "3", label: "Publications & IP" },
+    { value: "100K+", label: "Users Impacted" },
+  ],
+  interests: [
+    { label: "Football", emoji: "⚽" },
+    { label: "Real Madrid", emoji: "👑" },
+    { label: "Swimming", emoji: "🏊" },
+    { label: "Table Tennis", emoji: "🏓" },
+    { label: "Netflix", emoji: "🎬" },
+    { label: "Spotify", emoji: "🎧" },
+    { label: "Game Dev", emoji: "🎮" },
+  ],
+  realMadrid: {
+    tagline: "Hala Madrid y nada más.",
+    description:
+      "A proud Real Madrid supporter through and through — the mentality, history, and winning culture is unmatched.",
+  },
+  quote: {
+    text: "You miss 100% of the shots you don't take.",
+    author: "Wayne Gretzky",
+    coauthor: "— Michael Scott",
   },
 }

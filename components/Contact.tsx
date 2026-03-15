@@ -56,11 +56,17 @@ function ContactCard({
         href={link.href}
         target={link.external ? "_blank" : undefined}
         rel={link.external ? "noopener noreferrer" : undefined}
-        className="group flex items-center gap-4 p-4 rounded-xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/30 hover:shadow-[0_0_30px_rgba(255,215,0,0.05)] transition-all duration-300 block"
-        onMouseMove={(e) => setTilt(getTiltTransform(e as never, 8))}
+        className="card-glow group flex items-center gap-4 p-4 rounded-xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/30 hover:shadow-[0_0_30px_var(--accent-glow-val)] transition-all duration-300"
+        onMouseMove={(e) => {
+          const r = e.currentTarget.getBoundingClientRect()
+          e.currentTarget.style.setProperty("--mouse-x", `${((e.clientX - r.left) / r.width) * 100}%`)
+          e.currentTarget.style.setProperty("--mouse-y", `${((e.clientY - r.top) / r.height) * 100}%`)
+          setTilt(getTiltTransform(e as never, 8))
+        }}
         onMouseLeave={() => setTilt("")}
         style={{ transform: tilt, transition: "transform 0.15s ease-out" }}
       >
+        <div className="card-spotlight" />
         <motion.div
           className="p-2.5 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors duration-300"
           whileHover={{ rotate: 15, scale: 1.15 }}
@@ -90,7 +96,7 @@ function ContactCard({
 
 export default function Contact() {
   return (
-    <section id="contact" className="py-24 md:py-32 px-6 relative">
+    <section id="contact" className="py-16 md:py-24 px-6 relative">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/[0.04] rounded-full blur-[128px] pointer-events-none" />
 
       <div className="max-w-3xl mx-auto relative text-center">
@@ -127,7 +133,7 @@ export default function Contact() {
         >
           <motion.a
             href={`mailto:${profile.links.email}`}
-            className="group relative inline-flex items-center gap-2 px-8 py-4 bg-accent hover:bg-accent-hover text-[#0a0e1a] rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:shadow-accent/25 overflow-hidden"
+            className="group relative inline-flex items-center gap-2 px-8 py-4 bg-accent hover:bg-accent-hover text-[#0a0e1a] rounded-full font-medium transition-all duration-300 hover:shadow-[0_8px_30px_var(--accent-glow-val)] overflow-hidden"
             whileHover={{ scale: 1.06 }}
             whileTap={{ scale: 0.95 }}
           >

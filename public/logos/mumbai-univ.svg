@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#1a3a7a" rx="10"/>
+  <!-- Simple fort outline representing Mumbai -->
+  <polygon points="20,44 20,30 26,24 32,20 38,24 44,30 44,44" fill="none" stroke="#c8a84b" stroke-width="1.5"/>
+  <line x1="20" y1="44" x2="44" y2="44" stroke="#c8a84b" stroke-width="1.5"/>
+  <!-- MU text -->
+  <text x="32" y="56" font-family="Georgia,Times New Roman,serif" font-size="9" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="1">UNIV. MUMBAI</text>
+  <!-- Stars representing excellence -->
+  <text x="32" y="37" font-family="Arial,sans-serif" font-size="9" fill="#c8a84b" text-anchor="middle">MU</text>
+</svg>

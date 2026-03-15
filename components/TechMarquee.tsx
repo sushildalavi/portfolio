@@ -13,9 +13,9 @@ function MarqueeRow({
   const items = [...marqueeTechs, ...marqueeTechs]
 
   return (
-    <div className="relative flex overflow-hidden py-4 group">
+    <div className="group/row relative flex overflow-hidden py-4">
       <div
-        className="flex shrink-0 gap-10 items-center"
+        className="flex shrink-0 gap-10 items-center group-hover/row:[animation-play-state:paused]"
         style={{
           animation: `scroll-${direction} ${speed}s linear infinite`,
         }}
@@ -31,7 +31,7 @@ function MarqueeRow({
               style={{ color: tech.color }}
               className="shrink-0"
             />
-            <span className="text-sm text-muted-foreground whitespace-nowrap group-hover:text-foreground transition-colors">
+            <span className="text-sm text-muted-foreground whitespace-nowrap transition-colors">
               {tech.name}
             </span>
           </motion.div>
@@ -39,7 +39,7 @@ function MarqueeRow({
       </div>
 
       <div
-        className="flex shrink-0 gap-10 items-center"
+        className="flex shrink-0 gap-10 items-center group-hover/row:[animation-play-state:paused]"
         style={{
           animation: `scroll-${direction} ${speed}s linear infinite`,
         }}
@@ -55,7 +55,7 @@ function MarqueeRow({
               style={{ color: tech.color }}
               className="shrink-0"
             />
-            <span className="text-sm text-muted-foreground whitespace-nowrap">
+            <span className="text-sm text-muted-foreground whitespace-nowrap transition-colors">
               {tech.name}
             </span>
           </motion.div>
@@ -67,7 +67,7 @@ function MarqueeRow({
 
 export default function TechMarquee() {
   return (
-    <section className="py-12 relative overflow-hidden">
+    <section className="py-8 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-accent/[0.02] to-transparent pointer-events-none" />
 
       <motion.div

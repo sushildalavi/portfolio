@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="jioGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#003087;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#004fc4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" fill="url(#jioGrad)" rx="10"/>
+  <!-- Signal arc lines representing telecom -->
+  <path d="M 14 38 Q 32 18 50 38" fill="none" stroke="#00a1e4" stroke-width="1.5" opacity="0.5"/>
+  <path d="M 18 44 Q 32 28 46 44" fill="none" stroke="#00a1e4" stroke-width="1.5" opacity="0.7"/>
+  <text x="32" y="52" font-family="Arial,Helvetica,sans-serif" font-size="20" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="1">Jio</text>
+</svg>

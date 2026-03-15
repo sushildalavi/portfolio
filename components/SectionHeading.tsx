@@ -18,7 +18,7 @@ export default function SectionHeading({
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, margin: "-80px" }}
-      className="mb-16"
+      className="mb-10"
     >
       <motion.span
         variants={{
