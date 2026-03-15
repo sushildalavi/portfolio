@@ -84,7 +84,7 @@ const screenFS = /* glsl */ `
 `
 
 /* ═══════════════════════════════════════════
-   Laptop with animated code screen
+   MacBook M3 Air — thin, sleek, silver
    ═══════════════════════════════════════════ */
 
 function CodeScreen() {
@@ -94,73 +94,283 @@ function CodeScreen() {
     if (ref.current) ref.current.uniforms.uTime.value = s.clock.getElapsedTime()
   })
   return (
-    <mesh position={[0, 0, 0.022]}>
-      <planeGeometry args={[0.72, 0.48]} />
+    <mesh position={[0, 0, 0.012]}>
+      <planeGeometry args={[0.58, 0.38]} />
       <shaderMaterial ref={ref} uniforms={uniforms} vertexShader={screenVS} fragmentShader={screenFS} />
     </mesh>
   )
 }
 
-function LaptopOnDesk() {
-  const dark = "#0f172a"
+function MacBookM3Air() {
+  const silver = "#c0c0c0"
+  const dark = "#1a1a1a"
   return (
-    <group position={[0, 0.92, -0.15]}>
-      {/* base */}
+    <group position={[0.15, 0.92, -0.12]}>
+      {/* base — ultra thin */}
       <mesh>
-        <boxGeometry args={[0.82, 0.022, 0.52]} />
-        <meshStandardMaterial color={dark} metalness={0.9} roughness={0.1} />
+        <boxGeometry args={[0.62, 0.012, 0.42]} />
+        <meshStandardMaterial color={silver} metalness={0.95} roughness={0.08} />
       </mesh>
-      {/* trackpad */}
-      <mesh position={[0, 0.013, 0.1]}>
-        <boxGeometry args={[0.22, 0.003, 0.14]} />
-        <meshStandardMaterial color="#1a2744" metalness={0.95} roughness={0.05} />
+      {/* trackpad notch */}
+      <mesh position={[0, 0.008, 0.08]}>
+        <boxGeometry args={[0.18, 0.002, 0.1]} />
+        <meshStandardMaterial color={dark} metalness={0.98} roughness={0.02} />
       </mesh>
-      {/* screen assembly */}
-      <group position={[0, 0.3, -0.24]} rotation={[-0.2, 0, 0]}>
+      {/* screen — thin lid */}
+      <group position={[0, 0.22, -0.2]} rotation={[-0.25, 0, 0]}>
         <mesh>
-          <boxGeometry args={[0.82, 0.56, 0.018]} />
-          <meshStandardMaterial color={dark} metalness={0.9} roughness={0.1} />
+          <boxGeometry args={[0.62, 0.42, 0.01]} />
+          <meshStandardMaterial color={dark} metalness={0.95} roughness={0.05} />
         </mesh>
         <CodeScreen />
-        {/* gold accent line */}
-        <mesh position={[0, 0.285, 0.012]}>
-          <boxGeometry args={[0.74, 0.005, 0.005]} />
-          <meshBasicMaterial color="#FFD700" transparent opacity={0.35} />
+        {/* notch / camera area */}
+        <mesh position={[0, 0.2, 0.008]}>
+          <boxGeometry args={[0.06, 0.012, 0.008]} />
+          <meshStandardMaterial color={dark} />
         </mesh>
       </group>
-      {/* hinge gold accent */}
-      <mesh position={[0, 0.013, -0.24]}>
-        <boxGeometry args={[0.4, 0.012, 0.02]} />
-        <meshStandardMaterial color="#FFD700" emissive="#FFD700" emissiveIntensity={0.2} metalness={0.9} roughness={0.15} />
+      {/* hinge */}
+      <mesh position={[0, 0.008, -0.2]}>
+        <boxGeometry args={[0.35, 0.008, 0.015]} />
+        <meshStandardMaterial color={silver} metalness={0.95} roughness={0.1} />
       </mesh>
     </group>
   )
 }
 
 /* ═══════════════════════════════════════════
-   Blocky coding character  (Real Madrid kit)
+   Alienware AW3225QF — 32" curved QD-OLED
    ═══════════════════════════════════════════ */
+
+function AlienwareMonitor() {
+  const dark = "#0d0d0d"
+  const alienGreen = "#00ff88"
+  return (
+    <group position={[-0.25, 0.92, -0.35]}>
+      {/* curved screen — wide 32" aspect */}
+      <mesh position={[0, 0.55, 0]} rotation={[-0.08, 0, 0]}>
+        <planeGeometry args={[0.95, 0.55]} />
+        <meshStandardMaterial color="#0a0a12" metalness={0.9} roughness={0.1} />
+      </mesh>
+      {/* screen content — code glow */}
+      <mesh position={[0, 0.55, 0.002]} rotation={[-0.08, 0, 0]}>
+        <planeGeometry args={[0.9, 0.5]} />
+        <meshBasicMaterial color="#0a1520" transparent opacity={0.9} />
+      </mesh>
+      {/* bezel — Alienware style */}
+      <mesh position={[0, 0.55, -0.008]} rotation={[-0.08, 0, 0]}>
+        <boxGeometry args={[0.98, 0.58, 0.02]} />
+        <meshStandardMaterial color={dark} metalness={0.85} roughness={0.15} />
+      </mesh>
+      {/* Alienware logo accent */}
+      <mesh position={[0, 0.25, 0.01]} rotation={[-0.08, 0, 0]}>
+        <boxGeometry args={[0.12, 0.02, 0.001]} />
+        <meshBasicMaterial color={alienGreen} transparent opacity={0.6} />
+      </mesh>
+      {/* stand — V-shaped Alienware */}
+      <mesh position={[0, 0.15, 0.12]}>
+        <boxGeometry args={[0.25, 0.04, 0.15]} />
+        <meshStandardMaterial color={dark} metalness={0.8} roughness={0.2} />
+      </mesh>
+      <mesh position={[-0.18, 0.08, 0.12]}>
+        <boxGeometry args={[0.06, 0.2, 0.06]} />
+        <meshStandardMaterial color={dark} metalness={0.8} roughness={0.2} />
+      </mesh>
+      <mesh position={[0.18, 0.08, 0.12]}>
+        <boxGeometry args={[0.06, 0.2, 0.06]} />
+        <meshStandardMaterial color={dark} metalness={0.8} roughness={0.2} />
+      </mesh>
+    </group>
+  )
+}
+
+/* ═══════════════════════════════════════════
+   Secretlab TITAN Evo — premium gaming chair
+   ═══════════════════════════════════════════ */
+
+function SecretlabChair() {
+  const black = "#0f0f0f"
+  const orange = "#ff6b35"
+  return (
+    <group position={[0, 0, 0.42]}>
+      {/* seat — ergonomic, thick */}
+      <mesh position={[0, 0.78, 0]}>
+        <boxGeometry args={[0.5, 0.06, 0.48]} />
+        <meshStandardMaterial color={black} roughness={0.4} />
+      </mesh>
+      {/* seat edge curve */}
+      <mesh position={[0, 0.81, -0.18]}>
+        <boxGeometry args={[0.48, 0.03, 0.12]} />
+        <meshStandardMaterial color={black} roughness={0.4} />
+      </mesh>
+      {/* backrest — tall, curved */}
+      <mesh position={[0, 1.15, 0.22]} rotation={[-0.15, 0, 0]}>
+        <boxGeometry args={[0.48, 0.7, 0.06]} />
+        <meshStandardMaterial color={black} roughness={0.4} />
+      </mesh>
+      {/* lumbar support area */}
+      <mesh position={[0, 1.0, 0.26]} rotation={[-0.15, 0, 0]}>
+        <boxGeometry args={[0.2, 0.15, 0.02]} />
+        <meshStandardMaterial color={orange} emissive={orange} emissiveIntensity={0.15} />
+      </mesh>
+      {/* headrest */}
+      <mesh position={[0, 1.52, 0.28]} rotation={[-0.15, 0, 0]}>
+        <boxGeometry args={[0.35, 0.2, 0.05]} />
+        <meshStandardMaterial color={black} roughness={0.4} />
+      </mesh>
+      {/* armrests — TITAN signature */}
+      <mesh position={[-0.3, 0.95, 0.08]}>
+        <boxGeometry args={[0.06, 0.08, 0.35]} />
+        <meshStandardMaterial color={black} roughness={0.3} />
+      </mesh>
+      <mesh position={[0.3, 0.95, 0.08]}>
+        <boxGeometry args={[0.06, 0.08, 0.35]} />
+        <meshStandardMaterial color={black} roughness={0.3} />
+      </mesh>
+      {/* base — 5-star */}
+      {[0, 1, 2, 3, 4].map((i) => {
+        const a = (i / 5) * Math.PI * 2 - Math.PI / 2
+        return (
+          <mesh key={i} position={[Math.cos(a) * 0.22, 0.45, Math.sin(a) * 0.22]}>
+            <boxGeometry args={[0.04, 0.35, 0.04]} />
+            <meshStandardMaterial color={black} metalness={0.7} roughness={0.3} />
+          </mesh>
+        )
+      })}
+      {/* center hub */}
+      <mesh position={[0, 0.38, 0]}>
+        <cylinderGeometry args={[0.08, 0.1, 0.06, 8]} />
+        <meshStandardMaterial color={black} metalness={0.8} roughness={0.2} />
+      </mesh>
+      {/* wheels */}
+      {[0, 1, 2, 3, 4].map((i) => {
+        const a = (i / 5) * Math.PI * 2 - Math.PI / 2
+        return (
+          <mesh key={i} position={[Math.cos(a) * 0.25, 0.02, Math.sin(a) * 0.25]}>
+            <sphereGeometry args={[0.03, 8, 8]} />
+            <meshStandardMaterial color="#222" />
+          </mesh>
+        )
+      })}
+    </group>
+  )
+}
+
+/* ═══════════════════════════════════════════
+   Coffee mug — for drinking emote
+   ═══════════════════════════════════════════ */
+
+function CoffeeMugModel() {
+  return (
+    <group>
+      <mesh position={[0, 0.05, 0]}>
+        <cylinderGeometry args={[0.035, 0.03, 0.09, 12]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.3} />
+      </mesh>
+      <mesh position={[0.04, 0.05, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <torusGeometry args={[0.02, 0.005, 8, 12, Math.PI]} />
+        <meshStandardMaterial color="#ffffff" />
+      </mesh>
+      <mesh position={[0, 0.085, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[0.028, 12]} />
+        <meshStandardMaterial color="#3e1f0d" />
+      </mesh>
+    </group>
+  )
+}
+
+/* ═══════════════════════════════════════════
+   Character — Real Madrid 25-26 blue third kit + emotes
+   ═══════════════════════════════════════════ */
+
+type Emote = "typing" | "drinking" | "nodding" | "stretch"
 
 function Character() {
   const leftArmRef = useRef<THREE.Group>(null!)
   const rightArmRef = useRef<THREE.Group>(null!)
   const headRef = useRef<THREE.Group>(null!)
+  const mugRef = useRef<THREE.Group>(null!)
+  const torsoRef = useRef<THREE.Group>(null!)
 
+  const rmBlue = "#0a1628"
+  const rmBlueLight = "#0d1f3c"
   const gold = "#FFD700"
-  const white = "#ffffff"
   const skin = "#e8b88a"
   const hair = "#1a1a2e"
   const dark = "#0f172a"
 
+  const emoteCycle: { emote: Emote; duration: number }[] = [
+    { emote: "typing", duration: 6 },
+    { emote: "drinking", duration: 4 },
+    { emote: "typing", duration: 5 },
+    { emote: "nodding", duration: 2 },
+    { emote: "typing", duration: 6 },
+    { emote: "stretch", duration: 3 },
+  ]
+
+  const totalCycle = emoteCycle.reduce((a, b) => a + b.duration, 0)
+
   useFrame((s) => {
     const t = s.clock.getElapsedTime()
-    if (leftArmRef.current)
-      leftArmRef.current.rotation.x = -0.55 + Math.sin(t * 4.5) * 0.07
-    if (rightArmRef.current)
-      rightArmRef.current.rotation.x = -0.55 + Math.sin(t * 4.5 + Math.PI) * 0.07
+    const cycleTime = t % totalCycle
+
+    let elapsed = 0
+    let currentEmote: Emote = "typing"
+    let phaseStart = 0
+    for (const { emote, duration } of emoteCycle) {
+      if (cycleTime < elapsed + duration) {
+        currentEmote = emote
+        phaseStart = elapsed
+        break
+      }
+      elapsed += duration
+    }
+    const phaseT = (cycleTime - phaseStart) / (emoteCycle.find((e) => e.emote === currentEmote)?.duration ?? 1)
+
     if (headRef.current) {
-      headRef.current.rotation.z = Math.sin(t * 0.6) * 0.04
-      headRef.current.rotation.x = Math.sin(t * 0.4) * 0.02
+      if (currentEmote === "nodding") {
+        headRef.current.rotation.x = Math.sin(phaseT * Math.PI * 3) * 0.15
+        headRef.current.rotation.z = 0
+      } else if (currentEmote === "stretch") {
+        headRef.current.rotation.x = -0.1 - phaseT * 0.08
+        headRef.current.rotation.z = 0
+      } else {
+        headRef.current.rotation.z = Math.sin(t * 0.6) * 0.03
+        headRef.current.rotation.x = Math.sin(t * 0.4) * 0.02
+      }
+    }
+
+    if (torsoRef.current && currentEmote === "stretch") {
+      torsoRef.current.rotation.x = -phaseT * 0.12
+    } else if (torsoRef.current) {
+      torsoRef.current.rotation.x = 0
+    }
+
+    if (currentEmote === "typing") {
+      if (leftArmRef.current)
+        leftArmRef.current.rotation.x = -0.55 + Math.sin(t * 4.5) * 0.07
+      if (rightArmRef.current)
+        rightArmRef.current.rotation.x = -0.55 + Math.sin(t * 4.5 + Math.PI) * 0.07
+      if (mugRef.current) {
+        mugRef.current.visible = false
+      }
+    } else if (currentEmote === "drinking") {
+      let lift = 0
+      if (phaseT < 0.3) lift = phaseT / 0.3
+      else if (phaseT < 0.6) lift = 1
+      else lift = Math.max(0, (1 - phaseT) / 0.4)
+      const armRot = -0.55 + lift * 1.5
+      if (rightArmRef.current) rightArmRef.current.rotation.x = armRot
+      if (leftArmRef.current) leftArmRef.current.rotation.x = -0.55
+      if (mugRef.current) {
+        mugRef.current.visible = true
+        mugRef.current.position.set(0.32, 1.1 + lift * 0.45, 0.08 + lift * 0.15)
+        mugRef.current.rotation.x = -0.25 - lift * 0.6
+      }
+    } else {
+      if (leftArmRef.current) leftArmRef.current.rotation.x = -0.55
+      if (rightArmRef.current) rightArmRef.current.rotation.x = -0.55
+      if (mugRef.current) mugRef.current.visible = false
     }
   })
 
@@ -172,12 +382,10 @@ function Character() {
           <boxGeometry args={[0.32, 0.32, 0.32]} />
           <meshStandardMaterial color={skin} />
         </mesh>
-        {/* hair */}
         <mesh position={[0, 0.17, -0.01]}>
           <boxGeometry args={[0.34, 0.1, 0.34]} />
           <meshStandardMaterial color={hair} />
         </mesh>
-        {/* eyes */}
         <mesh position={[-0.07, 0.02, 0.165]}>
           <boxGeometry args={[0.055, 0.035, 0.01]} />
           <meshStandardMaterial color={dark} />
@@ -188,22 +396,29 @@ function Character() {
         </mesh>
       </group>
 
-      {/* ── Torso (gold jersey) ── */}
-      <mesh position={[0, 1.3, 0]}>
-        <boxGeometry args={[0.42, 0.44, 0.22]} />
-        <meshStandardMaterial color={gold} metalness={0.35} roughness={0.55} />
-      </mesh>
-      {/* collar stripe */}
-      <mesh position={[0, 1.5, 0.115]}>
-        <boxGeometry args={[0.13, 0.035, 0.01]} />
-        <meshStandardMaterial color={white} />
-      </mesh>
+      {/* ── Torso (Real Madrid 25-26 blue third kit) ── */}
+      <group ref={torsoRef}>
+        <mesh position={[0, 1.3, 0]}>
+          <boxGeometry args={[0.42, 0.44, 0.22]} />
+          <meshStandardMaterial color={rmBlue} metalness={0.2} roughness={0.6} />
+        </mesh>
+        {/* gold trim stripe */}
+        <mesh position={[0, 1.5, 0.115]}>
+          <boxGeometry args={[0.14, 0.03, 0.01]} />
+          <meshStandardMaterial color={gold} metalness={0.5} roughness={0.4} />
+        </mesh>
+        {/* crest area */}
+        <mesh position={[0, 1.35, 0.115]}>
+          <boxGeometry args={[0.08, 0.1, 0.01]} />
+          <meshStandardMaterial color={gold} metalness={0.4} roughness={0.5} />
+        </mesh>
+      </group>
 
-      {/* ── Left arm (typing) ── */}
+      {/* ── Left arm ── */}
       <group ref={leftArmRef} position={[-0.28, 1.48, 0]}>
         <mesh position={[0, -0.12, 0]}>
           <boxGeometry args={[0.11, 0.24, 0.11]} />
-          <meshStandardMaterial color={gold} metalness={0.35} roughness={0.55} />
+          <meshStandardMaterial color={rmBlue} metalness={0.2} roughness={0.6} />
         </mesh>
         <mesh position={[0, -0.3, 0.06]}>
           <boxGeometry args={[0.09, 0.16, 0.09]} />
@@ -211,11 +426,11 @@ function Character() {
         </mesh>
       </group>
 
-      {/* ── Right arm (typing) ── */}
+      {/* ── Right arm (typing / holds mug when drinking) ── */}
       <group ref={rightArmRef} position={[0.28, 1.48, 0]}>
         <mesh position={[0, -0.12, 0]}>
           <boxGeometry args={[0.11, 0.24, 0.11]} />
-          <meshStandardMaterial color={gold} metalness={0.35} roughness={0.55} />
+          <meshStandardMaterial color={rmBlue} metalness={0.2} roughness={0.6} />
         </mesh>
         <mesh position={[0, -0.3, 0.06]}>
           <boxGeometry args={[0.09, 0.16, 0.09]} />
@@ -223,25 +438,28 @@ function Character() {
         </mesh>
       </group>
 
-      {/* ── Legs (sitting, white shorts) ── */}
+      {/* ── Coffee mug (in hand when drinking emote) ── */}
+      <group ref={mugRef} position={[0.32, 1.1, 0.08]} visible={false}>
+        <CoffeeMugModel />
+      </group>
+
+      {/* ── Legs (blue shorts — third kit) ── */}
       <mesh position={[-0.1, 1.0, -0.06]} rotation={[1.1, 0, 0]}>
         <boxGeometry args={[0.15, 0.26, 0.14]} />
-        <meshStandardMaterial color={white} />
+        <meshStandardMaterial color={rmBlueLight} />
       </mesh>
       <mesh position={[0.1, 1.0, -0.06]} rotation={[1.1, 0, 0]}>
         <boxGeometry args={[0.15, 0.26, 0.14]} />
-        <meshStandardMaterial color={white} />
+        <meshStandardMaterial color={rmBlueLight} />
       </mesh>
-      {/* shins */}
       <mesh position={[-0.1, 0.75, -0.22]}>
         <boxGeometry args={[0.13, 0.28, 0.13]} />
-        <meshStandardMaterial color={white} />
+        <meshStandardMaterial color={rmBlueLight} />
       </mesh>
       <mesh position={[0.1, 0.75, -0.22]}>
         <boxGeometry args={[0.13, 0.28, 0.13]} />
-        <meshStandardMaterial color={white} />
+        <meshStandardMaterial color={rmBlueLight} />
       </mesh>
-      {/* shoes */}
       <mesh position={[-0.1, 0.59, -0.17]}>
         <boxGeometry args={[0.14, 0.05, 0.18]} />
         <meshStandardMaterial color={dark} />
@@ -255,97 +473,41 @@ function Character() {
 }
 
 /* ═══════════════════════════════════════════
-   Desk + Chair + Accessories
+   Desk + desk mug (when not drinking)
    ═══════════════════════════════════════════ */
 
-function Desk() {
-  const wood = "#5c3a1e"
-  const woodLight = "#7a4f2e"
+function DeskMug() {
   return (
-    <group>
-      {/* surface */}
-      <mesh position={[0, 0.9, -0.15]}>
-        <boxGeometry args={[1.6, 0.04, 0.7]} />
-        <meshStandardMaterial color={woodLight} roughness={0.6} />
-      </mesh>
-      {/* legs */}
-      {[[-0.72, -0.42], [0.72, -0.42], [-0.72, 0.08], [0.72, 0.08]].map(
-        ([x, z], i) => (
-          <mesh key={i} position={[x, 0.44, z]}>
-            <boxGeometry args={[0.04, 0.88, 0.04]} />
-            <meshStandardMaterial color={wood} roughness={0.7} />
-          </mesh>
-        )
-      )}
-    </group>
-  )
-}
-
-function Chair() {
-  const c = "#2a2a3e"
-  return (
-    <group position={[0, 0, 0.35]}>
-      {/* seat */}
-      <mesh position={[0, 0.78, 0]}>
-        <boxGeometry args={[0.42, 0.04, 0.38]} />
-        <meshStandardMaterial color={c} />
-      </mesh>
-      {/* backrest */}
-      <mesh position={[0, 1.08, 0.18]}>
-        <boxGeometry args={[0.4, 0.55, 0.04]} />
-        <meshStandardMaterial color={c} />
-      </mesh>
-      {/* legs */}
-      {[[-0.18, -0.15], [0.18, -0.15], [-0.18, 0.15], [0.18, 0.15]].map(
-        ([x, z], i) => (
-          <mesh key={i} position={[x, 0.38, z]}>
-            <cylinderGeometry args={[0.015, 0.015, 0.76, 6]} />
-            <meshStandardMaterial color="#444" metalness={0.8} roughness={0.2} />
-          </mesh>
-        )
-      )}
-      {/* wheels */}
-      {[[-0.18, -0.15], [0.18, -0.15], [-0.18, 0.15], [0.18, 0.15]].map(
-        ([x, z], i) => (
-          <mesh key={`w${i}`} position={[x, 0.02, z]}>
-            <sphereGeometry args={[0.025, 8, 8]} />
-            <meshStandardMaterial color="#333" />
-          </mesh>
-        )
-      )}
-    </group>
-  )
-}
-
-function CoffeeMug() {
-  return (
-    <group position={[0.55, 0.92, -0.3]}>
+    <group position={[0.5, 0.92, -0.25]}>
       <mesh position={[0, 0.05, 0]}>
-        <cylinderGeometry args={[0.04, 0.035, 0.1, 12]} />
+        <cylinderGeometry args={[0.035, 0.03, 0.09, 12]} />
         <meshStandardMaterial color="#ffffff" roughness={0.3} />
       </mesh>
-      {/* handle */}
-      <mesh position={[0.05, 0.05, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <torusGeometry args={[0.025, 0.006, 8, 12, Math.PI]} />
+      <mesh position={[0.04, 0.05, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <torusGeometry args={[0.02, 0.005, 8, 12, Math.PI]} />
         <meshStandardMaterial color="#ffffff" />
       </mesh>
-      {/* coffee surface */}
-      <mesh position={[0, 0.09, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.035, 12]} />
+      <mesh position={[0, 0.085, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[0.028, 12]} />
         <meshStandardMaterial color="#3e1f0d" />
       </mesh>
     </group>
   )
 }
 
-function BookStack() {
-  const colors = ["#c0392b", "#2980b9", "#27ae60"]
+function Desk() {
+  const wood = "#5c3a1e"
+  const woodLight = "#7a4f2e"
   return (
-    <group position={[-0.55, 0.92, -0.32]}>
-      {colors.map((c, i) => (
-        <mesh key={i} position={[0, i * 0.04, 0]}>
-          <boxGeometry args={[0.16, 0.035, 0.11]} />
-          <meshStandardMaterial color={c} roughness={0.7} />
+    <group>
+      <mesh position={[0, 0.9, -0.2]}>
+        <boxGeometry args={[1.9, 0.04, 0.85]} />
+        <meshStandardMaterial color={woodLight} roughness={0.6} />
+      </mesh>
+      {[[-0.85, -0.5], [0.85, -0.5], [-0.85, 0.1], [0.85, 0.1]].map(([x, z], i) => (
+        <mesh key={i} position={[x, 0.44, z]}>
+          <boxGeometry args={[0.04, 0.88, 0.04]} />
+          <meshStandardMaterial color={wood} roughness={0.7} />
         </mesh>
       ))}
     </group>
@@ -367,9 +529,9 @@ function FloatingShapes() {
       [new THREE.OctahedronGeometry(0.15), [1.6, 1.8, 0.3], "#FFD700", 2.0, 1.8],
       [new THREE.BoxGeometry(0.18, 0.18, 0.18), [-1.5, 1.5, 0.4], "#FFD700", 1.5, 1.4],
       [new THREE.TorusGeometry(0.12, 0.04, 12, 24), [1.3, 0.3, 1.0], "#FFD700", 1.8, 1.0],
-      [new THREE.IcosahedronGeometry(0.12), [-1.2, 0.5, 1.2], "#2563eb", 2.2, 1.6],
+      [new THREE.IcosahedronGeometry(0.12), [-1.2, 0.5, 1.2], "#0a1628", 2.2, 1.6],
       [new THREE.DodecahedronGeometry(0.13), [0.2, 2.2, -0.5], "#FFD700", 1.2, 0.8],
-      [new THREE.TetrahedronGeometry(0.12), [-0.4, -0.1, 1.4], "#2563eb", 1.7, 1.3],
+      [new THREE.TetrahedronGeometry(0.12), [-0.4, -0.1, 1.4], "#00ff88", 1.7, 1.3],
       [new THREE.ConeGeometry(0.08, 0.18, 6), [1.7, 0.8, -0.6], "#FFD700", 1.9, 1.1],
     ],
     []
@@ -387,10 +549,6 @@ function FloatingShapes() {
     </group>
   )
 }
-
-/* ═══════════════════════════════════════════
-   Ambient particles
-   ═══════════════════════════════════════════ */
 
 function Particles({ count = 100 }: { count?: number }) {
   const ref = useRef<THREE.Points>(null!)
@@ -426,7 +584,7 @@ function Particles({ count = 100 }: { count?: number }) {
 }
 
 /* ═══════════════════════════════════════════
-   Main Scene (composition + lighting + mouse)
+   Main Scene
    ═══════════════════════════════════════════ */
 
 function Scene() {
@@ -457,27 +615,22 @@ function Scene() {
       <group ref={groupRef}>
         <Character />
         <Desk />
-        <Chair />
-        <LaptopOnDesk />
-        <CoffeeMug />
-        <BookStack />
+        <SecretlabChair />
+        <MacBookM3Air />
+        <AlienwareMonitor />
+        <DeskMug />
         <FloatingShapes />
       </group>
       <Particles />
 
-      {/* Lighting: gold key from laptop, blue rim, warm fill */}
-      <ambientLight intensity={0.18} />
+      <ambientLight intensity={0.2} />
       <pointLight position={[0, 2, 2]} intensity={3} color="#FFD700" distance={8} decay={2} />
       <pointLight position={[-3, 3, -1]} intensity={1.2} color="#2563eb" distance={10} decay={2} />
-      <pointLight position={[3, 0, 3]} intensity={0.6} color="#FFD700" distance={7} decay={2} />
+      <pointLight position={[3, 0, 3]} intensity={0.6} color="#00ff88" distance={7} decay={2} />
       <spotLight position={[0, 4, 1]} intensity={0.5} angle={0.6} penumbra={0.8} color="#fff5e0" />
     </>
   )
 }
-
-/* ═══════════════════════════════════════════
-   Canvas export
-   ═══════════════════════════════════════════ */
 
 export default function HeroScene() {
   const [isMobile, setIsMobile] = useState(false)
@@ -488,7 +641,7 @@ export default function HeroScene() {
 
   return (
     <Canvas
-      camera={{ position: [2, 2, 3.8], fov: 34 }}
+      camera={{ position: [2, 2, 4], fov: 34 }}
       dpr={[1, isMobile ? 1 : 1.5]}
       gl={{ antialias: true, alpha: true }}
       style={{ background: "transparent" }}
