@@ -92,6 +92,42 @@ body {
   }
 }
 
+/* Keyboard focus ring for accessibility */
+:focus-visible {
+  outline: 2px solid var(--accent-val);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip to content for screen readers */
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  top: 4px;
+  z-index: 9999;
+  padding: 8px 16px;
+  background: var(--accent-val);
+  color: #0a0e1a;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.skip-to-content:focus {
+  left: 16px;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Shimmer sweep for buttons */
 @keyframes shimmer-sweep {
   0% {
@@ -128,6 +164,21 @@ body {
 .animate-gradient-text {
   background-size: 200% auto;
   animation: gradient-shift 4s ease-in-out infinite;
+}
+
+/* Animated gradient border for featured cards */
+@keyframes border-glow {
+  0%,
+  100% {
+    border-color: rgba(255, 215, 0, 0.12);
+  }
+  50% {
+    border-color: rgba(255, 215, 0, 0.35);
+  }
+}
+
+.animate-border-glow {
+  animation: border-glow 3s ease-in-out infinite;
 }
 
 /* Marquee scroll */
