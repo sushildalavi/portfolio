@@ -1,9 +1,104 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
 import { MapPin, ChevronRight } from "lucide-react"
 import SectionHeading from "./SectionHeading"
 import { experiences } from "@/data/experience"
+import { getTiltTransform } from "@/lib/tilt"
+
+function ExperienceCard({
+  exp,
+  index,
+}: {
+  exp: (typeof experiences)[number]
+  index: number
+}) {
+  const [tilt, setTilt] = useState("")
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30, x: index % 2 === 0 ? -20 : 20 }}
+      whileInView={{ opacity: 1, y: 0, x: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.6, delay: index * 0.15 }}
+      className="relative md:pl-12"
+    >
+      {/* Timeline dot with pulse */}
+      <div className="hidden md:block absolute left-0 top-2 w-[15px] h-[15px] rounded-full border-2 border-accent/40 bg-background z-10">
+        <div className="absolute inset-1 rounded-full bg-accent/60" />
+        <div
+          className="absolute inset-0 rounded-full border-2 border-accent/30"
+          style={{ animation: "pulse-ring 2s ease-out infinite" }}
+        />
+      </div>
+
+      <div
+        className="group relative p-6 md:p-8 rounded-2xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/25 hover:shadow-[0_0_40px_rgba(255,215,0,0.04)] transition-all duration-500 overflow-hidden"
+        onMouseMove={(e) => setTilt(getTiltTransform(e))}
+        onMouseLeave={() => setTilt("")}
+        style={{ transform: tilt, transition: "transform 0.15s ease-out" }}
+      >
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+        <div className="relative z-10">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+            <div>
+              <h3 className="text-xl font-bold group-hover:text-accent transition-colors duration-300">
+                {exp.company}
+              </h3>
+              <p className="text-accent text-sm font-medium mt-0.5">
+                {exp.role}
+              </p>
+            </div>
+            <div className="flex flex-col sm:items-end gap-1">
+              <span className="text-sm text-muted font-mono">{exp.period}</span>
+              <div className="flex items-center gap-1">
+                <MapPin size={12} className="text-muted" />
+                <span className="text-xs text-muted">{exp.location}</span>
+              </div>
+            </div>
+          </div>
+
+          <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
+            {exp.description}
+          </p>
+
+          <ul className="space-y-2.5">
+            {exp.achievements.map((achievement, j) => (
+              <motion.li
+                key={j}
+                className="flex items-start gap-2 text-sm"
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 + j * 0.06 }}
+              >
+                <ChevronRight
+                  size={14}
+                  className="text-accent/40 mt-0.5 shrink-0"
+                />
+                <span className="text-muted-foreground">{achievement}</span>
+              </motion.li>
+            ))}
+          </ul>
+
+          <div className="flex flex-wrap gap-1.5 mt-6">
+            {exp.technologies.map((tech) => (
+              <motion.span
+                key={tech}
+                className="text-[11px] px-2 py-1 rounded-md bg-foreground/[0.04] text-muted-foreground border border-foreground/[0.04] hover:border-accent/25 hover:text-accent hover:bg-accent/5 transition-all duration-200 cursor-default"
+                whileHover={{ scale: 1.1, y: -2 }}
+              >
+                {tech}
+              </motion.span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
 
 export default function Experience() {
   return (
@@ -22,76 +117,7 @@ export default function Experience() {
 
           <div className="space-y-12">
             {experiences.map((exp, i) => (
-              <motion.div
-                key={exp.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.5, delay: i * 0.15 }}
-                className="relative md:pl-12"
-              >
-                <div className="hidden md:block absolute left-0 top-2 w-[15px] h-[15px] rounded-full border-2 border-accent/40 bg-background z-10">
-                  <div className="absolute inset-1 rounded-full bg-accent/60" />
-                </div>
-
-                <div className="group relative p-6 md:p-8 rounded-2xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/20 transition-all duration-500 overflow-hidden">
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-accent/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                  <div className="relative z-10">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
-                      <div>
-                        <h3 className="text-xl font-bold">{exp.company}</h3>
-                        <p className="text-accent text-sm font-medium mt-0.5">
-                          {exp.role}
-                        </p>
-                      </div>
-                      <div className="flex flex-col sm:items-end gap-1">
-                        <span className="text-sm text-muted font-mono">
-                          {exp.period}
-                        </span>
-                        <div className="flex items-center gap-1">
-                          <MapPin size={12} className="text-muted" />
-                          <span className="text-xs text-muted">
-                            {exp.location}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
-                      {exp.description}
-                    </p>
-
-                    <ul className="space-y-2.5">
-                      {exp.achievements.map((achievement, j) => (
-                        <li
-                          key={j}
-                          className="flex items-start gap-2 text-sm"
-                        >
-                          <ChevronRight
-                            size={14}
-                            className="text-accent/40 mt-0.5 shrink-0"
-                          />
-                          <span className="text-muted-foreground">
-                            {achievement}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div className="flex flex-wrap gap-1.5 mt-6">
-                      {exp.technologies.map((tech) => (
-                        <span
-                          key={tech}
-                          className="text-[11px] px-2 py-1 rounded-md bg-foreground/[0.04] text-muted-foreground border border-foreground/[0.04]"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+              <ExperienceCard key={exp.id} exp={exp} index={i} />
             ))}
           </div>
         </div>
