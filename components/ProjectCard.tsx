@@ -5,6 +5,27 @@ import { motion } from "framer-motion"
 import { ExternalLink, Github, ChevronRight } from "lucide-react"
 import type { Project } from "@/data/projects"
 import { getTiltTransform } from "@/lib/tilt"
+import { getTechIcon } from "@/lib/techIcons"
+
+function TechTag({ tech }: { tech: string }) {
+  const entry = getTechIcon(tech)
+
+  return (
+    <motion.span
+      className="inline-flex items-center gap-1.5 text-[11px] px-2 py-1 rounded-md bg-foreground/[0.04] text-muted-foreground border border-foreground/[0.04] hover:border-accent/25 hover:text-accent hover:bg-accent/5 transition-all duration-200 cursor-default"
+      whileHover={{ scale: 1.1, y: -2 }}
+    >
+      {entry && (
+        <entry.icon
+          size={12}
+          style={{ color: entry.color }}
+          className="shrink-0"
+        />
+      )}
+      {tech}
+    </motion.span>
+  )
+}
 
 export default function ProjectCard({
   project,
@@ -34,7 +55,6 @@ export default function ProjectCard({
         <div className="absolute inset-0 bg-gradient-to-br from-accent/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
         <div className="relative z-10">
-          {/* Category tags */}
           <div className="flex flex-wrap items-center gap-2 mb-4">
             {project.categories.map((cat) => (
               <motion.span
@@ -62,7 +82,6 @@ export default function ProjectCard({
             {project.description}
           </p>
 
-          {/* Metrics */}
           {isFeatured && project.metrics.length > 0 && (
             <div className="flex flex-wrap gap-4 mt-6">
               {project.metrics.map((metric) => (
@@ -78,7 +97,6 @@ export default function ProjectCard({
             </div>
           )}
 
-          {/* Highlights */}
           {isFeatured && (
             <ul className="mt-6 space-y-2">
               {project.highlights.slice(0, 4).map((h, i) => (
@@ -100,17 +118,12 @@ export default function ProjectCard({
             </ul>
           )}
 
-          {/* Tech tags */}
           <div className="flex flex-wrap items-center gap-1.5 mt-6">
-            {project.technologies.slice(0, isFeatured ? 8 : 5).map((tech) => (
-              <motion.span
-                key={tech}
-                className="text-[11px] px-2 py-1 rounded-md bg-foreground/[0.04] text-muted-foreground border border-foreground/[0.04] hover:border-accent/25 hover:text-accent hover:bg-accent/5 transition-all duration-200 cursor-default"
-                whileHover={{ scale: 1.1, y: -2 }}
-              >
-                {tech}
-              </motion.span>
-            ))}
+            {project.technologies
+              .slice(0, isFeatured ? 8 : 5)
+              .map((tech) => (
+                <TechTag key={tech} tech={tech} />
+              ))}
             {project.technologies.length > (isFeatured ? 8 : 5) && (
               <span className="text-[11px] text-muted">
                 +{project.technologies.length - (isFeatured ? 8 : 5)}
@@ -118,7 +131,6 @@ export default function ProjectCard({
             )}
           </div>
 
-          {/* Links */}
           {(project.links.github || project.links.live) && (
             <div className="flex gap-3 mt-6 pt-4 border-t border-foreground/[0.04]">
               {project.links.github && (

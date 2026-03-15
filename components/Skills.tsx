@@ -14,6 +14,7 @@ import {
 import SectionHeading from "./SectionHeading"
 import { skillGroups } from "@/data/skills"
 import { getTiltTransform } from "@/lib/tilt"
+import { getTechIcon } from "@/lib/techIcons"
 
 const iconMap: Record<string, LucideIcon> = {
   Brain,
@@ -32,6 +33,22 @@ const containerVariants = {
 const cardVariants = {
   hidden: { opacity: 0, y: 20, scale: 0.95 },
   show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.45 } },
+}
+
+function SkillTag({ skill }: { skill: string }) {
+  const tech = getTechIcon(skill)
+
+  return (
+    <motion.span
+      className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1.5 rounded-md bg-foreground/[0.04] text-muted-foreground border border-foreground/[0.04] hover:border-accent/25 hover:text-accent hover:bg-accent/5 transition-all duration-200 cursor-default"
+      whileHover={{ scale: 1.12, y: -2 }}
+    >
+      {tech && (
+        <tech.icon size={13} style={{ color: tech.color }} className="shrink-0" />
+      )}
+      {skill}
+    </motion.span>
+  )
 }
 
 function SkillCard({ group }: { group: (typeof skillGroups)[number] }) {
@@ -61,13 +78,7 @@ function SkillCard({ group }: { group: (typeof skillGroups)[number] }) {
 
         <div className="flex flex-wrap gap-1.5">
           {group.skills.map((skill) => (
-            <motion.span
-              key={skill}
-              className="text-[11px] px-2.5 py-1.5 rounded-md bg-foreground/[0.04] text-muted-foreground border border-foreground/[0.04] hover:border-accent/25 hover:text-accent hover:bg-accent/5 transition-all duration-200 cursor-default inline-block"
-              whileHover={{ scale: 1.12, y: -2 }}
-            >
-              {skill}
-            </motion.span>
+            <SkillTag key={skill} skill={skill} />
           ))}
         </div>
       </div>

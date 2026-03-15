@@ -6,6 +6,27 @@ import { MapPin, ChevronRight } from "lucide-react"
 import SectionHeading from "./SectionHeading"
 import { experiences } from "@/data/experience"
 import { getTiltTransform } from "@/lib/tilt"
+import { getTechIcon } from "@/lib/techIcons"
+
+function TechTag({ tech }: { tech: string }) {
+  const entry = getTechIcon(tech)
+
+  return (
+    <motion.span
+      className="inline-flex items-center gap-1.5 text-[11px] px-2 py-1 rounded-md bg-foreground/[0.04] text-muted-foreground border border-foreground/[0.04] hover:border-accent/25 hover:text-accent hover:bg-accent/5 transition-all duration-200 cursor-default"
+      whileHover={{ scale: 1.1, y: -2 }}
+    >
+      {entry && (
+        <entry.icon
+          size={12}
+          style={{ color: entry.color }}
+          className="shrink-0"
+        />
+      )}
+      {tech}
+    </motion.span>
+  )
+}
 
 function ExperienceCard({
   exp,
@@ -24,7 +45,6 @@ function ExperienceCard({
       transition={{ duration: 0.6, delay: index * 0.15 }}
       className="relative md:pl-12"
     >
-      {/* Timeline dot with pulse */}
       <div className="hidden md:block absolute left-0 top-2 w-[15px] h-[15px] rounded-full border-2 border-accent/40 bg-background z-10">
         <div className="absolute inset-1 rounded-full bg-accent/60" />
         <div
@@ -85,13 +105,7 @@ function ExperienceCard({
 
           <div className="flex flex-wrap gap-1.5 mt-6">
             {exp.technologies.map((tech) => (
-              <motion.span
-                key={tech}
-                className="text-[11px] px-2 py-1 rounded-md bg-foreground/[0.04] text-muted-foreground border border-foreground/[0.04] hover:border-accent/25 hover:text-accent hover:bg-accent/5 transition-all duration-200 cursor-default"
-                whileHover={{ scale: 1.1, y: -2 }}
-              >
-                {tech}
-              </motion.span>
+              <TechTag key={tech} tech={tech} />
             ))}
           </div>
         </div>
