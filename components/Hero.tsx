@@ -31,7 +31,19 @@ const fadeUp = {
   },
 }
 
+const letterAnimation = {
+  hidden: { opacity: 0, y: 40, rotateX: -40 },
+  show: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    rotateX: 0,
+    transition: { duration: 0.45, delay: 0.5 + i * 0.04, ease: "easeOut" as const },
+  }),
+}
+
 export default function Hero() {
+  const firstName = profile.name.split(" ")[0]
+
   return (
     <section
       id="hero"
@@ -56,25 +68,37 @@ export default function Hero() {
             {profile.role.toUpperCase()}
           </motion.span>
 
-          <motion.h1
-            variants={fadeUp}
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight"
-          >
-            Hi, I&apos;m{" "}
-            <span className="bg-gradient-to-r from-accent via-accent-light to-accent bg-clip-text text-transparent">
-              {profile.name.split(" ")[0]}
+          <div className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight">
+            <motion.span variants={fadeUp} className="inline-block">
+              Hi, I&apos;m{" "}
+            </motion.span>
+            <span className="inline-flex" style={{ perspective: 600 }}>
+              {firstName.split("").map((char, i) => (
+                <motion.span
+                  key={i}
+                  custom={i}
+                  variants={letterAnimation}
+                  initial="hidden"
+                  animate="show"
+                  className="bg-gradient-to-r from-accent via-accent-light to-accent bg-clip-text text-transparent animate-gradient-text inline-block"
+                  whileHover={{ scale: 1.2, y: -4, rotate: Math.random() > 0.5 ? 5 : -5 }}
+                  style={{ display: "inline-block" }}
+                >
+                  {char}
+                </motion.span>
+              ))}
             </span>
-            .
+            <motion.span variants={fadeUp} className="inline-block">.</motion.span>
             <br />
-            <span className="text-foreground/90">
+            <motion.span variants={fadeUp} className="text-foreground/90 inline-block">
               {profile.headline.split("\n").map((line, i) => (
                 <span key={i}>
                   {i > 0 && <br />}
                   {line}
                 </span>
               ))}
-            </span>
-          </motion.h1>
+            </motion.span>
+          </div>
 
           <motion.p
             variants={fadeUp}
@@ -84,31 +108,42 @@ export default function Hero() {
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex flex-wrap gap-4 pt-2">
-            <button
+            {/* Primary CTA with shimmer */}
+            <motion.button
               onClick={() =>
                 document
                   .getElementById("projects")
                   ?.scrollIntoView({ behavior: "smooth" })
               }
-              className="group px-6 py-3 bg-accent hover:bg-accent-hover text-[#0a0e1a] rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:shadow-accent/20"
+              className="group relative px-6 py-3 bg-accent hover:bg-accent-hover text-[#0a0e1a] rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:shadow-accent/25 overflow-hidden"
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.95 }}
             >
-              View Projects
-              <span className="inline-block ml-1 transition-transform group-hover:translate-x-1">
-                &rarr;
+              <span className="relative z-10">
+                View Projects
+                <span className="inline-block ml-1 transition-transform group-hover:translate-x-1.5">
+                  &rarr;
+                </span>
               </span>
-            </button>
-            <button
+              <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+            </motion.button>
+
+            {/* Secondary CTA with glow */}
+            <motion.button
               onClick={() =>
                 document
                   .getElementById("contact")
                   ?.scrollIntoView({ behavior: "smooth" })
               }
-              className="px-6 py-3 border border-foreground/10 hover:border-accent/30 rounded-full hover:bg-accent/5 transition-all duration-300"
+              className="px-6 py-3 border border-foreground/10 hover:border-accent/40 rounded-full hover:bg-accent/5 transition-all duration-300 hover:shadow-[0_0_25px_rgba(255,215,0,0.08)]"
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.95 }}
             >
               Get in Touch
-            </button>
+            </motion.button>
           </motion.div>
 
+          {/* Social links with bounce */}
           <motion.div variants={fadeUp} className="flex gap-5 pt-2">
             {[
               { href: profile.links.github, icon: Github, label: "GitHub" },
@@ -123,16 +158,18 @@ export default function Hero() {
                 label: "Email",
               },
             ].map(({ href, icon: Icon, label }) => (
-              <a
+              <motion.a
                 key={label}
                 href={href}
                 target={label !== "Email" ? "_blank" : undefined}
                 rel="noopener noreferrer"
                 aria-label={label}
                 className="text-foreground/30 hover:text-accent transition-colors duration-200"
+                whileHover={{ scale: 1.35, y: -4, rotate: 8 }}
+                whileTap={{ scale: 0.85 }}
               >
                 <Icon size={20} />
-              </a>
+              </motion.a>
             ))}
           </motion.div>
         </motion.div>
@@ -147,6 +184,7 @@ export default function Hero() {
         </motion.div>
       </div>
 
+      {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -154,10 +192,10 @@ export default function Hero() {
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
         <motion.div
-          animate={{ y: [0, 8, 0] }}
+          animate={{ y: [0, 10, 0] }}
           transition={{
             repeat: Infinity,
-            duration: 2,
+            duration: 1.8,
             ease: "easeInOut" as const,
           }}
         >
