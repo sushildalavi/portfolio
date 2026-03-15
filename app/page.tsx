@@ -9,11 +9,15 @@ import Publications from "@/components/Publications"
 import Contact from "@/components/Contact"
 import Footer from "@/components/Footer"
 import CustomCursor from "@/components/CustomCursor"
+import ScrollToTop from "@/components/ScrollToTop"
+import PageLoader from "@/components/PageLoader"
 
 export default function Home() {
   return (
     <>
+      <PageLoader />
       <CustomCursor />
+      <ScrollToTop />
       <Navbar />
       <main>
         <Hero />
