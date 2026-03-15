@@ -72,12 +72,12 @@ export default function Hero() {
       <div className="pointer-events-none absolute -left-24 top-28 h-[26rem] w-[26rem] rounded-full bg-accent/10 blur-[140px]" />
       <div className="pointer-events-none absolute -right-24 bottom-16 h-[24rem] w-[24rem] rounded-full bg-secondary/12 blur-[140px]" />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 px-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(380px,0.92fr)] lg:gap-14">
+      <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-6 lg:grid-cols-[minmax(0,0.92fr)_minmax(380px,0.88fr)] lg:gap-12">
         <motion.div
           variants={stagger}
           initial="hidden"
           animate="show"
-          className="max-w-2xl space-y-7"
+          className="max-w-2xl space-y-5"
         >
           <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-3">
             <span className="rounded-full border border-accent/25 bg-accent/8 px-4 py-2 text-[11px] font-mono tracking-[0.28em] text-accent">
@@ -88,7 +88,7 @@ export default function Hero() {
             </span>
           </motion.div>
 
-          <div className="max-w-[11.5ch] text-[clamp(3.6rem,7vw,6.35rem)] font-black leading-[0.92] tracking-[-0.05em] text-foreground">
+          <div className="max-w-[10.6ch] text-[clamp(2.7rem,5.1vw,4.9rem)] font-black leading-[0.92] tracking-[-0.05em] text-foreground">
             <motion.span variants={fadeUp} className="inline-block">
               Hi, I&apos;m{" "}
             </motion.span>
@@ -124,7 +124,7 @@ export default function Hero() {
 
           <motion.p
             variants={fadeUp}
-            className="max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl"
+            className="max-w-xl text-[1.05rem] leading-relaxed text-muted-foreground"
           >
             {profile.description}
           </motion.p>
@@ -201,7 +201,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 28, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.9, delay: 0.22, ease: "easeOut" as const }}
-          className="relative mx-auto w-full max-w-[42rem]"
+          className="relative mx-auto w-full max-w-[39rem]"
         >
           <div className="pointer-events-none absolute inset-6 rounded-[2.5rem] bg-gradient-to-br from-accent/18 via-accent/6 to-secondary/14 blur-3xl" />
 
@@ -219,7 +219,7 @@ export default function Hero() {
               ))}
             </div>
 
-            <div className="relative h-[430px] w-full pt-14 sm:h-[520px] lg:h-[620px]">
+            <div className="relative h-[400px] w-full pt-14 sm:h-[480px] lg:h-[560px]">
               <HeroScene />
             </div>
 

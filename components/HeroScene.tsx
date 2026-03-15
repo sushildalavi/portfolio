@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useRef, useState } from "react"
-import { Canvas, useFrame } from "@react-three/fiber"
+import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { ContactShadows, RoundedBox, Sparkles } from "@react-three/drei"
 import * as THREE from "three"
 
@@ -942,8 +942,13 @@ function AmbientAccents() {
 }
 
 function Scene({ mobile = false }: { mobile?: boolean }) {
+  const { camera } = useThree()
   const rigRef = useRef<THREE.Group>(null!)
   const mouse = useRef({ x: 0, y: 0 })
+
+  useEffect(() => {
+    camera.lookAt(0.02, 0.78, 0.05)
+  }, [camera])
 
   useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
