@@ -6,6 +6,7 @@ import { ExternalLink, Github, ChevronRight } from "lucide-react"
 import type { Project } from "@/data/projects"
 import { getTiltTransform } from "@/lib/tilt"
 import { getTechIcon } from "@/lib/techIcons"
+import CountUp from "./CountUp"
 
 function TechTag({ tech }: { tech: string }) {
   const entry = getTechIcon(tech)
@@ -45,8 +46,10 @@ export default function ProjectCard({
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
       <article
-        className={`group relative rounded-2xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/30 hover:shadow-[0_0_40px_rgba(255,215,0,0.05)] transition-all duration-500 overflow-hidden ${
-          isFeatured ? "p-6 md:p-8" : "p-5 md:p-6"
+        className={`group relative rounded-2xl bg-foreground/[0.025] border hover:border-accent/30 hover:shadow-[0_0_40px_rgba(255,215,0,0.05)] transition-all duration-500 overflow-hidden ${
+          isFeatured
+            ? "p-6 md:p-8 border-accent/15 animate-border-glow"
+            : "p-5 md:p-6 border-foreground/[0.06]"
         }`}
         onMouseMove={(e) => setTilt(getTiltTransform(e))}
         onMouseLeave={() => setTilt("")}
@@ -90,7 +93,7 @@ export default function ProjectCard({
                   className="px-4 py-3 rounded-xl bg-accent/[0.07] border border-accent/10 hover:border-accent/25 transition-all duration-200"
                   whileHover={{ scale: 1.06, y: -2 }}
                 >
-                  <p className="text-lg font-bold text-accent">{metric.value}</p>
+                  <CountUp value={metric.value} className="text-lg font-bold text-accent" />
                   <p className="text-[11px] text-muted mt-0.5">{metric.label}</p>
                 </motion.div>
               ))}

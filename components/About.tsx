@@ -6,6 +6,7 @@ import { GraduationCap, MapPin } from "lucide-react"
 import SectionHeading from "./SectionHeading"
 import { profile } from "@/data/profile"
 import { getTiltTransform } from "@/lib/tilt"
+import FloatingParticles from "./FloatingParticles"
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -50,6 +51,7 @@ function EduCard({ edu }: { edu: (typeof profile.education)[number] }) {
 export default function About() {
   return (
     <section id="about" className="py-24 md:py-32 px-6 relative">
+      <FloatingParticles count={25} />
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-accent/[0.04] rounded-full blur-[128px] pointer-events-none" />
 
       <div className="max-w-6xl mx-auto relative">
