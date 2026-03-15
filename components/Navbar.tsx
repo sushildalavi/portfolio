@@ -44,63 +44,120 @@ export default function Navbar() {
       )}
     >
       <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <button
+        {/* Logo */}
+        <motion.button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="text-lg font-bold tracking-tight hover:text-accent transition-colors"
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.92 }}
         >
           {profile.name.split(" ")[0]}
-          <span className="text-accent">.</span>
-        </button>
+          <motion.span
+            className="text-accent inline-block"
+            animate={{ rotate: [0, 0, 0, 15, -15, 0] }}
+            transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}
+          >
+            .
+          </motion.span>
+        </motion.button>
 
+        {/* Desktop nav links with animated underline */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <button
+            <motion.button
               key={link.href}
               onClick={() => scrollTo(link.href)}
-              className="text-sm text-foreground/60 hover:text-accent transition-colors duration-200"
+              className="relative text-sm text-foreground/60 hover:text-accent transition-colors duration-200 py-1"
+              whileHover="hover"
+              initial="rest"
             >
               {link.label}
-            </button>
+              <motion.span
+                className="absolute left-0 bottom-0 h-[2px] w-full bg-accent origin-left"
+                variants={{
+                  rest: { scaleX: 0, opacity: 0 },
+                  hover: { scaleX: 1, opacity: 1 },
+                }}
+                transition={{ duration: 0.3, ease: "easeOut" as const }}
+              />
+            </motion.button>
           ))}
         </div>
 
+        {/* Desktop right actions */}
         <div className="hidden md:flex items-center gap-3">
-          <button
+          {/* Theme toggle with spin */}
+          <motion.button
             onClick={toggleTheme}
             aria-label="Toggle theme"
             className="p-2 rounded-full text-foreground/50 hover:text-accent hover:bg-foreground/[0.05] transition-all duration-200"
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 0.85, rotate: 180 }}
           >
-            {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
-          <a
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={theme}
+                initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
+                animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
+                transition={{ duration: 0.25 }}
+                className="block"
+              >
+                {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+              </motion.span>
+            </AnimatePresence>
+          </motion.button>
+
+          {/* Resume button with shimmer */}
+          <motion.a
             href={profile.links.resume}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm px-4 py-2 rounded-full border border-accent/30 text-accent hover:bg-accent/10 transition-all duration-200"
+            className="group relative inline-flex items-center gap-2 text-sm px-4 py-2 rounded-full border border-accent/30 text-accent overflow-hidden"
+            whileHover={{ scale: 1.06, borderColor: "var(--accent-val)" }}
+            whileTap={{ scale: 0.95 }}
           >
-            <FileText size={14} />
-            Resume
-          </a>
+            <span className="relative z-10 flex items-center gap-2">
+              <FileText size={14} />
+              Resume
+            </span>
+            <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-accent/15 to-transparent" />
+          </motion.a>
         </div>
 
+        {/* Mobile actions */}
         <div className="flex md:hidden items-center gap-2">
-          <button
+          <motion.button
             onClick={toggleTheme}
             aria-label="Toggle theme"
             className="p-2 rounded-full text-foreground/50 hover:text-accent transition-colors"
+            whileTap={{ scale: 0.85, rotate: 180 }}
           >
             {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="text-foreground/60 hover:text-foreground transition-colors"
             aria-label="Toggle menu"
+            whileTap={{ scale: 0.85 }}
           >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={mobileOpen ? "close" : "open"}
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 90, opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="block"
+              >
+                {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+              </motion.span>
+            </AnimatePresence>
+          </motion.button>
         </div>
       </nav>
 
+      {/* Mobile menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -114,24 +171,27 @@ export default function Navbar() {
               {navLinks.map((link, i) => (
                 <motion.button
                   key={link.href}
-                  initial={{ opacity: 0, x: -10 }}
+                  initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
+                  transition={{ delay: i * 0.07 }}
                   onClick={() => scrollTo(link.href)}
                   className="text-sm text-foreground/60 hover:text-accent transition-colors text-left"
+                  whileHover={{ x: 8 }}
                 >
                   {link.label}
                 </motion.button>
               ))}
-              <a
+              <motion.a
                 href={profile.links.resume}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm px-4 py-2 rounded-full border border-accent/30 text-accent hover:bg-accent/10 transition-colors w-fit mt-2"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 <FileText size={14} />
                 Resume
-              </a>
+              </motion.a>
             </div>
           </motion.div>
         )}
