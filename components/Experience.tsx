@@ -7,6 +7,7 @@ import SectionHeading from "./SectionHeading"
 import { experiences } from "@/data/experience"
 import { getTiltTransform } from "@/lib/tilt"
 import { getTechIcon } from "@/lib/techIcons"
+import { asset } from "@/lib/assetPath"
 
 const ORG_LOGOS: Record<string, { logo: string; bg: string; pad?: boolean }> = {
   "USC Annenberg Norman Lear Center": {
@@ -32,7 +33,7 @@ function OrgLogo({ company }: { company: string }) {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={config.logo}
+        src={asset(config.logo)}
         alt={company}
         className="w-full h-full object-cover"
       />

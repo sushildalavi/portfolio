@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:pages": "NEXT_EXPORT=true NEXT_PUBLIC_BASE_PATH=/portfolio NEXT_PUBLIC_SITE_ORIGIN=https://sushildalavi.github.io next build",
     "start": "next start",
     "lint": "eslint"
   },

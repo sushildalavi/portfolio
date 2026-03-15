@@ -6,6 +6,7 @@ import { Github, Linkedin, Mail, FileText, Menu, X, Sun, Moon } from "lucide-rea
 import { cn } from "@/lib/utils"
 import { profile } from "@/data/profile"
 import { useTheme } from "@/components/ThemeProvider"
+import { asset } from "@/lib/assetPath"
 
 const navLinks = [
   { label: "Home", href: "#hero" },
@@ -26,6 +27,7 @@ const socialLinks = [
 function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
   const [activeSection, setActiveSection] = useState("hero")
   const { toggleTheme } = useTheme()
+  const resumeHref = asset(profile.links.resume)
 
   useEffect(() => {
     const sectionIds = navLinks.map((l) => l.href.slice(1))
@@ -159,7 +161,7 @@ function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
           </motion.button>
 
           <motion.a
-            href={profile.links.resume}
+            href={resumeHref}
             target="_blank"
             rel="noopener noreferrer"
             className="group flex-1 flex items-center justify-center gap-1.5 text-xs px-3 py-2 rounded-lg border border-accent/25 text-accent hover:bg-accent/8 transition-all duration-200 overflow-hidden relative"

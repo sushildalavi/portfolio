@@ -7,6 +7,7 @@ import SectionHeading from "./SectionHeading"
 import { profile } from "@/data/profile"
 import { getTiltTransform } from "@/lib/tilt"
 import FloatingParticles from "./FloatingParticles"
+import { asset } from "@/lib/assetPath"
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -26,7 +27,7 @@ function UniLogo({ edu }: { edu: (typeof profile.education)[number] }) {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={edu.logo}
+        src={asset(edu.logo)}
         alt={edu.school}
         className="w-full h-full object-cover"
       />

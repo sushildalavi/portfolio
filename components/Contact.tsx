@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 import { Mail, Github, Linkedin, FileText, ArrowUpRight } from "lucide-react"
 import { profile } from "@/data/profile"
 import { getTiltTransform } from "@/lib/tilt"
+import { asset } from "@/lib/assetPath"
 
 const links = [
   {
@@ -29,7 +30,7 @@ const links = [
   },
   {
     label: "Resume",
-    href: profile.links.resume,
+    href: asset(profile.links.resume),
     icon: FileText,
     value: "Download PDF",
     external: true,

@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { ThemeProvider } from "@/components/ThemeProvider"
+import { absoluteUrl } from "@/lib/assetPath"
 import "./globals.css"
 
 const geistSans = Geist({
@@ -17,6 +18,10 @@ export const metadata: Metadata = {
   title: "Sushil Dalavi — AI Research Engineer",
   description:
     "AI Research Engineer building NLP, RAG, and LLM-powered systems for research, healthcare, and social impact. MS in Computer Science at USC.",
+  metadataBase: new URL(absoluteUrl("/")),
+  alternates: {
+    canonical: absoluteUrl("/"),
+  },
   keywords: [
     "AI Engineer",
     "Machine Learning",
@@ -32,6 +37,7 @@ export const metadata: Metadata = {
     title: "Sushil Dalavi — AI Research Engineer",
     description:
       "Building intelligent systems for research, healthcare, and social impact.",
+    url: absoluteUrl("/"),
     type: "website",
   },
 }

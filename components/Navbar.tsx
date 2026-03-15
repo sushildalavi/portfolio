@@ -6,6 +6,7 @@ import { Menu, X, FileText, Sun, Moon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { profile } from "@/data/profile"
 import { useTheme } from "@/components/ThemeProvider"
+import { asset } from "@/lib/assetPath"
 
 const navLinks = [
   { label: "About", href: "#about" },
@@ -19,6 +20,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const { toggleTheme } = useTheme()
+  const resumeHref = asset(profile.links.resume)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50)
@@ -102,7 +104,7 @@ export default function Navbar() {
 
           {/* Resume button with shimmer */}
           <motion.a
-            href={profile.links.resume}
+            href={resumeHref}
             target="_blank"
             rel="noopener noreferrer"
             className="group relative inline-flex items-center gap-2 text-sm px-4 py-2 rounded-full border border-accent/30 text-accent overflow-hidden"
@@ -181,7 +183,7 @@ export default function Navbar() {
                 </motion.button>
               ))}
               <motion.a
-                href={profile.links.resume}
+                href={resumeHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm px-4 py-2 rounded-full border border-accent/30 text-accent hover:bg-accent/10 transition-colors w-fit mt-2"
