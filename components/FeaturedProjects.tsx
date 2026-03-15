@@ -1,5 +1,6 @@
 "use client"
 
+import { motion } from "framer-motion"
 import SectionHeading from "./SectionHeading"
 import ProjectCard from "./ProjectCard"
 import { projects } from "@/data/projects"
@@ -31,9 +32,15 @@ export default function FeaturedProjects() {
 
         {other.length > 0 && (
           <div className="mt-16">
-            <h3 className="text-sm font-mono text-muted tracking-wider uppercase mb-8">
+            <motion.h3
+              initial={{ opacity: 0, x: -15 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4 }}
+              className="text-sm font-mono text-muted tracking-wider uppercase mb-8"
+            >
               More Projects
-            </h3>
+            </motion.h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {other.map((project, i) => (
                 <ProjectCard

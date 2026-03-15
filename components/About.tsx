@@ -1,9 +1,11 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
 import { GraduationCap, MapPin } from "lucide-react"
 import SectionHeading from "./SectionHeading"
 import { profile } from "@/data/profile"
+import { getTiltTransform } from "@/lib/tilt"
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -13,6 +15,36 @@ const containerVariants = {
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+}
+
+function EduCard({ edu }: { edu: (typeof profile.education)[number] }) {
+  const [tilt, setTilt] = useState("")
+
+  return (
+    <div
+      className="group p-4 rounded-xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/25 hover:shadow-[0_0_30px_rgba(255,215,0,0.04)] transition-all duration-300"
+      onMouseMove={(e) => setTilt(getTiltTransform(e))}
+      onMouseLeave={() => setTilt("")}
+      style={{ transform: tilt, transition: "transform 0.15s ease-out" }}
+    >
+      <div className="flex items-start gap-3">
+        <motion.div
+          className="shrink-0 mt-0.5"
+          whileHover={{ rotate: 15, scale: 1.2 }}
+        >
+          <GraduationCap size={18} className="text-accent/60" />
+        </motion.div>
+        <div>
+          <p className="text-sm font-medium">{edu.degree}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{edu.school}</p>
+          <div className="flex items-center gap-1 mt-1">
+            <MapPin size={10} className="text-muted" />
+            <p className="text-xs text-muted">{edu.location}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default function About() {
@@ -59,12 +91,14 @@ export default function About() {
               </h3>
               <div className="flex flex-wrap gap-2">
                 {profile.about.focus.map((area) => (
-                  <span
+                  <motion.span
                     key={area}
-                    className="text-xs px-3 py-1.5 rounded-full bg-accent/10 text-accent border border-accent/10"
+                    className="text-xs px-3 py-1.5 rounded-full bg-accent/10 text-accent border border-accent/10 hover:bg-accent/20 hover:border-accent/30 hover:shadow-[0_0_12px_rgba(255,215,0,0.1)] transition-all duration-200 cursor-default inline-block"
+                    whileHover={{ scale: 1.1, y: -3 }}
+                    whileTap={{ scale: 0.95 }}
                   >
                     {area}
-                  </span>
+                  </motion.span>
                 ))}
               </div>
             </motion.div>
@@ -75,27 +109,7 @@ export default function About() {
               </h3>
               <div className="space-y-4">
                 {profile.education.map((edu) => (
-                  <div
-                    key={edu.degree}
-                    className="group p-4 rounded-xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/20 transition-colors duration-300"
-                  >
-                    <div className="flex items-start gap-3">
-                      <GraduationCap
-                        size={18}
-                        className="text-accent/60 mt-0.5 shrink-0"
-                      />
-                      <div>
-                        <p className="text-sm font-medium">{edu.degree}</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                          {edu.school}
-                        </p>
-                        <div className="flex items-center gap-1 mt-1">
-                          <MapPin size={10} className="text-muted" />
-                          <p className="text-xs text-muted">{edu.location}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <EduCard key={edu.degree} edu={edu} />
                 ))}
               </div>
             </motion.div>
