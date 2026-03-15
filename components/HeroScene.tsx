@@ -1,24 +1,48 @@
 "use client"
 
-import { useRef, useMemo, useEffect, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
-import { Float } from "@react-three/drei"
+import { ContactShadows, RoundedBox, Sparkles } from "@react-three/drei"
 import * as THREE from "three"
 
-/* ═══════════════════════════════════════════
-   Animated code-on-screen GLSL shader
-   ═══════════════════════════════════════════ */
+type Emote = "typing" | "drinking" | "nodding" | "celebrating"
 
-const screenVS = /* glsl */ `
+type EmoteSegment = {
+  emote: Emote
+  duration: number
+}
+
+type TimelineState = {
+  emote: Emote
+  raw: number
+}
+
+const EMOTE_SEQUENCE: EmoteSegment[] = [
+  { emote: "typing", duration: 5.6 },
+  { emote: "drinking", duration: 3.6 },
+  { emote: "typing", duration: 4.6 },
+  { emote: "nodding", duration: 2.3 },
+  { emote: "typing", duration: 3.8 },
+  { emote: "celebrating", duration: 3.3 },
+]
+
+const TOTAL_CYCLE = EMOTE_SEQUENCE.reduce(
+  (total, segment) => total + segment.duration,
+  0
+)
+
+const displayVertexShader = /* glsl */ `
   varying vec2 vUv;
+
   void main() {
     vUv = uv;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
 `
 
-const screenFS = /* glsl */ `
+const displayFragmentShader = /* glsl */ `
   uniform float uTime;
+  uniform float uVariant;
   varying vec2 vUv;
 
   float hash(vec2 p) {
@@ -27,607 +51,982 @@ const screenFS = /* glsl */ `
 
   void main() {
     vec2 uv = vUv;
-    float scroll = uTime * 0.025;
-    float lineIdx = floor((uv.y + scroll) * 26.0);
-    float linePhase = fract((uv.y + scroll) * 26.0);
-    float lineVis = step(0.18, linePhase) * step(linePhase, 0.72);
+    float t = uTime * mix(0.42, 0.62, uVariant);
 
-    float indent = floor(hash(vec2(lineIdx, 0.0)) * 5.0) * 0.04;
-    float len1 = 0.08 + hash(vec2(lineIdx, 1.0)) * 0.42;
-    float inT1 = step(indent + 0.04, uv.x) * step(uv.x, indent + 0.04 + len1);
+    vec3 bgA = mix(vec3(0.02, 0.03, 0.06), vec3(0.03, 0.03, 0.09), uVariant);
+    vec3 bgB = mix(vec3(0.06, 0.10, 0.18), vec3(0.04, 0.08, 0.16), uVariant);
+    vec3 lineA = mix(vec3(0.28, 0.85, 0.78), vec3(0.31, 0.63, 0.98), uVariant);
+    vec3 lineB = mix(vec3(1.00, 0.80, 0.28), vec3(0.12, 0.96, 0.62), uVariant);
+    vec3 lineC = mix(vec3(0.86, 0.46, 0.88), vec3(0.96, 0.65, 0.42), uVariant);
 
-    float gap = 0.015;
-    float t2s = indent + 0.04 + len1 + gap;
-    float len2 = hash(vec2(lineIdx, 2.0)) * 0.22;
-    float hasT2 = step(0.45, hash(vec2(lineIdx, 3.0)));
-    float inT2 = step(t2s, uv.x) * step(uv.x, min(t2s + len2, 0.95)) * hasT2;
+    vec3 color = mix(bgA, bgB, uv.y);
 
-    float t3s = t2s + len2 + gap;
-    float len3 = hash(vec2(lineIdx, 5.0)) * 0.14;
-    float hasT3 = step(0.55, hash(vec2(lineIdx, 6.0))) * hasT2;
-    float inT3 = step(t3s, uv.x) * step(uv.x, min(t3s + len3, 0.95)) * hasT3;
+    float scan = 0.03 * sin((uv.y + t * 0.18) * 280.0);
+    color += scan;
 
-    float isCode = lineVis * clamp(inT1 + inT2 + inT3, 0.0, 1.0);
+    float graph = smoothstep(0.03, 0.0, abs(uv.y - (0.30 + uv.x * 0.12 + sin((uv.x * 8.0 + t * 1.8) * 6.28318) * 0.035)));
+    float echo = smoothstep(0.02, 0.0, abs(uv.y - (0.58 - uv.x * 0.08 + sin((uv.x * 5.0 + t * 1.2) * 6.28318) * 0.03)));
+    color = mix(color, lineA, graph * 0.9);
+    color = mix(color, lineB, echo * 0.6);
 
-    vec3 gold   = vec3(1.0, 0.84, 0.0);
-    vec3 cyan   = vec3(0.29, 0.87, 0.79);
-    vec3 blue   = vec3(0.38, 0.65, 0.96);
-    vec3 white  = vec3(0.85, 0.85, 0.85);
-    vec3 purple = vec3(0.69, 0.49, 0.96);
+    float row = floor((uv.y + t * 0.06) * 16.0);
+    float band = step(0.16, fract((uv.y + t * 0.06) * 16.0)) * step(fract((uv.y + t * 0.06) * 16.0), 0.72);
+    float indent = 0.08 + floor(hash(vec2(row, 1.0)) * 4.0) * 0.06;
+    float width1 = 0.12 + hash(vec2(row, 2.0)) * 0.28;
+    float width2 = 0.08 + hash(vec2(row, 3.0)) * 0.16;
+    float block1 = step(indent, uv.x) * step(uv.x, indent + width1) * band;
+    float block2 = step(indent + width1 + 0.03, uv.x) * step(uv.x, indent + width1 + 0.03 + width2) * band * step(0.35, hash(vec2(row, 4.0)));
+    color = mix(color, lineC, clamp(block1 + block2, 0.0, 1.0) * 0.36);
 
-    float cs = hash(vec2(lineIdx, 4.0));
-    vec3 codeColor = gold;
-    codeColor = mix(codeColor, cyan,   step(0.25, cs));
-    codeColor = mix(codeColor, blue,   step(0.45, cs));
-    codeColor = mix(codeColor, white,  step(0.65, cs));
-    codeColor = mix(codeColor, purple, step(0.82, cs));
+    float ring = smoothstep(0.19, 0.17, abs(length(uv - vec2(0.82, 0.24)) - 0.10));
+    color = mix(color, lineB, ring * 0.8);
 
-    vec3 bg = vec3(0.02, 0.025, 0.055);
-    vec3 col = mix(bg, codeColor, isCode * 0.65);
+    float vignette = 1.0 - smoothstep(0.38, 0.92, length((uv - 0.5) * vec2(1.2, 1.0)));
+    color *= 0.82 + vignette * 0.42;
 
-    float inGutter = step(0.01, uv.x) * step(uv.x, 0.035) * lineVis;
-    col = mix(col, vec3(0.18, 0.22, 0.32), inGutter * 0.45);
-
-    float topLine = floor(scroll * 26.0 + 24.0);
-    float onCursor = 1.0 - step(0.5, abs(lineIdx - topLine));
-    float blink = step(0.5, fract(uTime * 1.2));
-    float cursorX = indent + 0.04 + len1 + gap;
-    float inCursor = step(cursorX, uv.x) * step(uv.x, cursorX + 0.007)
-                     * lineVis * blink * onCursor;
-    col = mix(col, gold, inCursor);
-
-    col *= 0.9 + 0.1 * sin(uv.y * 380.0);
-    col *= 1.0 - 0.3 * pow(length((uv - 0.5) * 1.35), 2.0);
-
-    gl_FragColor = vec4(col, 1.0);
+    gl_FragColor = vec4(color, 1.0);
   }
 `
 
-/* ═══════════════════════════════════════════
-   MacBook M3 Air — thin, sleek, silver
-   ═══════════════════════════════════════════ */
+function clamp01(value: number) {
+  return THREE.MathUtils.clamp(value, 0, 1)
+}
 
-function CodeScreen() {
-  const ref = useRef<THREE.ShaderMaterial>(null!)
-  const uniforms = useMemo(() => ({ uTime: { value: 0 } }), [])
-  useFrame((s) => {
-    if (ref.current) ref.current.uniforms.uTime.value = s.clock.getElapsedTime()
+function easeInOut(value: number) {
+  return value * value * (3 - 2 * value)
+}
+
+function getTimelineState(time: number): TimelineState {
+  const cycleTime = time % TOTAL_CYCLE
+  let elapsed = 0
+
+  for (const segment of EMOTE_SEQUENCE) {
+    if (cycleTime <= elapsed + segment.duration) {
+      return {
+        emote: segment.emote,
+        raw: clamp01((cycleTime - elapsed) / segment.duration),
+      }
+    }
+
+    elapsed += segment.duration
+  }
+
+  return { emote: "typing", raw: 0 }
+}
+
+function createCurvedPlaneGeometry(
+  width: number,
+  height: number,
+  segments: number,
+  curveDepth: number
+) {
+  const geometry = new THREE.PlaneGeometry(width, height, segments, 1)
+  const positions = geometry.attributes.position as THREE.BufferAttribute
+
+  for (let index = 0; index < positions.count; index += 1) {
+    const x = positions.getX(index)
+    const normalizedX = x / (width * 0.5)
+    const curve =
+      Math.cos(normalizedX * Math.PI * 0.5) * curveDepth - curveDepth
+    positions.setZ(index, curve)
+  }
+
+  positions.needsUpdate = true
+  geometry.computeVertexNormals()
+  return geometry
+}
+
+function ScreenSurface({
+  width,
+  height,
+  variant,
+  curved = false,
+  curveDepth = 0.04,
+}: {
+  width: number
+  height: number
+  variant: "laptop" | "monitor"
+  curved?: boolean
+  curveDepth?: number
+}) {
+  const materialRef = useRef<THREE.ShaderMaterial>(null!)
+  const uniforms = useMemo(
+    () => ({
+      uTime: { value: 0 },
+      uVariant: { value: variant === "monitor" ? 1 : 0 },
+    }),
+    [variant]
+  )
+
+  const geometry = useMemo(
+    () =>
+      curved
+        ? createCurvedPlaneGeometry(width, height, 48, curveDepth)
+        : new THREE.PlaneGeometry(width, height, 1, 1),
+    [curveDepth, curved, height, width]
+  )
+
+  useEffect(() => () => geometry.dispose(), [geometry])
+
+  useFrame((state) => {
+    materialRef.current.uniforms.uTime.value = state.clock.getElapsedTime()
   })
+
   return (
-    <mesh position={[0, 0, 0.012]}>
-      <planeGeometry args={[0.58, 0.38]} />
-      <shaderMaterial ref={ref} uniforms={uniforms} vertexShader={screenVS} fragmentShader={screenFS} />
+    <mesh geometry={geometry}>
+      <shaderMaterial
+        ref={materialRef}
+        uniforms={uniforms}
+        vertexShader={displayVertexShader}
+        fragmentShader={displayFragmentShader}
+      />
     </mesh>
   )
 }
 
-function MacBookM3Air() {
-  const silver = "#c0c0c0"
-  const dark = "#1a1a1a"
-  return (
-    <group position={[0.15, 0.92, -0.12]}>
-      {/* base — ultra thin */}
-      <mesh>
-        <boxGeometry args={[0.62, 0.012, 0.42]} />
-        <meshStandardMaterial color={silver} metalness={0.95} roughness={0.08} />
-      </mesh>
-      {/* trackpad notch */}
-      <mesh position={[0, 0.008, 0.08]}>
-        <boxGeometry args={[0.18, 0.002, 0.1]} />
-        <meshStandardMaterial color={dark} metalness={0.98} roughness={0.02} />
-      </mesh>
-      {/* screen — thin lid */}
-      <group position={[0, 0.22, -0.2]} rotation={[-0.25, 0, 0]}>
-        <mesh>
-          <boxGeometry args={[0.62, 0.42, 0.01]} />
-          <meshStandardMaterial color={dark} metalness={0.95} roughness={0.05} />
-        </mesh>
-        <CodeScreen />
-        {/* notch / camera area */}
-        <mesh position={[0, 0.2, 0.008]}>
-          <boxGeometry args={[0.06, 0.012, 0.008]} />
-          <meshStandardMaterial color={dark} />
-        </mesh>
-      </group>
-      {/* hinge */}
-      <mesh position={[0, 0.008, -0.2]}>
-        <boxGeometry args={[0.35, 0.008, 0.015]} />
-        <meshStandardMaterial color={silver} metalness={0.95} roughness={0.1} />
-      </mesh>
-    </group>
-  )
-}
+function Steam({ active = true }: { active?: boolean }) {
+  const puffs = useRef<Array<THREE.Mesh | null>>([])
+  const offsets = useMemo(() => Array.from({ length: 6 }, (_, index) => index / 6), [])
 
-/* ═══════════════════════════════════════════
-   Alienware AW3225QF — 32" curved QD-OLED
-   ═══════════════════════════════════════════ */
+  useFrame((state) => {
+    const time = state.clock.getElapsedTime()
 
-function AlienwareMonitor() {
-  const dark = "#0d0d0d"
-  const alienGreen = "#00ff88"
-  return (
-    <group position={[-0.25, 0.92, -0.35]}>
-      {/* curved screen — wide 32" aspect */}
-      <mesh position={[0, 0.55, 0]} rotation={[-0.08, 0, 0]}>
-        <planeGeometry args={[0.95, 0.55]} />
-        <meshStandardMaterial color="#0a0a12" metalness={0.9} roughness={0.1} />
-      </mesh>
-      {/* screen content — code glow */}
-      <mesh position={[0, 0.55, 0.002]} rotation={[-0.08, 0, 0]}>
-        <planeGeometry args={[0.9, 0.5]} />
-        <meshBasicMaterial color="#0a1520" transparent opacity={0.9} />
-      </mesh>
-      {/* bezel — Alienware style */}
-      <mesh position={[0, 0.55, -0.008]} rotation={[-0.08, 0, 0]}>
-        <boxGeometry args={[0.98, 0.58, 0.02]} />
-        <meshStandardMaterial color={dark} metalness={0.85} roughness={0.15} />
-      </mesh>
-      {/* Alienware logo accent */}
-      <mesh position={[0, 0.25, 0.01]} rotation={[-0.08, 0, 0]}>
-        <boxGeometry args={[0.12, 0.02, 0.001]} />
-        <meshBasicMaterial color={alienGreen} transparent opacity={0.6} />
-      </mesh>
-      {/* stand — V-shaped Alienware */}
-      <mesh position={[0, 0.15, 0.12]}>
-        <boxGeometry args={[0.25, 0.04, 0.15]} />
-        <meshStandardMaterial color={dark} metalness={0.8} roughness={0.2} />
-      </mesh>
-      <mesh position={[-0.18, 0.08, 0.12]}>
-        <boxGeometry args={[0.06, 0.2, 0.06]} />
-        <meshStandardMaterial color={dark} metalness={0.8} roughness={0.2} />
-      </mesh>
-      <mesh position={[0.18, 0.08, 0.12]}>
-        <boxGeometry args={[0.06, 0.2, 0.06]} />
-        <meshStandardMaterial color={dark} metalness={0.8} roughness={0.2} />
-      </mesh>
-    </group>
-  )
-}
+    puffs.current.forEach((puff, index) => {
+      if (!puff) return
 
-/* ═══════════════════════════════════════════
-   Secretlab TITAN Evo — premium gaming chair
-   ═══════════════════════════════════════════ */
+      const progress = (time * 0.24 + offsets[index]) % 1
+      puff.position.set(
+        Math.sin(progress * Math.PI * 2 + index) * 0.02,
+        0.05 + progress * 0.2,
+        Math.cos(progress * Math.PI * 2 + index * 1.4) * 0.012
+      )
 
-function SecretlabChair() {
-  const black = "#0f0f0f"
-  const orange = "#ff6b35"
-  return (
-    <group position={[0, 0, 0.42]}>
-      {/* seat — ergonomic, thick */}
-      <mesh position={[0, 0.78, 0]}>
-        <boxGeometry args={[0.5, 0.06, 0.48]} />
-        <meshStandardMaterial color={black} roughness={0.4} />
-      </mesh>
-      {/* seat edge curve */}
-      <mesh position={[0, 0.81, -0.18]}>
-        <boxGeometry args={[0.48, 0.03, 0.12]} />
-        <meshStandardMaterial color={black} roughness={0.4} />
-      </mesh>
-      {/* backrest — tall, curved */}
-      <mesh position={[0, 1.15, 0.22]} rotation={[-0.15, 0, 0]}>
-        <boxGeometry args={[0.48, 0.7, 0.06]} />
-        <meshStandardMaterial color={black} roughness={0.4} />
-      </mesh>
-      {/* lumbar support area */}
-      <mesh position={[0, 1.0, 0.26]} rotation={[-0.15, 0, 0]}>
-        <boxGeometry args={[0.2, 0.15, 0.02]} />
-        <meshStandardMaterial color={orange} emissive={orange} emissiveIntensity={0.15} />
-      </mesh>
-      {/* headrest */}
-      <mesh position={[0, 1.52, 0.28]} rotation={[-0.15, 0, 0]}>
-        <boxGeometry args={[0.35, 0.2, 0.05]} />
-        <meshStandardMaterial color={black} roughness={0.4} />
-      </mesh>
-      {/* armrests — TITAN signature */}
-      <mesh position={[-0.3, 0.95, 0.08]}>
-        <boxGeometry args={[0.06, 0.08, 0.35]} />
-        <meshStandardMaterial color={black} roughness={0.3} />
-      </mesh>
-      <mesh position={[0.3, 0.95, 0.08]}>
-        <boxGeometry args={[0.06, 0.08, 0.35]} />
-        <meshStandardMaterial color={black} roughness={0.3} />
-      </mesh>
-      {/* base — 5-star */}
-      {[0, 1, 2, 3, 4].map((i) => {
-        const a = (i / 5) * Math.PI * 2 - Math.PI / 2
-        return (
-          <mesh key={i} position={[Math.cos(a) * 0.22, 0.45, Math.sin(a) * 0.22]}>
-            <boxGeometry args={[0.04, 0.35, 0.04]} />
-            <meshStandardMaterial color={black} metalness={0.7} roughness={0.3} />
-          </mesh>
-        )
-      })}
-      {/* center hub */}
-      <mesh position={[0, 0.38, 0]}>
-        <cylinderGeometry args={[0.08, 0.1, 0.06, 8]} />
-        <meshStandardMaterial color={black} metalness={0.8} roughness={0.2} />
-      </mesh>
-      {/* wheels */}
-      {[0, 1, 2, 3, 4].map((i) => {
-        const a = (i / 5) * Math.PI * 2 - Math.PI / 2
-        return (
-          <mesh key={i} position={[Math.cos(a) * 0.25, 0.02, Math.sin(a) * 0.25]}>
-            <sphereGeometry args={[0.03, 8, 8]} />
-            <meshStandardMaterial color="#222" />
-          </mesh>
-        )
-      })}
-    </group>
-  )
-}
+      const scale = 0.35 + progress * 0.9
+      puff.scale.setScalar(scale)
 
-/* ═══════════════════════════════════════════
-   Coffee mug — for drinking emote
-   ═══════════════════════════════════════════ */
-
-function CoffeeMugModel() {
-  return (
-    <group>
-      <mesh position={[0, 0.05, 0]}>
-        <cylinderGeometry args={[0.035, 0.03, 0.09, 12]} />
-        <meshStandardMaterial color="#ffffff" roughness={0.3} />
-      </mesh>
-      <mesh position={[0.04, 0.05, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <torusGeometry args={[0.02, 0.005, 8, 12, Math.PI]} />
-        <meshStandardMaterial color="#ffffff" />
-      </mesh>
-      <mesh position={[0, 0.085, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.028, 12]} />
-        <meshStandardMaterial color="#3e1f0d" />
-      </mesh>
-    </group>
-  )
-}
-
-/* ═══════════════════════════════════════════
-   Character — Real Madrid 25-26 blue third kit + emotes
-   ═══════════════════════════════════════════ */
-
-type Emote = "typing" | "drinking" | "nodding" | "stretch"
-
-function Character() {
-  const leftArmRef = useRef<THREE.Group>(null!)
-  const rightArmRef = useRef<THREE.Group>(null!)
-  const headRef = useRef<THREE.Group>(null!)
-  const mugRef = useRef<THREE.Group>(null!)
-  const torsoRef = useRef<THREE.Group>(null!)
-
-  const rmBlue = "#0a1628"
-  const rmBlueLight = "#0d1f3c"
-  const gold = "#FFD700"
-  const skin = "#e8b88a"
-  const hair = "#1a1a2e"
-  const dark = "#0f172a"
-
-  const emoteCycle: { emote: Emote; duration: number }[] = [
-    { emote: "typing", duration: 6 },
-    { emote: "drinking", duration: 4 },
-    { emote: "typing", duration: 5 },
-    { emote: "nodding", duration: 2 },
-    { emote: "typing", duration: 6 },
-    { emote: "stretch", duration: 3 },
-  ]
-
-  const totalCycle = emoteCycle.reduce((a, b) => a + b.duration, 0)
-
-  useFrame((s) => {
-    const t = s.clock.getElapsedTime()
-    const cycleTime = t % totalCycle
-
-    let elapsed = 0
-    let currentEmote: Emote = "typing"
-    let phaseStart = 0
-    for (const { emote, duration } of emoteCycle) {
-      if (cycleTime < elapsed + duration) {
-        currentEmote = emote
-        phaseStart = elapsed
-        break
-      }
-      elapsed += duration
-    }
-    const phaseT = (cycleTime - phaseStart) / (emoteCycle.find((e) => e.emote === currentEmote)?.duration ?? 1)
-
-    if (headRef.current) {
-      if (currentEmote === "nodding") {
-        headRef.current.rotation.x = Math.sin(phaseT * Math.PI * 3) * 0.15
-        headRef.current.rotation.z = 0
-      } else if (currentEmote === "stretch") {
-        headRef.current.rotation.x = -0.1 - phaseT * 0.08
-        headRef.current.rotation.z = 0
-      } else {
-        headRef.current.rotation.z = Math.sin(t * 0.6) * 0.03
-        headRef.current.rotation.x = Math.sin(t * 0.4) * 0.02
-      }
-    }
-
-    if (torsoRef.current && currentEmote === "stretch") {
-      torsoRef.current.rotation.x = -phaseT * 0.12
-    } else if (torsoRef.current) {
-      torsoRef.current.rotation.x = 0
-    }
-
-    if (currentEmote === "typing") {
-      if (leftArmRef.current)
-        leftArmRef.current.rotation.x = -0.55 + Math.sin(t * 4.5) * 0.07
-      if (rightArmRef.current)
-        rightArmRef.current.rotation.x = -0.55 + Math.sin(t * 4.5 + Math.PI) * 0.07
-      if (mugRef.current) {
-        mugRef.current.visible = false
-      }
-    } else if (currentEmote === "drinking") {
-      let lift = 0
-      if (phaseT < 0.3) lift = phaseT / 0.3
-      else if (phaseT < 0.6) lift = 1
-      else lift = Math.max(0, (1 - phaseT) / 0.4)
-      const armRot = -0.55 + lift * 1.5
-      if (rightArmRef.current) rightArmRef.current.rotation.x = armRot
-      if (leftArmRef.current) leftArmRef.current.rotation.x = -0.55
-      if (mugRef.current) {
-        mugRef.current.visible = true
-        mugRef.current.position.set(0.32, 1.1 + lift * 0.45, 0.08 + lift * 0.15)
-        mugRef.current.rotation.x = -0.25 - lift * 0.6
-      }
-    } else {
-      if (leftArmRef.current) leftArmRef.current.rotation.x = -0.55
-      if (rightArmRef.current) rightArmRef.current.rotation.x = -0.55
-      if (mugRef.current) mugRef.current.visible = false
-    }
+      const material = puff.material as THREE.MeshBasicMaterial
+      material.opacity = active ? (1 - progress) * 0.16 : 0
+    })
   })
 
   return (
-    <group position={[0, 0, 0.2]}>
-      {/* ── Head ── */}
-      <group ref={headRef} position={[0, 1.68, 0]}>
-        <mesh>
-          <boxGeometry args={[0.32, 0.32, 0.32]} />
-          <meshStandardMaterial color={skin} />
+    <group position={[0, 0.02, 0]}>
+      {offsets.map((offset, index) => (
+        <mesh
+          key={offset}
+          ref={(node) => {
+            puffs.current[index] = node
+          }}
+        >
+          <sphereGeometry args={[0.02, 10, 10]} />
+          <meshBasicMaterial color="#f8fafc" transparent opacity={0} depthWrite={false} />
         </mesh>
-        <mesh position={[0, 0.17, -0.01]}>
-          <boxGeometry args={[0.34, 0.1, 0.34]} />
-          <meshStandardMaterial color={hair} />
+      ))}
+    </group>
+  )
+}
+
+function CoffeeCup({ activeSteam = true }: { activeSteam?: boolean }) {
+  return (
+    <group>
+      <mesh castShadow position={[0, 0.055, 0]}>
+        <cylinderGeometry args={[0.045, 0.038, 0.11, 24]} />
+        <meshStandardMaterial color="#faf7f3" roughness={0.28} metalness={0.06} />
+      </mesh>
+      <mesh position={[0.05, 0.055, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <torusGeometry args={[0.024, 0.006, 10, 18, Math.PI * 1.18]} />
+        <meshStandardMaterial color="#faf7f3" roughness={0.24} metalness={0.06} />
+      </mesh>
+      <mesh position={[0, 0.104, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[0.034, 24]} />
+        <meshStandardMaterial color="#3f2415" roughness={0.72} />
+      </mesh>
+      <Steam active={activeSteam} />
+    </group>
+  )
+}
+
+function LaptopKeyboard() {
+  const keys = useMemo(() => {
+    const rows = 4
+    const columns = 11
+    const generated: Array<{ x: number; z: number; width: number }> = []
+
+    for (let row = 0; row < rows; row += 1) {
+      for (let column = 0; column < columns; column += 1) {
+        generated.push({
+          x: -0.2 + column * 0.04 + (row % 2 === 0 ? 0 : 0.01),
+          z: -0.06 + row * 0.045,
+          width: column === columns - 1 ? 0.052 : 0.032,
+        })
+      }
+    }
+
+    return generated
+  }, [])
+
+  return (
+    <group position={[0, 0.016, 0.015]}>
+      {keys.map((key, index) => (
+        <mesh key={`${key.x}-${key.z}-${index}`} castShadow position={[key.x, 0, key.z]}>
+          <boxGeometry args={[key.width, 0.004, 0.028]} />
+          <meshStandardMaterial color="#131722" roughness={0.28} metalness={0.36} />
         </mesh>
-        <mesh position={[-0.07, 0.02, 0.165]}>
-          <boxGeometry args={[0.055, 0.035, 0.01]} />
-          <meshStandardMaterial color={dark} />
+      ))}
+
+      <RoundedBox args={[0.26, 0.004, 0.16]} radius={0.012} smoothness={4} position={[0.02, 0, 0.165]}>
+        <meshStandardMaterial color="#cfd4dc" roughness={0.2} metalness={0.82} />
+      </RoundedBox>
+    </group>
+  )
+}
+
+function MacBookAir() {
+  const hingeGlowRef = useRef<THREE.Mesh>(null!)
+
+  useFrame((state) => {
+    const material = hingeGlowRef.current.material as THREE.MeshStandardMaterial
+    material.emissiveIntensity = 0.26 + Math.sin(state.clock.getElapsedTime() * 1.6) * 0.06
+  })
+
+  return (
+    <group position={[0.58, 1.08, 0.16]} rotation={[0, -0.54, 0]}>
+      <RoundedBox args={[0.82, 0.035, 0.56]} radius={0.03} smoothness={4} castShadow receiveShadow>
+        <meshStandardMaterial color="#d5dae1" metalness={0.92} roughness={0.14} />
+      </RoundedBox>
+
+      <LaptopKeyboard />
+
+      <group position={[0, 0.31, -0.21]} rotation={[-0.26, 0, 0]}>
+        <RoundedBox args={[0.82, 0.54, 0.02]} radius={0.026} smoothness={4} castShadow>
+          <meshStandardMaterial color="#141923" metalness={0.84} roughness={0.16} />
+        </RoundedBox>
+
+        <mesh position={[0, 0, 0.012]}>
+          <ScreenSurface width={0.75} height={0.46} variant="laptop" />
         </mesh>
-        <mesh position={[0.07, 0.02, 0.165]}>
-          <boxGeometry args={[0.055, 0.035, 0.01]} />
-          <meshStandardMaterial color={dark} />
-        </mesh>
+
+        <RoundedBox args={[0.09, 0.018, 0.004]} radius={0.004} smoothness={4} position={[0, 0.257, 0.014]}>
+          <meshStandardMaterial color="#1a2230" roughness={0.28} />
+        </RoundedBox>
       </group>
 
-      {/* ── Torso (Real Madrid 25-26 blue third kit) ── */}
-      <group ref={torsoRef}>
-        <mesh position={[0, 1.3, 0]}>
-          <boxGeometry args={[0.42, 0.44, 0.22]} />
-          <meshStandardMaterial color={rmBlue} metalness={0.2} roughness={0.6} />
-        </mesh>
-        {/* gold trim stripe */}
-        <mesh position={[0, 1.5, 0.115]}>
-          <boxGeometry args={[0.14, 0.03, 0.01]} />
-          <meshStandardMaterial color={gold} metalness={0.5} roughness={0.4} />
-        </mesh>
-        {/* crest area */}
-        <mesh position={[0, 1.35, 0.115]}>
-          <boxGeometry args={[0.08, 0.1, 0.01]} />
-          <meshStandardMaterial color={gold} metalness={0.4} roughness={0.5} />
-        </mesh>
-      </group>
-
-      {/* ── Left arm ── */}
-      <group ref={leftArmRef} position={[-0.28, 1.48, 0]}>
-        <mesh position={[0, -0.12, 0]}>
-          <boxGeometry args={[0.11, 0.24, 0.11]} />
-          <meshStandardMaterial color={rmBlue} metalness={0.2} roughness={0.6} />
-        </mesh>
-        <mesh position={[0, -0.3, 0.06]}>
-          <boxGeometry args={[0.09, 0.16, 0.09]} />
-          <meshStandardMaterial color={skin} />
-        </mesh>
-      </group>
-
-      {/* ── Right arm (typing / holds mug when drinking) ── */}
-      <group ref={rightArmRef} position={[0.28, 1.48, 0]}>
-        <mesh position={[0, -0.12, 0]}>
-          <boxGeometry args={[0.11, 0.24, 0.11]} />
-          <meshStandardMaterial color={rmBlue} metalness={0.2} roughness={0.6} />
-        </mesh>
-        <mesh position={[0, -0.3, 0.06]}>
-          <boxGeometry args={[0.09, 0.16, 0.09]} />
-          <meshStandardMaterial color={skin} />
-        </mesh>
-      </group>
-
-      {/* ── Coffee mug (in hand when drinking emote) ── */}
-      <group ref={mugRef} position={[0.32, 1.1, 0.08]} visible={false}>
-        <CoffeeMugModel />
-      </group>
-
-      {/* ── Legs (blue shorts — third kit) ── */}
-      <mesh position={[-0.1, 1.0, -0.06]} rotation={[1.1, 0, 0]}>
-        <boxGeometry args={[0.15, 0.26, 0.14]} />
-        <meshStandardMaterial color={rmBlueLight} />
-      </mesh>
-      <mesh position={[0.1, 1.0, -0.06]} rotation={[1.1, 0, 0]}>
-        <boxGeometry args={[0.15, 0.26, 0.14]} />
-        <meshStandardMaterial color={rmBlueLight} />
-      </mesh>
-      <mesh position={[-0.1, 0.75, -0.22]}>
-        <boxGeometry args={[0.13, 0.28, 0.13]} />
-        <meshStandardMaterial color={rmBlueLight} />
-      </mesh>
-      <mesh position={[0.1, 0.75, -0.22]}>
-        <boxGeometry args={[0.13, 0.28, 0.13]} />
-        <meshStandardMaterial color={rmBlueLight} />
-      </mesh>
-      <mesh position={[-0.1, 0.59, -0.17]}>
-        <boxGeometry args={[0.14, 0.05, 0.18]} />
-        <meshStandardMaterial color={dark} />
-      </mesh>
-      <mesh position={[0.1, 0.59, -0.17]}>
-        <boxGeometry args={[0.14, 0.05, 0.18]} />
-        <meshStandardMaterial color={dark} />
+      <mesh ref={hingeGlowRef} position={[0, 0.018, -0.22]}>
+        <boxGeometry args={[0.44, 0.016, 0.02]} />
+        <meshStandardMaterial
+          color="#8a92a0"
+          metalness={0.92}
+          roughness={0.12}
+          emissive="#6ec5ff"
+          emissiveIntensity={0.24}
+        />
       </mesh>
     </group>
   )
 }
 
-/* ═══════════════════════════════════════════
-   Desk + desk mug (when not drinking)
-   ═══════════════════════════════════════════ */
+function AlienwareMonitor() {
+  const bezelGeometry = useMemo(
+    () => createCurvedPlaneGeometry(1.2, 0.72, 52, 0.055),
+    []
+  )
+  const haloRef = useRef<THREE.Mesh>(null!)
 
-function DeskMug() {
+  useEffect(() => () => bezelGeometry.dispose(), [bezelGeometry])
+
+  useFrame((state) => {
+    const time = state.clock.getElapsedTime()
+    haloRef.current.rotation.z = time * 0.28
+    const material = haloRef.current.material as THREE.MeshStandardMaterial
+    material.emissiveIntensity = 0.48 + Math.sin(time * 2.0) * 0.12
+  })
+
   return (
-    <group position={[0.5, 0.92, -0.25]}>
-      <mesh position={[0, 0.05, 0]}>
-        <cylinderGeometry args={[0.035, 0.03, 0.09, 12]} />
-        <meshStandardMaterial color="#ffffff" roughness={0.3} />
+    <group position={[-0.12, 1.1, -0.28]}>
+      <mesh geometry={bezelGeometry} castShadow receiveShadow position={[0, 0.52, -0.03]}>
+        <meshStandardMaterial color="#0f1623" metalness={0.68} roughness={0.2} />
       </mesh>
-      <mesh position={[0.04, 0.05, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <torusGeometry args={[0.02, 0.005, 8, 12, Math.PI]} />
-        <meshStandardMaterial color="#ffffff" />
+
+      <mesh position={[0, 0.52, -0.002]}>
+        <ScreenSurface
+          width={1.08}
+          height={0.64}
+          variant="monitor"
+          curved
+          curveDepth={0.046}
+        />
       </mesh>
-      <mesh position={[0, 0.085, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.028, 12]} />
-        <meshStandardMaterial color="#3e1f0d" />
+
+      <mesh ref={haloRef} position={[0, 0.53, -0.12]} rotation={[0.28, 0.12, 0]}>
+        <torusGeometry args={[0.26, 0.012, 16, 64]} />
+        <meshStandardMaterial
+          color="#82b4ff"
+          emissive="#82b4ff"
+          emissiveIntensity={0.48}
+          roughness={0.2}
+          metalness={0.7}
+        />
       </mesh>
+
+      <RoundedBox args={[0.14, 0.38, 0.08]} radius={0.03} smoothness={4} castShadow position={[0, 0.16, 0.03]}>
+        <meshStandardMaterial color="#171d28" roughness={0.32} metalness={0.62} />
+      </RoundedBox>
+
+      <RoundedBox args={[0.42, 0.05, 0.18]} radius={0.03} smoothness={4} castShadow position={[0, 0.0, 0.08]}>
+        <meshStandardMaterial color="#171d28" roughness={0.32} metalness={0.62} />
+      </RoundedBox>
+
+      <RoundedBox args={[0.22, 0.04, 0.06]} radius={0.02} smoothness={4} castShadow position={[-0.16, -0.06, 0.1]} rotation={[0, 0, 0.52]}>
+        <meshStandardMaterial color="#171d28" roughness={0.32} metalness={0.62} />
+      </RoundedBox>
+
+      <RoundedBox args={[0.22, 0.04, 0.06]} radius={0.02} smoothness={4} castShadow position={[0.16, -0.06, 0.1]} rotation={[0, 0, -0.52]}>
+        <meshStandardMaterial color="#171d28" roughness={0.32} metalness={0.62} />
+      </RoundedBox>
+
+      <RoundedBox args={[0.14, 0.016, 0.012]} radius={0.004} smoothness={4} position={[0, 0.21, 0.028]}>
+        <meshStandardMaterial
+          color="#60f0c3"
+          emissive="#60f0c3"
+          emissiveIntensity={0.72}
+          roughness={0.18}
+        />
+      </RoundedBox>
     </group>
   )
 }
 
 function Desk() {
-  const wood = "#5c3a1e"
-  const woodLight = "#7a4f2e"
   return (
-    <group>
-      <mesh position={[0, 0.9, -0.2]}>
-        <boxGeometry args={[1.9, 0.04, 0.85]} />
-        <meshStandardMaterial color={woodLight} roughness={0.6} />
-      </mesh>
-      {[[-0.85, -0.5], [0.85, -0.5], [-0.85, 0.1], [0.85, 0.1]].map(([x, z], i) => (
-        <mesh key={i} position={[x, 0.44, z]}>
-          <boxGeometry args={[0.04, 0.88, 0.04]} />
-          <meshStandardMaterial color={wood} roughness={0.7} />
+    <group position={[0.1, 0, 0.02]}>
+      <RoundedBox args={[2.1, 0.07, 0.98]} radius={0.04} smoothness={4} castShadow receiveShadow position={[0, 1.03, 0]}>
+        <meshStandardMaterial color="#724421" roughness={0.52} metalness={0.12} />
+      </RoundedBox>
+
+      <RoundedBox args={[1.34, 0.012, 0.5]} radius={0.02} smoothness={4} position={[0.02, 1.07, 0.04]}>
+        <meshStandardMaterial color="#0f1726" roughness={0.74} metalness={0.08} />
+      </RoundedBox>
+
+      {[
+        [-0.98, 0.51, -0.38],
+        [0.98, 0.51, -0.38],
+        [-0.98, 0.51, 0.38],
+        [0.98, 0.51, 0.38],
+      ].map(([x, y, z]) => (
+        <RoundedBox
+          key={`${x}-${z}`}
+          args={[0.08, 1.02, 0.08]}
+          radius={0.02}
+          smoothness={4}
+          castShadow
+          position={[x, y, z]}
+        >
+          <meshStandardMaterial color="#1b2431" roughness={0.42} metalness={0.56} />
+        </RoundedBox>
+      ))}
+
+      <RoundedBox args={[1.28, 0.045, 0.12]} radius={0.02} smoothness={4} castShadow position={[0, 0.74, -0.4]}>
+        <meshStandardMaterial color="#1c2532" roughness={0.4} metalness={0.58} />
+      </RoundedBox>
+    </group>
+  )
+}
+
+function Character() {
+  const rootRef = useRef<THREE.Group>(null!)
+  const torsoRef = useRef<THREE.Group>(null!)
+  const headRef = useRef<THREE.Group>(null!)
+  const leftUpperArmRef = useRef<THREE.Group>(null!)
+  const rightUpperArmRef = useRef<THREE.Group>(null!)
+  const leftLowerArmRef = useRef<THREE.Group>(null!)
+  const rightLowerArmRef = useRef<THREE.Group>(null!)
+  const leftUpperLegRef = useRef<THREE.Group>(null!)
+  const rightUpperLegRef = useRef<THREE.Group>(null!)
+  const leftLowerLegRef = useRef<THREE.Group>(null!)
+  const rightLowerLegRef = useRef<THREE.Group>(null!)
+  const cupRef = useRef<THREE.Group>(null!)
+
+  const jersey = "#0a2448"
+  const jerseyShadow = "#071936"
+  const jerseyTrim = "#d4b057"
+  const shorts = "#0c1f42"
+  const skin = "#d7a27d"
+  const hair = "#151821"
+  const socks = "#eef2ff"
+  const boots = "#131722"
+
+  useFrame((state, delta) => {
+    const time = state.clock.getElapsedTime()
+    const timeline = getTimelineState(time)
+    const typing = Math.sin(time * 7.8)
+    const idle = Math.sin(time * 1.8) * 0.018
+
+    let rootY = idle
+    let torsoX = 0.18
+    let torsoY = -0.1 + Math.sin(time * 0.7) * 0.04
+    let torsoZ = 0
+    let headX = 0.05 + idle * 0.6
+    let headY = -0.14 + Math.sin(time * 0.55) * 0.05
+    let headZ = Math.sin(time * 0.6) * 0.025
+    let leftUpperArmX = -0.84 + typing * 0.05
+    let rightUpperArmX = -0.88 + Math.sin(time * 7.8 + 0.7) * 0.05
+    let leftUpperArmZ = 0.24
+    let rightUpperArmZ = -0.22
+    let leftLowerArmX = -0.82 + Math.sin(time * 7.8 + 1.2) * 0.07
+    let rightLowerArmX = -0.68 + Math.sin(time * 7.8 + 2.1) * 0.07
+    const leftUpperLegX = 1.28
+    const rightUpperLegX = 1.25
+    const leftLowerLegX = -1.42
+    const rightLowerLegX = -1.4
+    let cupVisible = false
+    let cupY = 0.0
+    let cupZ = 0.08
+    let cupRotX = 0.12
+
+    if (timeline.emote === "drinking") {
+      const lift =
+        timeline.raw < 0.34
+          ? easeInOut(timeline.raw / 0.34)
+          : timeline.raw < 0.72
+            ? 1
+            : 1 - easeInOut((timeline.raw - 0.72) / 0.28)
+
+      torsoX = 0.14
+      torsoY = -0.16
+      headX = 0.18 * lift + 0.02
+      headY = -0.22
+      headZ = 0
+      rightUpperArmX = -0.9 + lift * 1.5
+      rightUpperArmZ = -0.36
+      rightLowerArmX = -0.72 - lift * 1.12
+      leftUpperArmX = -0.78
+      leftLowerArmX = -0.78
+      cupVisible = lift > 0.05
+      cupY = 0.02 + lift * 0.08
+      cupZ = 0.08 + lift * 0.14
+      cupRotX = 0.1 - lift * 0.72
+    }
+
+    if (timeline.emote === "nodding") {
+      const nod = Math.sin(timeline.raw * Math.PI * 4) * 0.2
+      torsoX = 0.16
+      headX = 0.03 + nod
+      headY = -0.15
+      leftUpperArmX = -0.8
+      rightUpperArmX = -0.82
+      leftLowerArmX = -0.86
+      rightLowerArmX = -0.76
+    }
+
+    if (timeline.emote === "celebrating") {
+      const burst = Math.sin(timeline.raw * Math.PI)
+      const sway = Math.sin(timeline.raw * Math.PI * 2) * 0.18
+      rootY = burst * 0.05
+      torsoX = 0.03
+      torsoY = sway - 0.08
+      torsoZ = Math.sin(timeline.raw * Math.PI * 3) * 0.04
+      headX = -0.1 * burst
+      headY = sway * 0.25 - 0.1
+      headZ = 0
+      leftUpperArmX = -0.4 + burst * 1.62
+      rightUpperArmX = -0.46 + burst * 1.58
+      leftUpperArmZ = 0.92 * burst
+      rightUpperArmZ = -0.92 * burst
+      leftLowerArmX = -0.18 - burst * 0.72
+      rightLowerArmX = -0.12 - burst * 0.66
+    }
+
+    rootRef.current.position.y = THREE.MathUtils.damp(
+      rootRef.current.position.y,
+      0.96 + rootY,
+      6,
+      delta
+    )
+
+    torsoRef.current.rotation.x = THREE.MathUtils.damp(
+      torsoRef.current.rotation.x,
+      torsoX,
+      7,
+      delta
+    )
+    torsoRef.current.rotation.y = THREE.MathUtils.damp(
+      torsoRef.current.rotation.y,
+      torsoY,
+      7,
+      delta
+    )
+    torsoRef.current.rotation.z = THREE.MathUtils.damp(
+      torsoRef.current.rotation.z,
+      torsoZ,
+      7,
+      delta
+    )
+
+    headRef.current.rotation.x = THREE.MathUtils.damp(
+      headRef.current.rotation.x,
+      headX,
+      8,
+      delta
+    )
+    headRef.current.rotation.y = THREE.MathUtils.damp(
+      headRef.current.rotation.y,
+      headY,
+      8,
+      delta
+    )
+    headRef.current.rotation.z = THREE.MathUtils.damp(
+      headRef.current.rotation.z,
+      headZ,
+      8,
+      delta
+    )
+
+    leftUpperArmRef.current.rotation.x = THREE.MathUtils.damp(
+      leftUpperArmRef.current.rotation.x,
+      leftUpperArmX,
+      8,
+      delta
+    )
+    rightUpperArmRef.current.rotation.x = THREE.MathUtils.damp(
+      rightUpperArmRef.current.rotation.x,
+      rightUpperArmX,
+      8,
+      delta
+    )
+    leftUpperArmRef.current.rotation.z = THREE.MathUtils.damp(
+      leftUpperArmRef.current.rotation.z,
+      leftUpperArmZ,
+      8,
+      delta
+    )
+    rightUpperArmRef.current.rotation.z = THREE.MathUtils.damp(
+      rightUpperArmRef.current.rotation.z,
+      rightUpperArmZ,
+      8,
+      delta
+    )
+    leftLowerArmRef.current.rotation.x = THREE.MathUtils.damp(
+      leftLowerArmRef.current.rotation.x,
+      leftLowerArmX,
+      8,
+      delta
+    )
+    rightLowerArmRef.current.rotation.x = THREE.MathUtils.damp(
+      rightLowerArmRef.current.rotation.x,
+      rightLowerArmX,
+      8,
+      delta
+    )
+
+    leftUpperLegRef.current.rotation.x = THREE.MathUtils.damp(
+      leftUpperLegRef.current.rotation.x,
+      leftUpperLegX,
+      8,
+      delta
+    )
+    rightUpperLegRef.current.rotation.x = THREE.MathUtils.damp(
+      rightUpperLegRef.current.rotation.x,
+      rightUpperLegX,
+      8,
+      delta
+    )
+    leftLowerLegRef.current.rotation.x = THREE.MathUtils.damp(
+      leftLowerLegRef.current.rotation.x,
+      leftLowerLegX,
+      8,
+      delta
+    )
+    rightLowerLegRef.current.rotation.x = THREE.MathUtils.damp(
+      rightLowerLegRef.current.rotation.x,
+      rightLowerLegX,
+      8,
+      delta
+    )
+
+    cupRef.current.visible = cupVisible
+    cupRef.current.position.y = THREE.MathUtils.damp(cupRef.current.position.y, cupY, 10, delta)
+    cupRef.current.position.z = THREE.MathUtils.damp(cupRef.current.position.z, cupZ, 10, delta)
+    cupRef.current.rotation.x = THREE.MathUtils.damp(cupRef.current.rotation.x, cupRotX, 10, delta)
+  })
+
+  return (
+    <group ref={rootRef} position={[0, 0.96, 0.08]}>
+      <group ref={torsoRef} position={[0, 0.28, -0.03]}>
+        <mesh castShadow position={[0, 0.08, 0]}>
+          <capsuleGeometry args={[0.18, 0.3, 8, 16]} />
+          <meshStandardMaterial color={jersey} roughness={0.58} metalness={0.12} />
         </mesh>
-      ))}
-    </group>
-  )
-}
 
-/* ═══════════════════════════════════════════
-   Floating wireframe shapes
-   ═══════════════════════════════════════════ */
+        <mesh castShadow position={[0, -0.17, 0.01]}>
+          <capsuleGeometry args={[0.15, 0.12, 8, 16]} />
+          <meshStandardMaterial color={jerseyShadow} roughness={0.62} metalness={0.1} />
+        </mesh>
 
-function FloatingShapes() {
-  const outerRef = useRef<THREE.Group>(null!)
-  useFrame((s) => {
-    if (outerRef.current) outerRef.current.rotation.y = s.clock.getElapsedTime() * 0.06
-  })
+        <RoundedBox args={[0.18, 0.032, 0.016]} radius={0.008} smoothness={4} position={[0, 0.27, 0.17]}>
+          <meshStandardMaterial color={jerseyTrim} roughness={0.34} metalness={0.42} />
+        </RoundedBox>
 
-  const shapes: [THREE.BufferGeometry, [number, number, number], string, number, number][] = useMemo(
-    () => [
-      [new THREE.OctahedronGeometry(0.15), [1.6, 1.8, 0.3], "#FFD700", 2.0, 1.8],
-      [new THREE.BoxGeometry(0.18, 0.18, 0.18), [-1.5, 1.5, 0.4], "#FFD700", 1.5, 1.4],
-      [new THREE.TorusGeometry(0.12, 0.04, 12, 24), [1.3, 0.3, 1.0], "#FFD700", 1.8, 1.0],
-      [new THREE.IcosahedronGeometry(0.12), [-1.2, 0.5, 1.2], "#0a1628", 2.2, 1.6],
-      [new THREE.DodecahedronGeometry(0.13), [0.2, 2.2, -0.5], "#FFD700", 1.2, 0.8],
-      [new THREE.TetrahedronGeometry(0.12), [-0.4, -0.1, 1.4], "#00ff88", 1.7, 1.3],
-      [new THREE.ConeGeometry(0.08, 0.18, 6), [1.7, 0.8, -0.6], "#FFD700", 1.9, 1.1],
-    ],
-    []
-  )
+        <RoundedBox args={[0.08, 0.11, 0.014]} radius={0.006} smoothness={4} position={[0, 0.08, 0.17]}>
+          <meshStandardMaterial color={jerseyTrim} roughness={0.34} metalness={0.42} />
+        </RoundedBox>
 
-  return (
-    <group ref={outerRef}>
-      {shapes.map(([geo, pos, color, speed, ri], i) => (
-        <Float key={i} speed={speed} rotationIntensity={ri} floatIntensity={0.8} position={pos}>
-          <mesh geometry={geo}>
-            <meshStandardMaterial color={color} wireframe metalness={0.7} roughness={0.3} />
+        {[-0.12, 0, 0.12].map((x) => (
+          <RoundedBox key={x} args={[0.055, 0.012, 0.012]} radius={0.004} smoothness={4} position={[x, 0.31, 0.17]}>
+            <meshStandardMaterial color={jerseyTrim} roughness={0.3} metalness={0.44} />
+          </RoundedBox>
+        ))}
+      </group>
+
+      <group ref={headRef} position={[0, 0.84, 0.02]}>
+        <mesh castShadow>
+          <sphereGeometry args={[0.18, 24, 24]} />
+          <meshStandardMaterial color={skin} roughness={0.76} />
+        </mesh>
+
+        <mesh position={[0, 0.09, -0.015]} scale={[1.02, 0.66, 1.02]}>
+          <sphereGeometry args={[0.19, 24, 24]} />
+          <meshStandardMaterial color={hair} roughness={0.86} />
+        </mesh>
+
+        <mesh position={[0, 0.03, -0.14]}>
+          <boxGeometry args={[0.2, 0.12, 0.09]} />
+          <meshStandardMaterial color={hair} roughness={0.86} />
+        </mesh>
+
+        <mesh position={[-0.07, 0.02, 0.16]}>
+          <sphereGeometry args={[0.015, 12, 12]} />
+          <meshStandardMaterial color="#111827" />
+        </mesh>
+
+        <mesh position={[0.07, 0.02, 0.16]}>
+          <sphereGeometry args={[0.015, 12, 12]} />
+          <meshStandardMaterial color="#111827" />
+        </mesh>
+      </group>
+
+      <group ref={leftUpperArmRef} position={[-0.23, 0.6, 0.05]}>
+        <mesh castShadow position={[0, -0.16, 0]}>
+          <capsuleGeometry args={[0.06, 0.24, 8, 16]} />
+          <meshStandardMaterial color={jersey} roughness={0.58} metalness={0.12} />
+        </mesh>
+
+        <group ref={leftLowerArmRef} position={[0, -0.34, 0.02]}>
+          <mesh castShadow position={[0, -0.14, 0]}>
+            <capsuleGeometry args={[0.05, 0.2, 8, 16]} />
+            <meshStandardMaterial color={skin} roughness={0.76} />
           </mesh>
-        </Float>
-      ))}
+
+          <mesh castShadow position={[0, -0.3, 0.05]}>
+            <sphereGeometry args={[0.045, 16, 16]} />
+            <meshStandardMaterial color={skin} roughness={0.76} />
+          </mesh>
+        </group>
+      </group>
+
+      <group ref={rightUpperArmRef} position={[0.23, 0.6, 0.05]}>
+        <mesh castShadow position={[0, -0.16, 0]}>
+          <capsuleGeometry args={[0.06, 0.24, 8, 16]} />
+          <meshStandardMaterial color={jersey} roughness={0.58} metalness={0.12} />
+        </mesh>
+
+        <group ref={rightLowerArmRef} position={[0, -0.34, 0.02]}>
+          <mesh castShadow position={[0, -0.14, 0]}>
+            <capsuleGeometry args={[0.05, 0.2, 8, 16]} />
+            <meshStandardMaterial color={skin} roughness={0.76} />
+          </mesh>
+
+          <mesh castShadow position={[0, -0.3, 0.05]}>
+            <sphereGeometry args={[0.045, 16, 16]} />
+            <meshStandardMaterial color={skin} roughness={0.76} />
+          </mesh>
+
+          <group ref={cupRef} position={[0, 0, 0.08]} visible={false}>
+            <CoffeeCup activeSteam={false} />
+          </group>
+        </group>
+      </group>
+
+      <group ref={leftUpperLegRef} position={[-0.11, 0.04, 0.03]}>
+        <mesh castShadow position={[0, -0.18, 0]}>
+          <capsuleGeometry args={[0.07, 0.24, 8, 16]} />
+          <meshStandardMaterial color={shorts} roughness={0.6} metalness={0.12} />
+        </mesh>
+
+        <group ref={leftLowerLegRef} position={[0, -0.34, 0.12]}>
+          <mesh castShadow position={[0, -0.13, 0]}>
+            <capsuleGeometry args={[0.055, 0.18, 8, 16]} />
+            <meshStandardMaterial color={socks} roughness={0.72} />
+          </mesh>
+
+          <RoundedBox args={[0.17, 0.07, 0.28]} radius={0.03} smoothness={4} castShadow position={[0, -0.3, 0.07]}>
+            <meshStandardMaterial color={boots} roughness={0.56} metalness={0.18} />
+          </RoundedBox>
+        </group>
+      </group>
+
+      <group ref={rightUpperLegRef} position={[0.11, 0.04, 0.03]}>
+        <mesh castShadow position={[0, -0.18, 0]}>
+          <capsuleGeometry args={[0.07, 0.24, 8, 16]} />
+          <meshStandardMaterial color={shorts} roughness={0.6} metalness={0.12} />
+        </mesh>
+
+        <group ref={rightLowerLegRef} position={[0, -0.34, 0.12]}>
+          <mesh castShadow position={[0, -0.13, 0]}>
+            <capsuleGeometry args={[0.055, 0.18, 8, 16]} />
+            <meshStandardMaterial color={socks} roughness={0.72} />
+          </mesh>
+
+          <RoundedBox args={[0.17, 0.07, 0.28]} radius={0.03} smoothness={4} castShadow position={[0, -0.3, 0.07]}>
+            <meshStandardMaterial color={boots} roughness={0.56} metalness={0.18} />
+          </RoundedBox>
+        </group>
+      </group>
     </group>
   )
 }
 
-function Particles({ count = 100 }: { count?: number }) {
-  const ref = useRef<THREE.Points>(null!)
-  const geo = useMemo(() => {
-    const p = new Float32Array(count * 3)
-    for (let i = 0; i < count; i++) {
-      p[i * 3] = (Math.random() - 0.5) * 12
-      p[i * 3 + 1] = (Math.random() - 0.5) * 12
-      p[i * 3 + 2] = (Math.random() - 0.5) * 12
-    }
-    const g = new THREE.BufferGeometry()
-    g.setAttribute("position", new THREE.Float32BufferAttribute(p, 3))
-    return g
-  }, [count])
+function DeskMug() {
+  const ref = useRef<THREE.Group>(null!)
 
-  useFrame((s) => {
-    if (ref.current) ref.current.rotation.y = s.clock.getElapsedTime() * 0.01
+  useFrame((state) => {
+    const timeline = getTimelineState(state.clock.getElapsedTime())
+    ref.current.visible =
+      timeline.emote !== "drinking" || timeline.raw < 0.08 || timeline.raw > 0.9
+    ref.current.position.y = 1.075 + Math.sin(state.clock.getElapsedTime() * 1.5) * 0.004
   })
 
   return (
-    <points ref={ref} geometry={geo}>
-      <pointsMaterial
-        size={0.018}
-        color="#FFD700"
-        transparent
-        opacity={0.22}
-        sizeAttenuation
-        blending={THREE.AdditiveBlending}
-        depthWrite={false}
-      />
-    </points>
+    <group ref={ref} position={[-0.48, 1.075, 0.22]}>
+      <CoffeeCup activeSteam />
+    </group>
   )
 }
 
-/* ═══════════════════════════════════════════
-   Main Scene
-   ═══════════════════════════════════════════ */
+function SecretlabChair() {
+  const ref = useRef<THREE.Group>(null!)
+  const backrestRef = useRef<THREE.Group>(null!)
 
-function Scene() {
-  const groupRef = useRef<THREE.Group>(null!)
-  const mouse = useRef({ x: 0, y: 0 })
+  useFrame((state, delta) => {
+    const time = state.clock.getElapsedTime()
+    const timeline = getTimelineState(time)
+    const celebrate = timeline.emote === "celebrating" ? Math.sin(timeline.raw * Math.PI) : 0
+    const typingTurn = timeline.emote === "typing" ? Math.sin(time * 0.7) * 0.04 : 0
 
-  useEffect(() => {
-    const h = (e: MouseEvent) => {
-      mouse.current = {
-        x: (e.clientX / window.innerWidth) * 2 - 1,
-        y: -(e.clientY / window.innerHeight) * 2 + 1,
-      }
-    }
-    window.addEventListener("mousemove", h)
-    return () => window.removeEventListener("mousemove", h)
-  }, [])
+    ref.current.rotation.y = THREE.MathUtils.damp(
+      ref.current.rotation.y,
+      -0.1 + typingTurn,
+      4,
+      delta
+    )
+    ref.current.position.y = THREE.MathUtils.damp(
+      ref.current.position.y,
+      celebrate * 0.03,
+      4,
+      delta
+    )
+    backrestRef.current.rotation.x = THREE.MathUtils.damp(
+      backrestRef.current.rotation.x,
+      -0.06 - celebrate * 0.12,
+      4,
+      delta
+    )
+  })
 
-  useFrame(() => {
-    if (!groupRef.current) return
-    const targetY = -0.45 + mouse.current.x * 0.2
-    const targetX = 0.1 + mouse.current.y * 0.1
-    groupRef.current.rotation.y += (targetY - groupRef.current.rotation.y) * 0.03
-    groupRef.current.rotation.x += (targetX - groupRef.current.rotation.x) * 0.03
+  return (
+    <group ref={ref} position={[-0.46, 0, 0.42]}>
+      <mesh castShadow position={[0, 0.54, 0.01]}>
+        <cylinderGeometry args={[0.07, 0.1, 0.84, 18]} />
+        <meshStandardMaterial color="#171d27" roughness={0.24} metalness={0.72} />
+      </mesh>
+
+      <RoundedBox args={[0.72, 0.14, 0.7]} radius={0.08} smoothness={4} castShadow position={[0, 0.83, 0.04]}>
+        <meshStandardMaterial color="#101317" roughness={0.42} metalness={0.18} />
+      </RoundedBox>
+
+      <RoundedBox args={[0.54, 0.06, 0.22]} radius={0.06} smoothness={4} castShadow position={[0, 0.78, 0.28]}>
+        <meshStandardMaterial color="#0d1117" roughness={0.44} metalness={0.14} />
+      </RoundedBox>
+
+      <group ref={backrestRef} position={[0, 1.22, -0.12]}>
+        <RoundedBox args={[0.62, 0.9, 0.12]} radius={0.08} smoothness={4} castShadow>
+          <meshStandardMaterial color="#0f1218" roughness={0.4} metalness={0.18} />
+        </RoundedBox>
+
+        <RoundedBox args={[0.18, 0.18, 0.02]} radius={0.02} smoothness={4} position={[0, -0.1, 0.07]}>
+          <meshStandardMaterial
+            color="#d6b15b"
+            emissive="#d6b15b"
+            emissiveIntensity={0.16}
+            roughness={0.3}
+            metalness={0.5}
+          />
+        </RoundedBox>
+
+        <RoundedBox args={[0.34, 0.2, 0.03]} radius={0.03} smoothness={4} position={[0, 0.26, 0.07]}>
+          <meshStandardMaterial
+            color="#c6982f"
+            emissive="#c6982f"
+            emissiveIntensity={0.12}
+            roughness={0.34}
+            metalness={0.46}
+          />
+        </RoundedBox>
+      </group>
+
+      <RoundedBox args={[0.1, 0.24, 0.42]} radius={0.03} smoothness={4} castShadow position={[-0.39, 0.98, 0.08]}>
+        <meshStandardMaterial color="#171d26" roughness={0.32} metalness={0.38} />
+      </RoundedBox>
+
+      <RoundedBox args={[0.1, 0.24, 0.42]} radius={0.03} smoothness={4} castShadow position={[0.39, 0.98, 0.08]}>
+        <meshStandardMaterial color="#171d26" roughness={0.32} metalness={0.38} />
+      </RoundedBox>
+
+      {[0, 1, 2, 3, 4].map((index) => {
+        const angle = (index / 5) * Math.PI * 2
+        const x = Math.cos(angle) * 0.34
+        const z = Math.sin(angle) * 0.34
+        return (
+          <group key={index}>
+            <RoundedBox args={[0.34, 0.04, 0.08]} radius={0.02} smoothness={4} castShadow position={[x * 0.54, 0.2, z * 0.54]} rotation={[0, -angle, 0]}>
+              <meshStandardMaterial color="#171d27" roughness={0.24} metalness={0.68} />
+            </RoundedBox>
+
+            <mesh castShadow position={[x, 0.04, z]}>
+              <sphereGeometry args={[0.045, 14, 14]} />
+              <meshStandardMaterial color="#0f1724" roughness={0.32} metalness={0.38} />
+            </mesh>
+          </group>
+        )
+      })}
+
+      <Character />
+    </group>
+  )
+}
+
+function AmbientAccents() {
+  const ringRef = useRef<THREE.Mesh>(null!)
+
+  useFrame((state) => {
+    ringRef.current.rotation.z = state.clock.getElapsedTime() * 0.18
   })
 
   return (
     <>
-      <group ref={groupRef}>
-        <Character />
-        <Desk />
-        <SecretlabChair />
-        <MacBookM3Air />
-        <AlienwareMonitor />
-        <DeskMug />
-        <FloatingShapes />
-      </group>
-      <Particles />
+      <mesh position={[0.18, 1.74, -1.42]} scale={[1.9, 1.2, 1]}>
+        <sphereGeometry args={[0.72, 24, 24]} />
+        <meshBasicMaterial color="#ffd96f" transparent opacity={0.08} depthWrite={false} />
+      </mesh>
 
-      <ambientLight intensity={0.2} />
-      <pointLight position={[0, 2, 2]} intensity={3} color="#FFD700" distance={8} decay={2} />
-      <pointLight position={[-3, 3, -1]} intensity={1.2} color="#2563eb" distance={10} decay={2} />
-      <pointLight position={[3, 0, 3]} intensity={0.6} color="#00ff88" distance={7} decay={2} />
-      <spotLight position={[0, 4, 1]} intensity={0.5} angle={0.6} penumbra={0.8} color="#fff5e0" />
+      <mesh ref={ringRef} position={[0.45, 2.12, -1.14]} rotation={[0.18, 0.1, 0.24]}>
+        <torusGeometry args={[0.96, 0.014, 12, 96]} />
+        <meshStandardMaterial
+          color="#e8d58b"
+          emissive="#e8d58b"
+          emissiveIntensity={0.34}
+          transparent
+          opacity={0.68}
+        />
+      </mesh>
+
+      <Sparkles
+        count={34}
+        scale={[6.4, 4.2, 5.8]}
+        size={2}
+        speed={0.24}
+        opacity={0.42}
+        color="#ffe49b"
+      />
+    </>
+  )
+}
+
+function Scene({ mobile = false }: { mobile?: boolean }) {
+  const rigRef = useRef<THREE.Group>(null!)
+  const mouse = useRef({ x: 0, y: 0 })
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      mouse.current = {
+        x: (event.clientX / window.innerWidth) * 2 - 1,
+        y: -(event.clientY / window.innerHeight) * 2 + 1,
+      }
+    }
+
+    window.addEventListener("mousemove", handleMouseMove)
+    return () => window.removeEventListener("mousemove", handleMouseMove)
+  }, [])
+
+  useFrame((state, delta) => {
+    if (!rigRef.current) return
+
+    const time = state.clock.getElapsedTime()
+    const autoYaw = Math.sin(time * 0.24) * 0.05
+    const autoPitch = Math.sin(time * 0.18) * 0.02
+
+    const targetYaw = -0.28 + autoYaw + mouse.current.x * 0.09
+    const targetPitch = 0.04 + autoPitch + mouse.current.y * 0.045
+
+    rigRef.current.rotation.y = THREE.MathUtils.damp(
+      rigRef.current.rotation.y,
+      targetYaw,
+      3,
+      delta
+    )
+    rigRef.current.rotation.x = THREE.MathUtils.damp(
+      rigRef.current.rotation.x,
+      targetPitch,
+      3,
+      delta
+    )
+    rigRef.current.position.y = THREE.MathUtils.damp(
+      rigRef.current.position.y,
+      mobile ? -0.9 : -0.82,
+      4,
+      delta
+    )
+  })
+
+  return (
+    <>
+      <group ref={rigRef} scale={mobile ? 0.86 : 1}>
+        <Desk />
+        <AlienwareMonitor />
+        <MacBookAir />
+        <DeskMug />
+        <SecretlabChair />
+        <AmbientAccents />
+      </group>
+
+      <ContactShadows
+        position={[0, 0.02, 0]}
+        scale={6.8}
+        blur={2.3}
+        far={4}
+        opacity={0.42}
+        resolution={1024}
+        color="#05070d"
+      />
+
+      <ambientLight intensity={0.5} />
+      <hemisphereLight intensity={0.48} color="#fdf7ea" groundColor="#0a0f18" />
+      <directionalLight
+        castShadow
+        position={[4.6, 5.2, 3.1]}
+        intensity={2.2}
+        color="#fff2cb"
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
+      />
+      <pointLight position={[-3.4, 2.8, -2.1]} intensity={1.35} color="#75b4ff" />
+      <pointLight position={[2.8, 1.8, 2.2]} intensity={1.0} color="#60f5c1" />
+      <spotLight
+        position={[0.5, 4.0, 1.6]}
+        intensity={1.2}
+        angle={0.5}
+        penumbra={0.9}
+        color="#ffd86b"
+      />
     </>
   )
 }
@@ -636,17 +1035,24 @@ export default function HeroScene() {
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
-    setIsMobile(window.innerWidth < 768)
+    const updateViewport = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    updateViewport()
+    window.addEventListener("resize", updateViewport)
+    return () => window.removeEventListener("resize", updateViewport)
   }, [])
 
   return (
     <Canvas
-      camera={{ position: [2, 2, 4], fov: 34 }}
-      dpr={[1, isMobile ? 1 : 1.5]}
+      shadows
+      camera={{ position: [0.4, 1.9, 4.8], fov: isMobile ? 32 : 28 }}
+      dpr={[1, isMobile ? 1.3 : 1.9]}
       gl={{ antialias: true, alpha: true }}
       style={{ background: "transparent" }}
     >
-      <Scene />
+      <Scene mobile={isMobile} />
     </Canvas>
   )
 }

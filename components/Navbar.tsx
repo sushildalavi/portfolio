@@ -18,7 +18,7 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const { theme, toggleTheme } = useTheme()
+  const { toggleTheme } = useTheme()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50)
@@ -94,18 +94,10 @@ export default function Navbar() {
             whileHover={{ scale: 1.2 }}
             whileTap={{ scale: 0.85, rotate: 180 }}
           >
-            <AnimatePresence mode="wait">
-              <motion.span
-                key={theme}
-                initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
-                animate={{ rotate: 0, opacity: 1, scale: 1 }}
-                exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
-                transition={{ duration: 0.25 }}
-                className="block"
-              >
-                {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-              </motion.span>
-            </AnimatePresence>
+            <span className="theme-toggle-icons" aria-hidden="true">
+              <Sun size={16} className="theme-icon theme-icon-sun" />
+              <Moon size={16} className="theme-icon theme-icon-moon" />
+            </span>
           </motion.button>
 
           {/* Resume button with shimmer */}
@@ -133,7 +125,10 @@ export default function Navbar() {
             className="p-2 rounded-full text-foreground/50 hover:text-accent transition-colors"
             whileTap={{ scale: 0.85, rotate: 180 }}
           >
-            {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+            <span className="theme-toggle-icons" aria-hidden="true">
+              <Sun size={16} className="theme-icon theme-icon-sun" />
+              <Moon size={16} className="theme-icon theme-icon-moon" />
+            </span>
           </motion.button>
           <motion.button
             onClick={() => setMobileOpen(!mobileOpen)}

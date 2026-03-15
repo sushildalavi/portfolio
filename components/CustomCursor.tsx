@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { motion, useMotionValue, useSpring } from "framer-motion"
 
 export default function CustomCursor() {
-  const [visible, setVisible] = useState(false)
   const [hovering, setHovering] = useState(false)
   const [clicking, setClicking] = useState(false)
 
@@ -17,7 +16,6 @@ export default function CustomCursor() {
 
   useEffect(() => {
     if (!window.matchMedia("(pointer: fine)").matches) return
-    setVisible(true)
 
     const move = (e: MouseEvent) => {
       cx.set(e.clientX)
@@ -56,8 +54,6 @@ export default function CustomCursor() {
       document.removeEventListener("mouseup", up)
     }
   }, [cx, cy])
-
-  if (!visible) return null
 
   return (
     <>

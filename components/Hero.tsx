@@ -8,36 +8,54 @@ import { profile } from "@/data/profile"
 const HeroScene = dynamic(() => import("@/components/HeroScene"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-full flex items-center justify-center">
-      <div className="w-14 h-14 border-2 border-accent/20 border-t-accent rounded-full animate-spin" />
+    <div className="flex h-full w-full items-center justify-center">
+      <div className="h-14 w-14 animate-spin rounded-full border-2 border-accent/20 border-t-accent" />
     </div>
   ),
 })
+
+const sceneTags = [
+  "Secretlab TITAN Evo",
+  "MacBook Air M3",
+  "Alienware AW3225QF",
+  "Real Madrid third kit",
+]
+
+const sceneStats = [
+  { label: "Emotes", value: "4-loop" },
+  { label: "Camera", value: "Reactive" },
+  { label: "Mood", value: "Desk setup" },
+  { label: "Coffee", value: "Yes" },
+]
 
 const stagger = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.12, delayChildren: 0.3 },
+    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
   },
 }
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 22 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: "easeOut" as const },
+    transition: { duration: 0.55, ease: "easeOut" as const },
   },
 }
 
 const letterAnimation = {
-  hidden: { opacity: 0, y: 40, rotateX: -40 },
-  show: (i: number) => ({
+  hidden: { opacity: 0, y: 34, rotateX: -32 },
+  show: (index: number) => ({
     opacity: 1,
     y: 0,
     rotateX: 0,
-    transition: { duration: 0.45, delay: 0.5 + i * 0.04, ease: "easeOut" as const },
+    transition: {
+      duration: 0.42,
+      delay: 0.38 + index * 0.035,
+      ease: "easeOut" as const,
+    },
   }),
 }
 
@@ -47,53 +65,57 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center overflow-hidden"
+      className="relative flex min-h-screen items-center overflow-hidden pt-24 pb-12 lg:pt-28"
     >
-      <div className="absolute inset-0 bg-grid-pattern opacity-40" />
+      <div className="absolute inset-0 bg-grid-pattern opacity-35" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-accent/6 to-transparent" />
+      <div className="pointer-events-none absolute -left-24 top-28 h-[26rem] w-[26rem] rounded-full bg-accent/10 blur-[140px]" />
+      <div className="pointer-events-none absolute -right-24 bottom-16 h-[24rem] w-[24rem] rounded-full bg-secondary/12 blur-[140px]" />
 
-      <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[128px] pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-32 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[128px] pointer-events-none" />
-
-      <div className="relative z-10 max-w-6xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center pt-20 lg:pt-0">
+      <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 px-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(380px,0.92fr)] lg:gap-14">
         <motion.div
           variants={stagger}
           initial="hidden"
           animate="show"
-          className="space-y-6"
+          className="max-w-2xl space-y-7"
         >
-          <motion.span
-            variants={fadeUp}
-            className="inline-block text-accent text-sm font-mono tracking-widest"
-          >
-            {profile.role.toUpperCase()}
-          </motion.span>
+          <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-3">
+            <span className="rounded-full border border-accent/25 bg-accent/8 px-4 py-2 text-[11px] font-mono tracking-[0.28em] text-accent">
+              {profile.role.toUpperCase()}
+            </span>
+            <span className="text-sm text-muted-foreground">
+              Research systems, product-minded execution, and applied AI.
+            </span>
+          </motion.div>
 
-          <div className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight">
+          <div className="max-w-[11.5ch] text-[clamp(3.6rem,7vw,6.35rem)] font-black leading-[0.92] tracking-[-0.05em] text-foreground">
             <motion.span variants={fadeUp} className="inline-block">
               Hi, I&apos;m{" "}
             </motion.span>
             <span className="inline-flex" style={{ perspective: 600 }}>
-              {firstName.split("").map((char, i) => (
+              {firstName.split("").map((char, index) => (
                 <motion.span
-                  key={i}
-                  custom={i}
+                  key={index}
+                  custom={index}
                   variants={letterAnimation}
                   initial="hidden"
                   animate="show"
-                  className="bg-gradient-to-r from-accent via-accent-light to-accent bg-clip-text text-transparent animate-gradient-text inline-block"
-                  whileHover={{ scale: 1.2, y: -4, rotate: Math.random() > 0.5 ? 5 : -5 }}
+                  className="animate-gradient-text inline-block bg-gradient-to-r from-accent via-accent-light to-accent bg-clip-text text-transparent"
                   style={{ display: "inline-block" }}
+                  whileHover={{ scale: 1.08, y: -3, rotate: index % 2 === 0 ? 4 : -4 }}
                 >
                   {char}
                 </motion.span>
               ))}
             </span>
-            <motion.span variants={fadeUp} className="inline-block">.</motion.span>
+            <motion.span variants={fadeUp} className="inline-block">
+              .
+            </motion.span>
             <br />
-            <motion.span variants={fadeUp} className="text-foreground/90 inline-block">
-              {profile.headline.split("\n").map((line, i) => (
-                <span key={i}>
-                  {i > 0 && <br />}
+            <motion.span variants={fadeUp} className="inline-block text-foreground/92">
+              {profile.headline.split("\n").map((line, index) => (
+                <span key={line}>
+                  {index > 0 && <br />}
                   {line}
                 </span>
               ))}
@@ -102,93 +124,140 @@ export default function Hero() {
 
           <motion.p
             variants={fadeUp}
-            className="text-lg text-muted-foreground max-w-lg leading-relaxed"
+            className="max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl"
           >
             {profile.description}
           </motion.p>
 
-          <motion.div variants={fadeUp} className="flex flex-wrap gap-4 pt-2">
-            {/* Primary CTA with shimmer */}
+          <motion.div variants={fadeUp} className="flex flex-wrap gap-4 pt-1">
             <motion.button
               onClick={() =>
-                document
-                  .getElementById("projects")
-                  ?.scrollIntoView({ behavior: "smooth" })
+                document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })
               }
-              className="group relative px-6 py-3 bg-accent hover:bg-accent-hover text-[#0a0e1a] rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:shadow-accent/25 overflow-hidden"
-              whileHover={{ scale: 1.06 }}
-              whileTap={{ scale: 0.95 }}
+              className="group relative overflow-hidden rounded-full bg-accent px-7 py-3.5 font-medium text-[#0a0e1a] transition-all duration-300 hover:bg-accent-hover hover:shadow-[0_18px_40px_rgba(184,134,11,0.22)]"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
             >
               <span className="relative z-10">
                 View Projects
-                <span className="inline-block ml-1 transition-transform group-hover:translate-x-1.5">
+                <span className="ml-1 inline-block transition-transform group-hover:translate-x-1.5">
                   &rarr;
                 </span>
               </span>
-              <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             </motion.button>
 
-            {/* Secondary CTA with glow */}
             <motion.button
               onClick={() =>
-                document
-                  .getElementById("contact")
-                  ?.scrollIntoView({ behavior: "smooth" })
+                document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
               }
-              className="px-6 py-3 border border-foreground/10 hover:border-accent/40 rounded-full hover:bg-accent/5 transition-all duration-300 hover:shadow-[0_0_25px_rgba(255,215,0,0.08)]"
-              whileHover={{ scale: 1.06 }}
-              whileTap={{ scale: 0.95 }}
+              className="rounded-full border border-foreground/10 bg-background/55 px-7 py-3.5 font-medium text-foreground/78 backdrop-blur-xl transition-all duration-300 hover:border-accent/35 hover:bg-accent/6"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
             >
               Get in Touch
             </motion.button>
           </motion.div>
 
-          {/* Social links with bounce */}
-          <motion.div variants={fadeUp} className="flex gap-5 pt-2">
-            {[
-              { href: profile.links.github, icon: Github, label: "GitHub" },
-              {
-                href: profile.links.linkedin,
-                icon: Linkedin,
-                label: "LinkedIn",
-              },
-              {
-                href: `mailto:${profile.links.email}`,
-                icon: Mail,
-                label: "Email",
-              },
-            ].map(({ href, icon: Icon, label }) => (
-              <motion.a
-                key={label}
-                href={href}
-                target={label !== "Email" ? "_blank" : undefined}
-                rel="noopener noreferrer"
-                aria-label={label}
-                className="text-foreground/30 hover:text-accent transition-colors duration-200"
-                whileHover={{ scale: 1.35, y: -4, rotate: 8 }}
-                whileTap={{ scale: 0.85 }}
-              >
-                <Icon size={20} />
-              </motion.a>
-            ))}
+          <motion.div
+            variants={fadeUp}
+            className="flex flex-wrap items-center gap-5 pt-1 text-sm text-muted-foreground"
+          >
+            <div className="flex gap-5">
+              {[
+                { href: profile.links.github, icon: Github, label: "GitHub" },
+                { href: profile.links.linkedin, icon: Linkedin, label: "LinkedIn" },
+                { href: `mailto:${profile.links.email}`, icon: Mail, label: "Email" },
+              ].map(({ href, icon: Icon, label }) => (
+                <motion.a
+                  key={label}
+                  href={href}
+                  target={label !== "Email" ? "_blank" : undefined}
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="text-foreground/35 transition-colors duration-200 hover:text-accent"
+                  whileHover={{ scale: 1.25, y: -3 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <Icon size={20} />
+                </motion.a>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {["NLP", "RAG", "LLM systems"].map((item) => (
+                <span
+                  key={item}
+                  className="rounded-full border border-foreground/10 bg-background/50 px-3 py-1 backdrop-blur-xl"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
           </motion.div>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.85 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, delay: 0.4, ease: "easeOut" as const }}
-          className="h-[350px] sm:h-[400px] lg:h-[520px] w-full"
+          initial={{ opacity: 0, y: 28, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.9, delay: 0.22, ease: "easeOut" as const }}
+          className="relative mx-auto w-full max-w-[42rem]"
         >
-          <HeroScene />
+          <div className="pointer-events-none absolute inset-6 rounded-[2.5rem] bg-gradient-to-br from-accent/18 via-accent/6 to-secondary/14 blur-3xl" />
+
+          <div className="relative overflow-hidden rounded-[2.3rem] border border-foreground/10 bg-background/72 shadow-[0_35px_90px_rgba(10,14,26,0.18)] backdrop-blur-2xl">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(184,134,11,0.18),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(30,58,95,0.16),transparent_32%)]" />
+
+            <div className="absolute left-5 right-5 top-5 z-10 flex flex-wrap gap-2">
+              {sceneTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-foreground/10 bg-background/70 px-3 py-1 text-[11px] font-medium text-foreground/70 backdrop-blur-xl"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            <div className="relative h-[430px] w-full pt-14 sm:h-[520px] lg:h-[620px]">
+              <HeroScene />
+            </div>
+
+            <div className="absolute inset-x-5 bottom-5 z-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div className="max-w-sm rounded-[1.4rem] border border-foreground/10 bg-background/72 px-4 py-3 backdrop-blur-2xl">
+                <p className="text-[11px] font-mono uppercase tracking-[0.24em] text-accent/90">
+                  Live Scene
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-foreground/72">
+                  Typing, coffee break, nod, and celebration loops in a cleaner
+                  3D desk setup.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 sm:w-[13.5rem]">
+                {sceneStats.map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="rounded-2xl border border-foreground/10 bg-background/66 px-3 py-2 backdrop-blur-xl"
+                  >
+                    <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+                      {stat.label}
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-foreground/80">
+                      {stat.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </motion.div>
       </div>
 
-      {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 0.8 }}
+        transition={{ delay: 1.8, duration: 0.8 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
         <motion.div
