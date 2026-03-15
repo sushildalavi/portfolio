@@ -175,10 +175,14 @@ export default function Navbar() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.07 }}
                   onClick={() => scrollTo(link.href)}
-                  className="text-sm text-foreground/60 hover:text-accent transition-colors text-left"
+                  className="text-sm text-foreground/60 hover:text-accent active:text-accent transition-colors text-left py-1.5"
                   whileHover={{ x: 8 }}
+                  whileTap={{ x: 12, scale: 0.98 }}
                 >
-                  {link.label}
+                  <span className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent/40" />
+                    {link.label}
+                  </span>
                 </motion.button>
               ))}
               <motion.a
