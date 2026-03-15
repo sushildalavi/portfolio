@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
 import {
   Brain,
@@ -12,6 +13,7 @@ import {
 } from "lucide-react"
 import SectionHeading from "./SectionHeading"
 import { skillGroups } from "@/data/skills"
+import { getTiltTransform } from "@/lib/tilt"
 
 const iconMap: Record<string, LucideIcon> = {
   Brain,
@@ -28,8 +30,49 @@ const containerVariants = {
 }
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.45 } },
+}
+
+function SkillCard({ group }: { group: (typeof skillGroups)[number] }) {
+  const Icon = iconMap[group.icon] || Code2
+  const [tilt, setTilt] = useState("")
+
+  return (
+    <motion.div variants={cardVariants}>
+      <div
+        className="group p-5 rounded-xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/25 hover:shadow-[0_0_30px_rgba(255,215,0,0.04)] transition-all duration-500 h-full"
+        onMouseMove={(e) => setTilt(getTiltTransform(e, 8))}
+        onMouseLeave={() => setTilt("")}
+        style={{ transform: tilt, transition: "transform 0.15s ease-out" }}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <motion.div
+            className="p-2 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors duration-300"
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.6 }}
+          >
+            <Icon size={18} className="text-accent" />
+          </motion.div>
+          <h3 className="text-sm font-semibold group-hover:text-accent transition-colors duration-300">
+            {group.title}
+          </h3>
+        </div>
+
+        <div className="flex flex-wrap gap-1.5">
+          {group.skills.map((skill) => (
+            <motion.span
+              key={skill}
+              className="text-[11px] px-2.5 py-1.5 rounded-md bg-foreground/[0.04] text-muted-foreground border border-foreground/[0.04] hover:border-accent/25 hover:text-accent hover:bg-accent/5 transition-all duration-200 cursor-default inline-block"
+              whileHover={{ scale: 1.12, y: -2 }}
+            >
+              {skill}
+            </motion.span>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  )
 }
 
 export default function Skills() {
@@ -51,34 +94,9 @@ export default function Skills() {
           viewport={{ once: true, margin: "-60px" }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
         >
-          {skillGroups.map((group) => {
-            const Icon = iconMap[group.icon] || Code2
-            return (
-              <motion.div
-                key={group.title}
-                variants={cardVariants}
-                className="group p-5 rounded-xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/20 transition-all duration-500"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-accent/10">
-                    <Icon size={18} className="text-accent" />
-                  </div>
-                  <h3 className="text-sm font-semibold">{group.title}</h3>
-                </div>
-
-                <div className="flex flex-wrap gap-1.5">
-                  {group.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="text-[11px] px-2.5 py-1.5 rounded-md bg-foreground/[0.04] text-muted-foreground border border-foreground/[0.04] hover:border-accent/20 hover:text-accent transition-all duration-200 cursor-default"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            )
-          })}
+          {skillGroups.map((group) => (
+            <SkillCard key={group.title} group={group} />
+          ))}
         </motion.div>
       </div>
     </section>
