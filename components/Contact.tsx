@@ -1,8 +1,10 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
 import { Mail, Github, Linkedin, FileText, ArrowUpRight } from "lucide-react"
 import { profile } from "@/data/profile"
+import { getTiltTransform } from "@/lib/tilt"
 
 const links = [
   {
@@ -34,6 +36,58 @@ const links = [
   },
 ]
 
+function ContactCard({
+  link,
+  index,
+}: {
+  link: (typeof links)[number]
+  index: number
+}) {
+  const [tilt, setTilt] = useState("")
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: 0.2 + index * 0.08 }}
+    >
+      <a
+        href={link.href}
+        target={link.external ? "_blank" : undefined}
+        rel={link.external ? "noopener noreferrer" : undefined}
+        className="group flex items-center gap-4 p-4 rounded-xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/30 hover:shadow-[0_0_30px_rgba(255,215,0,0.05)] transition-all duration-300 block"
+        onMouseMove={(e) => setTilt(getTiltTransform(e as never, 8))}
+        onMouseLeave={() => setTilt("")}
+        style={{ transform: tilt, transition: "transform 0.15s ease-out" }}
+      >
+        <motion.div
+          className="p-2.5 rounded-lg bg-accent/10 group-hover:bg-accent/20 transition-colors duration-300"
+          whileHover={{ rotate: 15, scale: 1.15 }}
+        >
+          <link.icon size={18} className="text-accent" />
+        </motion.div>
+        <div className="text-left flex-1 min-w-0">
+          <p className="text-xs text-muted">{link.label}</p>
+          <p className="text-sm text-foreground/70 truncate group-hover:text-accent transition-colors duration-300">
+            {link.value}
+          </p>
+        </div>
+        <motion.div
+          className="shrink-0"
+          animate={{ x: 0, y: 0 }}
+          whileHover={{ x: 3, y: -3 }}
+        >
+          <ArrowUpRight
+            size={14}
+            className="text-muted group-hover:text-accent transition-colors duration-300"
+          />
+        </motion.div>
+      </a>
+    </motion.div>
+  )
+}
+
 export default function Contact() {
   return (
     <section id="contact" className="py-24 md:py-32 px-6 relative">
@@ -58,55 +112,34 @@ export default function Contact() {
           </p>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto"
-        >
-          {links.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              target={link.external ? "_blank" : undefined}
-              rel={link.external ? "noopener noreferrer" : undefined}
-              className="group flex items-center gap-4 p-4 rounded-xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/25 transition-all duration-300"
-            >
-              <div className="p-2.5 rounded-lg bg-accent/10 group-hover:bg-accent/15 transition-colors">
-                <link.icon size={18} className="text-accent" />
-              </div>
-              <div className="text-left flex-1 min-w-0">
-                <p className="text-xs text-muted">{link.label}</p>
-                <p className="text-sm text-foreground/70 truncate">
-                  {link.value}
-                </p>
-              </div>
-              <ArrowUpRight
-                size={14}
-                className="text-muted group-hover:text-accent transition-colors shrink-0"
-              />
-            </a>
+        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto">
+          {links.map((link, i) => (
+            <ContactCard key={link.label} link={link} index={i} />
           ))}
-        </motion.div>
+        </div>
 
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.4 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
           className="mt-12"
         >
-          <a
+          <motion.a
             href={`mailto:${profile.links.email}`}
-            className="group inline-flex items-center gap-2 px-8 py-4 bg-accent hover:bg-accent-hover text-[#0a0e1a] rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:shadow-accent/20"
+            className="group relative inline-flex items-center gap-2 px-8 py-4 bg-accent hover:bg-accent-hover text-[#0a0e1a] rounded-full font-medium transition-all duration-300 hover:shadow-lg hover:shadow-accent/25 overflow-hidden"
+            whileHover={{ scale: 1.06 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <Mail size={18} />
-            Say Hello
-            <span className="inline-block transition-transform group-hover:translate-x-1">
-              &rarr;
+            <span className="relative z-10 flex items-center gap-2">
+              <Mail size={18} />
+              Say Hello
+              <span className="inline-block transition-transform group-hover:translate-x-1.5">
+                &rarr;
+              </span>
             </span>
-          </a>
+            <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+          </motion.a>
         </motion.div>
       </div>
     </section>
