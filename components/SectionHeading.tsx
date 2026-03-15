@@ -15,24 +15,58 @@ export default function SectionHeading({
 }: SectionHeadingProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial="hidden"
+      whileInView="show"
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.5 }}
       className="mb-16"
     >
-      <span className="text-accent text-sm font-mono tracking-widest uppercase">
+      <motion.span
+        variants={{
+          hidden: { opacity: 0, x: -20 },
+          show: { opacity: 1, x: 0, transition: { duration: 0.5 } },
+        }}
+        className="inline-block text-accent text-sm font-mono tracking-widest uppercase"
+      >
         {label}
-      </span>
-      <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mt-3 tracking-tight">
+      </motion.span>
+
+      <motion.h2
+        variants={{
+          hidden: { opacity: 0, y: 20 },
+          show: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.1 } },
+        }}
+        className="text-3xl md:text-4xl lg:text-5xl font-bold mt-3 tracking-tight"
+      >
         {title}
-      </h2>
+      </motion.h2>
+
       {subtitle && (
-        <p className="text-muted-foreground mt-4 max-w-2xl text-lg">
+        <motion.p
+          variants={{
+            hidden: { opacity: 0, y: 15 },
+            show: {
+              opacity: 1,
+              y: 0,
+              transition: { duration: 0.5, delay: 0.2 },
+            },
+          }}
+          className="text-muted-foreground mt-4 max-w-2xl text-lg"
+        >
           {subtitle}
-        </p>
+        </motion.p>
       )}
-      <div className="h-px w-16 bg-gradient-to-r from-accent to-accent-light mt-6" />
+
+      <motion.div
+        variants={{
+          hidden: { width: 0, opacity: 0 },
+          show: {
+            width: 64,
+            opacity: 1,
+            transition: { duration: 0.8, delay: 0.3, ease: "easeOut" as const },
+          },
+        }}
+        className="h-px bg-gradient-to-r from-accent to-accent-light mt-6"
+      />
     </motion.div>
   )
 }
