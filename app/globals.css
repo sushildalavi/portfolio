@@ -129,3 +129,22 @@ body {
   background-size: 200% auto;
   animation: gradient-shift 4s ease-in-out infinite;
 }
+
+/* Marquee scroll */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes scroll-right {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
