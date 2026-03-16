@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { ArrowUpRight, GraduationCap, MapPin } from "lucide-react"
+import { GraduationCap, MapPin } from "lucide-react"
 import SectionHeading from "./SectionHeading"
 import { profile } from "@/data/profile"
 import { getTiltTransform } from "@/lib/tilt"
@@ -18,8 +18,6 @@ const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 }
-
-const researchPartners = ["Oxford", "UPenn", "World Bank"]
 
 function UniLogo({ edu }: { edu: (typeof profile.education)[number] }) {
   return (
@@ -37,29 +35,6 @@ function UniLogo({ edu }: { edu: (typeof profile.education)[number] }) {
   )
 }
 
-function StoryCard({
-  paragraph,
-  index,
-}: {
-  paragraph: string
-  index: number
-}) {
-  return (
-    <motion.div
-      variants={itemVariants}
-      className="rounded-[1.4rem] border border-foreground/[0.06] bg-foreground/[0.022] p-5"
-    >
-      <div className="flex items-center gap-2 text-accent/75">
-        <span className="text-[10px] font-mono uppercase tracking-[0.22em]">
-          0{index + 1}
-        </span>
-        <div className="h-px flex-1 bg-gradient-to-r from-accent/30 to-transparent" />
-      </div>
-      <p className="mt-4 text-sm leading-7 text-muted-foreground">{paragraph}</p>
-    </motion.div>
-  )
-}
-
 function EduCard({
   edu,
   index,
@@ -71,7 +46,7 @@ function EduCard({
 
   return (
     <div
-      className="card-glow group relative overflow-hidden rounded-[1.45rem] border border-foreground/[0.06] bg-foreground/[0.022] p-4 transition-all duration-300 hover:border-accent/25 hover:shadow-[0_0_26px_var(--accent-glow-val)]"
+      className="card-glow group relative overflow-hidden rounded-2xl border border-foreground/[0.06] bg-foreground/[0.02] p-4 transition-all duration-300 hover:border-accent/25 hover:shadow-[0_0_26px_var(--accent-glow-val)]"
       onMouseMove={(e) => {
         const r = e.currentTarget.getBoundingClientRect()
         e.currentTarget.style.setProperty("--mouse-x", `${((e.clientX - r.left) / r.width) * 100}%`)
@@ -92,7 +67,7 @@ function EduCard({
               </p>
               <p className="mt-1 text-sm text-muted-foreground">{edu.school}</p>
             </div>
-            <span className="rounded-full border border-accent/12 bg-accent/[0.06] px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-accent/80">
+            <span className="rounded-full border border-foreground/[0.08] bg-background/72 px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-accent/80">
               {index === 0 ? "Current" : edu.shortName}
             </span>
           </div>
@@ -129,46 +104,26 @@ export default function About() {
                 subtitle="AI systems engineer with a product-minded approach to building intelligent infrastructure."
               />
 
-              <div className="card-glow group relative overflow-hidden rounded-[2rem] border border-foreground/[0.08] bg-background/58 p-6 md:p-8">
-                <div className="card-spotlight" />
-                <div className="pointer-events-none absolute -right-8 top-2 text-[5.5rem] font-black tracking-[-0.09em] text-accent/[0.06] md:text-[7rem]">
-                  AI
-                </div>
+              <div className="space-y-6">
+                <motion.p
+                  variants={itemVariants}
+                  className="max-w-3xl text-[1.08rem] leading-8 text-foreground/88"
+                >
+                  {profile.about.paragraphs[0]}
+                </motion.p>
 
-                <div className="relative z-10">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-accent/15 bg-accent/[0.06] px-3 py-1.5 text-[10px] font-mono uppercase tracking-[0.24em] text-accent/85">
-                    Research x Product
-                  </div>
-
-                  <motion.p
-                    variants={itemVariants}
-                    className="mt-6 max-w-3xl text-[clamp(1.18rem,2vw,1.55rem)] leading-[1.7] tracking-[-0.02em] text-foreground/90"
-                  >
-                    {profile.about.paragraphs[0]}
-                  </motion.p>
-
-                  <div className="mt-8 grid gap-4 md:grid-cols-2">
-                    {profile.about.paragraphs.slice(1).map((paragraph, i) => (
-                      <StoryCard key={i} paragraph={paragraph} index={i + 1} />
-                    ))}
-                  </div>
-
-                  <motion.div
-                    variants={itemVariants}
-                    className="mt-8 flex flex-wrap items-center gap-2.5"
-                  >
-                    <span className="mr-1 text-[10px] font-mono uppercase tracking-[0.22em] text-muted">
-                      Research Context
-                    </span>
-                    {researchPartners.map((partner) => (
-                      <span
-                        key={partner}
-                        className="inline-flex items-center rounded-full border border-foreground/[0.08] bg-background/75 px-3 py-1.5 text-xs text-foreground/75"
-                      >
-                        {partner}
-                      </span>
-                    ))}
-                  </motion.div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {profile.about.paragraphs.slice(1).map((paragraph, i) => (
+                    <motion.div
+                      key={i}
+                      variants={itemVariants}
+                      className="rounded-2xl border border-foreground/[0.06] bg-background/52 p-5"
+                    >
+                      <p className="text-sm leading-7 text-muted-foreground">
+                        {paragraph}
+                      </p>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
             </motion.div>
@@ -178,31 +133,18 @@ export default function About() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="space-y-5 lg:pt-24"
+              className="space-y-5 lg:pt-22"
             >
-              <div className="card-glow relative overflow-hidden rounded-[1.7rem] border border-foreground/[0.08] bg-background/58 p-5 md:p-6">
-                <div className="card-spotlight" />
-                <div className="relative z-10">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-[10px] font-mono uppercase tracking-[0.24em] text-accent/80">
-                        Focus Stack
-                      </p>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                        The systems layers I keep building around.
-                      </p>
-                    </div>
-                    <span className="rounded-full border border-accent/12 bg-accent/[0.06] px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-accent/80">
-                      {profile.about.focus.length} Areas
-                    </span>
-                  </div>
-
-                  <div className="mt-5 flex flex-wrap gap-2.5">
+              <div className="rounded-[1.6rem] border border-foreground/[0.08] bg-background/58 p-5 md:p-6">
+                <p className="text-[10px] font-mono uppercase tracking-[0.24em] text-accent/80">
+                  Focus Areas
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2.5">
                   {profile.about.focus.map((area) => (
                     <motion.span
                       key={area}
                       className="inline-flex rounded-full border border-accent/12 bg-accent/[0.05] px-3 py-1.5 text-xs text-accent transition-all duration-200 hover:border-accent/28 hover:bg-accent/10"
-                      whileHover={{ scale: 1.04, y: -2 }}
+                      whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.97 }}
                     >
                       {area}
@@ -210,29 +152,22 @@ export default function About() {
                   ))}
                 </div>
               </div>
-              </div>
 
-              <div className="card-glow relative overflow-hidden rounded-[1.7rem] border border-foreground/[0.08] bg-background/58 p-5 md:p-6">
-                <div className="card-spotlight" />
-                <div className="relative z-10">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-2 text-accent">
-                      <GraduationCap size={16} />
-                      <span className="text-[10px] font-mono uppercase tracking-[0.24em]">
-                        Education
-                      </span>
-                    </div>
-                    <ArrowUpRight size={14} className="text-accent/45" />
-                  </div>
-                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                    Formal training in computer science, from core engineering fundamentals to advanced systems and research-oriented work.
-                  </p>
+              <div className="rounded-[1.6rem] border border-foreground/[0.08] bg-background/58 p-5 md:p-6">
+                <div className="flex items-center gap-2 text-accent">
+                  <GraduationCap size={16} />
+                  <span className="text-[10px] font-mono uppercase tracking-[0.24em]">
+                    Education
+                  </span>
+                </div>
+                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                  Formal training in computer science, from core engineering fundamentals to advanced systems and research-oriented work.
+                </p>
 
-                  <div className="mt-5 space-y-4">
-                    {profile.education.map((edu, index) => (
-                      <EduCard key={edu.degree} edu={edu} index={index} />
-                    ))}
-                  </div>
+                <div className="mt-5 space-y-4">
+                  {profile.education.map((edu, index) => (
+                    <EduCard key={edu.degree} edu={edu} index={index} />
+                  ))}
                 </div>
               </div>
             </motion.div>
