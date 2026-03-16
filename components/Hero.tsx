@@ -172,20 +172,20 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative flex min-h-screen items-center overflow-hidden pt-14 pb-10 lg:pt-0"
+      className="relative flex min-h-screen items-center overflow-hidden pt-20 pb-12 lg:h-[min(100svh,920px)] lg:min-h-[820px] lg:items-start lg:pt-20 lg:pb-20"
     >
       <FloatingParticles count={22} />
       <div className="absolute inset-0 bg-grid-pattern opacity-30" />
       <div className="pointer-events-none absolute -left-32 top-1/4 h-[32rem] w-[32rem] rounded-full bg-accent/6 blur-[160px]" />
       <div className="pointer-events-none absolute -right-24 bottom-1/4 h-[26rem] w-[26rem] rounded-full bg-secondary/10 blur-[140px]" />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-14 px-6 lg:grid-cols-[1fr_auto] lg:gap-20 lg:px-12">
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-14 px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-16 lg:px-12 xl:grid-cols-[minmax(0,1fr)_400px] xl:gap-20">
         {/* Left: text */}
         <motion.div
           variants={stagger}
           initial="hidden"
           animate="show"
-          className="max-w-xl space-y-6"
+          className="max-w-xl space-y-6 lg:pt-6"
         >
           <motion.div variants={fadeUp}>
             <span className="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/8 px-4 py-2 text-[11px] font-mono tracking-[0.26em] text-accent">

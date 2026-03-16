@@ -87,7 +87,7 @@ function ExperienceCard({
       </div>
 
       <div
-        className="card-glow group relative p-6 md:p-8 rounded-2xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/25 hover:shadow-[0_0_40px_var(--accent-glow-val)] transition-all duration-500 overflow-hidden"
+        className="card-glow group relative p-6 md:p-8 rounded-2xl bg-background/65 border border-foreground/[0.08] hover:border-accent/25 hover:shadow-[0_0_40px_var(--accent-glow-val)] transition-all duration-500 overflow-hidden"
         onMouseMove={(e) => {
           const r = e.currentTarget.getBoundingClientRect()
           e.currentTarget.style.setProperty("--mouse-x", `${((e.clientX - r.left) / r.width) * 100}%`)
@@ -158,23 +158,36 @@ function ExperienceCard({
 
 export default function Experience() {
   return (
-    <section id="experience" className="py-16 md:py-24 px-6 relative">
+    <section id="experience" className="py-20 md:py-24 px-6 relative">
       <div className="absolute top-1/3 -left-32 w-[400px] h-[400px] bg-accent/[0.03] rounded-full blur-[128px] pointer-events-none" />
 
       <div className="max-w-6xl mx-auto relative">
-        <SectionHeading
-          label="Experience"
-          title="Where I've Worked"
-          subtitle="Building production AI systems across research and industry."
-        />
+        <div className="section-panel rounded-[2rem] px-6 py-8 md:px-10 md:py-10">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-end">
+            <SectionHeading
+              label="Experience"
+              title="Where I've Worked"
+              subtitle="Building production AI systems across research and industry."
+            />
+            <motion.p
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.45, delay: 0.2 }}
+              className="text-sm leading-relaxed text-muted-foreground"
+            >
+              Research rigor on one side, production delivery on the other. This section should read fast and still feel substantial.
+            </motion.p>
+          </div>
 
-        <div className="relative">
-          <div className="absolute left-[7px] top-2 bottom-2 w-px bg-gradient-to-b from-accent/30 via-accent/10 to-transparent hidden md:block" />
+          <div className="relative">
+            <div className="absolute left-[7px] top-2 bottom-2 w-px bg-gradient-to-b from-accent/30 via-accent/10 to-transparent hidden md:block" />
 
-          <div className="space-y-8">
-            {experiences.map((exp, i) => (
-              <ExperienceCard key={exp.id} exp={exp} index={i} />
-            ))}
+            <div className="space-y-8">
+              {experiences.map((exp, i) => (
+                <ExperienceCard key={exp.id} exp={exp} index={i} />
+              ))}
+            </div>
           </div>
         </div>
       </div>

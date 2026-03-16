@@ -4,16 +4,16 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
 // ─── timing constants (ms) ────────────────────────────────────────
-const BOOT_END = 380
-const CHECK_FIRST = 480
-const CHECK_STEP = 210        // gap between each system check completing
+const BOOT_END = 220
+const CHECK_FIRST = 260
+const CHECK_STEP = 140        // gap between each system check completing
 const CHECKS_COUNT = 5
-const CHECKS_END = CHECK_FIRST + CHECKS_COUNT * CHECK_STEP + 80   // ~1640
+const CHECKS_END = CHECK_FIRST + CHECKS_COUNT * CHECK_STEP + 40   // ~1000
 const COUNTDOWN_FROM = 3
-const TICK = 420               // ms per countdown tick
-const LAUNCH_AT = CHECKS_END + COUNTDOWN_FROM * TICK              // ~2900
-const LIFTOFF_AT = LAUNCH_AT + 480                                 // ~3380
-const HIDE_AT = LIFTOFF_AT + 450                                   // ~3830
+const TICK = 240               // ms per countdown tick
+const LAUNCH_AT = CHECKS_END + COUNTDOWN_FROM * TICK              // ~1720
+const LIFTOFF_AT = LAUNCH_AT + 340                                 // ~2060
+const HIDE_AT = LIFTOFF_AT + 260                                   // ~2320
 
 const SYSTEMS = [
   "NEURAL CORE.........",

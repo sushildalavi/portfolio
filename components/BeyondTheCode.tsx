@@ -24,7 +24,7 @@ export default function BeyondTheCode() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5 }}
-            className="p-5 rounded-2xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/20 transition-all duration-300 card-glow"
+            className="p-5 rounded-2xl bg-background/62 border border-foreground/[0.08] hover:border-accent/20 transition-all duration-300 card-glow"
           >
             <div className="card-spotlight" />
             <p className="text-xs font-mono text-muted-foreground tracking-wider uppercase mb-4">
@@ -34,7 +34,7 @@ export default function BeyondTheCode() {
               {profile.interests.map(({ label, emoji }) => (
                 <motion.span
                   key={label}
-                  className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-foreground/[0.04] border border-foreground/[0.06] text-muted-foreground hover:border-accent/25 hover:text-accent hover:bg-accent/5 transition-all duration-200 cursor-default"
+                    className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-background/68 border border-foreground/[0.08] text-muted-foreground hover:border-accent/25 hover:text-accent hover:bg-accent/5 transition-all duration-200 cursor-default"
                   whileHover={{ scale: 1.08, y: -2 }}
                 >
                   <span>{emoji}</span>
@@ -77,7 +77,7 @@ export default function BeyondTheCode() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="p-5 rounded-2xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/20 transition-all duration-300 relative card-glow"
+            className="p-5 rounded-2xl bg-background/62 border border-foreground/[0.08] hover:border-accent/20 transition-all duration-300 relative card-glow"
           >
             <div className="card-spotlight" />
             <Quote size={18} className="text-accent/30 mb-3" />
