@@ -19,29 +19,12 @@ export default function FeaturedProjects() {
 
       <div className="max-w-6xl mx-auto relative">
         <div className="section-panel section-panel-accent rounded-[2rem] px-6 py-8 md:px-10 md:py-10">
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-end">
+          <div className="max-w-3xl">
             <SectionHeading
               label="Projects"
               title="Featured Work"
               subtitle="Systems I've designed and built — from retrieval-augmented research assistants to production ML pipelines."
             />
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.45, delay: 0.2 }}
-              className="rounded-2xl border border-foreground/[0.08] bg-background/55 px-5 py-4 backdrop-blur-sm"
-            >
-              <p className="text-[11px] font-mono uppercase tracking-[0.24em] text-accent/80">
-                Snapshot
-              </p>
-              <p className="mt-3 text-2xl font-bold tracking-tight">
-                {featured.length} featured
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Focused on RAG, NLP, and production AI systems with measurable outcomes.
-              </p>
-            </motion.div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

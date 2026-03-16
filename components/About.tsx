@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { MapPin } from "lucide-react"
+import { GraduationCap, MapPin, Sparkles } from "lucide-react"
 import SectionHeading from "./SectionHeading"
 import { profile } from "@/data/profile"
 import { getTiltTransform } from "@/lib/tilt"
@@ -22,7 +22,7 @@ const itemVariants = {
 function UniLogo({ edu }: { edu: (typeof profile.education)[number] }) {
   return (
     <div
-      className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 overflow-hidden shadow-md"
+      className="h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-black/8 shadow-md"
       style={{ backgroundColor: edu.accentColor, border: "1px solid rgba(0,0,0,0.08)" }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -35,12 +35,19 @@ function UniLogo({ edu }: { edu: (typeof profile.education)[number] }) {
   )
 }
 
-function EduCard({ edu }: { edu: (typeof profile.education)[number] }) {
+function EduCard({
+  edu,
+  index,
+}: {
+  edu: (typeof profile.education)[number]
+  index: number
+}) {
   const [tilt, setTilt] = useState("")
+  const isCurrent = index === 0
 
   return (
     <div
-      className="card-glow group p-4 rounded-xl bg-foreground/[0.025] border border-foreground/[0.06] hover:border-accent/25 hover:shadow-[0_0_30px_var(--accent-glow-val)] transition-all duration-300"
+      className="card-glow group relative overflow-hidden rounded-2xl border border-foreground/[0.06] bg-background/62 p-5 transition-all duration-300 hover:border-accent/25 hover:shadow-[0_0_30px_var(--accent-glow-val)]"
       onMouseMove={(e) => {
         const r = e.currentTarget.getBoundingClientRect()
         e.currentTarget.style.setProperty("--mouse-x", `${((e.clientX - r.left) / r.width) * 100}%`)
@@ -51,14 +58,27 @@ function EduCard({ edu }: { edu: (typeof profile.education)[number] }) {
       style={{ transform: tilt, transition: "transform 0.15s ease-out" }}
     >
       <div className="card-spotlight" />
-      <div className="flex items-center gap-3">
+      <div className="relative z-10 flex gap-4">
         <UniLogo edu={edu} />
-        <div>
-          <p className="text-sm font-medium leading-snug">{edu.degree}</p>
-          <p className="text-xs text-muted-foreground mt-0.5">{edu.school}</p>
-          <div className="flex items-center gap-1 mt-1">
-            <MapPin size={10} className="text-muted shrink-0" />
-            <p className="text-xs text-muted">{edu.location}</p>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-[10px] font-mono uppercase tracking-[0.24em] text-accent/75">
+                {isCurrent ? "Current Track" : "Foundation"}
+              </p>
+              <p className="mt-2 text-base font-semibold leading-snug text-foreground/92">
+                {edu.degree}
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">{edu.school}</p>
+            </div>
+            <span className="rounded-full border border-accent/12 bg-accent/8 px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.22em] text-accent/80">
+              {edu.shortName}
+            </span>
+          </div>
+
+          <div className="mt-4 flex items-center gap-1.5 text-sm text-muted">
+            <MapPin size={12} className="shrink-0" />
+            <span>{edu.location}</span>
           </div>
         </div>
       </div>
@@ -73,70 +93,118 @@ export default function About() {
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-accent/[0.04] rounded-full blur-[128px] pointer-events-none" />
 
       <div className="max-w-6xl mx-auto relative">
-        <SectionHeading
-          label="About"
-          title="Who I Am"
-          subtitle="AI systems engineer with a product-minded approach to building intelligent infrastructure."
-        />
-
-        {/* ── Top grid: paragraphs + focus/education ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
+        <div className="section-panel rounded-[2rem] px-6 py-8 md:px-10 md:py-10">
           <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="show"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            className="lg:col-span-3 space-y-5"
+            transition={{ duration: 0.45 }}
+            className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_300px] xl:items-end"
           >
-            {profile.about.paragraphs.map((paragraph, i) => (
-              <motion.p
-                key={i}
+            <SectionHeading
+              label="About"
+              title="Who I Am"
+              subtitle="AI systems engineer with a product-minded approach to building intelligent infrastructure."
+            />
+
+            <div className="rounded-2xl border border-foreground/[0.08] bg-background/58 px-5 py-5 backdrop-blur-sm">
+              <p className="text-[10px] font-mono uppercase tracking-[0.24em] text-accent/80">
+                Working Style
+              </p>
+              <p className="mt-3 text-lg font-semibold leading-snug tracking-tight text-foreground/92">
+                Research depth with shipping discipline.
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                I care about systems that hold up outside the notebook: measurable, maintainable, and built for real users.
+              </p>
+            </div>
+          </motion.div>
+
+          <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(300px,0.9fr)]">
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: "-80px" }}
+              className="rounded-[1.75rem] border border-foreground/[0.08] bg-background/55 p-6 md:p-8"
+            >
+              <div className="flex items-center gap-2 text-accent">
+                <Sparkles size={15} />
+                <span className="text-[10px] font-mono uppercase tracking-[0.24em]">
+                  Narrative
+                </span>
+              </div>
+
+              <div className="mt-5 space-y-5">
+                <motion.p
+                  variants={itemVariants}
+                  className="max-w-2xl text-[1.05rem] leading-8 text-foreground/88"
+                >
+                  {profile.about.paragraphs[0]}
+                </motion.p>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  {profile.about.paragraphs.slice(1).map((paragraph, i) => (
+                    <motion.div
+                      key={i}
+                      variants={itemVariants}
+                      className="rounded-2xl border border-foreground/[0.06] bg-foreground/[0.02] p-4"
+                    >
+                      <p className="text-sm leading-7 text-muted-foreground">
+                        {paragraph}
+                      </p>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              <motion.div
                 variants={itemVariants}
-                className="text-muted-foreground leading-relaxed text-[15px]"
+                className="mt-6 rounded-2xl border border-accent/12 bg-accent/[0.05] p-4 md:p-5"
               >
-                {paragraph}
-              </motion.p>
-            ))}
-          </motion.div>
+                <p className="text-[10px] font-mono uppercase tracking-[0.24em] text-accent/80">
+                  Focus Areas
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2.5">
+                  {profile.about.focus.map((area) => (
+                    <motion.span
+                      key={area}
+                      className="inline-flex rounded-full border border-accent/12 bg-background/72 px-3 py-1.5 text-xs text-accent transition-all duration-200 hover:border-accent/28 hover:bg-accent/10"
+                      whileHover={{ scale: 1.06, y: -2 }}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      {area}
+                    </motion.span>
+                  ))}
+                </div>
+              </motion.div>
+            </motion.div>
 
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-80px" }}
-            className="lg:col-span-2 space-y-8"
-          >
-            <motion.div variants={itemVariants}>
-              <h3 className="text-sm font-mono text-accent tracking-wider uppercase mb-4">
-                Focus Areas
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {profile.about.focus.map((area) => (
-                  <motion.span
-                    key={area}
-                    className="text-xs px-3 py-1.5 rounded-full bg-accent/10 text-accent border border-accent/10 hover:bg-accent/20 hover:border-accent/30 hover:shadow-[0_0_12px_rgba(255,215,0,0.1)] transition-all duration-200 cursor-default inline-block"
-                    whileHover={{ scale: 1.1, y: -3 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {area}
-                  </motion.span>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="rounded-[1.75rem] border border-foreground/[0.08] bg-background/58 p-6 md:p-7"
+            >
+              <div className="flex items-center gap-2 text-accent">
+                <GraduationCap size={16} />
+                <span className="text-[10px] font-mono uppercase tracking-[0.24em]">
+                  Education
+                </span>
+              </div>
+              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                Formal training in computer science, with one track focused on advanced systems and the other grounding the engineering fundamentals.
+              </p>
+
+              <div className="mt-6 space-y-4">
+                {profile.education.map((edu, index) => (
+                  <EduCard key={edu.degree} edu={edu} index={index} />
                 ))}
               </div>
             </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <h3 className="text-sm font-mono text-accent tracking-wider uppercase mb-4">
-                Education
-              </h3>
-              <div className="space-y-4">
-                {profile.education.map((edu) => (
-                  <EduCard key={edu.degree} edu={edu} />
-                ))}
-              </div>
-            </motion.div>
-          </motion.div>
+          </div>
         </div>
-
       </div>
     </section>
   )
