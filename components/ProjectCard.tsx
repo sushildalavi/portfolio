@@ -46,7 +46,7 @@ export default function ProjectCard({
       transition={{ duration: 0.5, delay: index * 0.1 }}
     >
       <article
-        className={`group relative rounded-2xl bg-background/62 border hover:border-accent/30 hover:shadow-[0_0_40px_var(--accent-glow-val)] transition-all duration-500 overflow-hidden ${
+        className={`card-glow group relative rounded-2xl bg-background/62 border hover:border-accent/30 hover:shadow-[0_0_40px_var(--accent-glow-val)] transition-all duration-500 overflow-hidden ${
           isFeatured
             ? "p-6 md:p-7 border-accent/18 animate-border-glow"
             : "p-5 md:p-6 border-foreground/[0.08]"

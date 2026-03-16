@@ -2,59 +2,55 @@
 
 import { useEffect, useRef, useState } from "react"
 import { ArrowUpRight } from "lucide-react"
-import { AnimatePresence, motion, useMotionValue, useSpring } from "framer-motion"
+import { motion, useMotionValue, useSpring } from "framer-motion"
 
-type CursorMode = "default" | "interactive" | "card"
+type CursorState = {
+  active: boolean
+  emphatic: boolean
+}
 
-const INTERACTIVE_SELECTOR =
+const defaultState: CursorState = {
+  active: false,
+  emphatic: false,
+}
+
+const ACTION_SELECTOR =
   "a, button, input, textarea, select, summary, [role='button'], [data-hover='interactive'], [data-hover='link']"
 
-const CARD_SELECTOR = ".card-glow, [data-hover='card']"
+const SURFACE_SELECTOR = ".card-glow, [data-hover='card'], [data-hover='surface']"
 
 const shellSpring = {
   type: "spring",
-  damping: 28,
-  stiffness: 360,
-  mass: 0.42,
+  damping: 24,
+  stiffness: 420,
+  mass: 0.34,
 } as const
 
 const glyphSpring = {
-  type: "spring",
-  damping: 24,
-  stiffness: 420,
-  mass: 0.32,
+  damping: 22,
+  stiffness: 360,
+  mass: 0.28,
 } as const
 
-function resolveMode(target: EventTarget | null): CursorMode {
+function resolveState(target: EventTarget | null): CursorState {
   if (!(target instanceof HTMLElement)) {
-    return "default"
+    return defaultState
   }
 
-  if (target.closest(INTERACTIVE_SELECTOR)) {
-    return "interactive"
-  }
+  const isSurface = Boolean(target.closest(SURFACE_SELECTOR))
+  const isAction = Boolean(target.closest(ACTION_SELECTOR))
 
-  if (target.closest(CARD_SELECTOR)) {
-    return "card"
+  return {
+    active: isSurface || isAction,
+    emphatic: isAction && !isSurface,
   }
-
-  return "default"
 }
 
-function DefaultGlyph() {
+function CursorGlyph() {
   return (
-    <div className="relative h-3.5 w-3.5">
-      <span className="absolute inset-0 rotate-45 rounded-[3px] border border-current/80" />
-      <span className="absolute left-1/2 top-1/2 h-[1.5px] w-4 -translate-x-1/2 -translate-y-1/2 -rotate-45 rounded-full bg-current/70" />
-    </div>
-  )
-}
-
-function CardGlyph() {
-  return (
-    <div className="relative h-4 w-4">
-      <span className="absolute inset-0 rotate-45 rounded-[3px] border border-current/70" />
-      <span className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-current/70" />
+    <div className="relative flex h-3.5 w-3.5 items-center justify-center">
+      <ArrowUpRight size={12} strokeWidth={2.35} />
+      <span className="absolute bottom-[2px] left-[3px] h-px w-2 rounded-full bg-current/70" />
     </div>
   )
 }
@@ -62,18 +58,20 @@ function CardGlyph() {
 export default function CustomCursor() {
   const [enabled, setEnabled] = useState(false)
   const [visible, setVisible] = useState(false)
-  const [mode, setMode] = useState<CursorMode>("default")
+  const [state, setState] = useState(defaultState)
   const [pressed, setPressed] = useState(false)
 
   const x = useMotionValue(-200)
   const y = useMotionValue(-200)
 
-  const shellX = useSpring(x, { damping: 26, stiffness: 420, mass: 0.28 })
-  const shellY = useSpring(y, { damping: 26, stiffness: 420, mass: 0.28 })
-  const auraX = useSpring(x, { damping: 20, stiffness: 260, mass: 0.6 })
-  const auraY = useSpring(y, { damping: 20, stiffness: 260, mass: 0.6 })
+  const shellX = useSpring(x, { damping: 24, stiffness: 520, mass: 0.22 })
+  const shellY = useSpring(y, { damping: 24, stiffness: 520, mass: 0.22 })
+  const washX = useSpring(x, { damping: 20, stiffness: 300, mass: 0.5 })
+  const washY = useSpring(y, { damping: 20, stiffness: 300, mass: 0.5 })
+  const auraX = useSpring(x, { damping: 18, stiffness: 220, mass: 0.7 })
+  const auraY = useSpring(y, { damping: 18, stiffness: 220, mass: 0.7 })
 
-  const hoveredModeRef = useRef<CursorMode>("default")
+  const hoveredStateRef = useRef(defaultState)
   const pressedRef = useRef(false)
 
   useEffect(() => {
@@ -89,18 +87,18 @@ export default function CustomCursor() {
       setEnabled(true)
     })
 
-    const syncMode = (nextMode: CursorMode) => {
-      hoveredModeRef.current = nextMode
+    const syncState = (nextState: CursorState) => {
+      hoveredStateRef.current = nextState
       if (!pressedRef.current) {
-        setMode(nextMode)
+        setState(nextState)
       }
     }
 
     const hideCursor = () => {
       setVisible(false)
-      hoveredModeRef.current = "default"
+      hoveredStateRef.current = defaultState
       if (!pressedRef.current) {
-        setMode("default")
+        setState(defaultState)
       }
     }
 
@@ -119,7 +117,7 @@ export default function CustomCursor() {
         return
       }
 
-      syncMode(resolveMode(event.target))
+      syncState(resolveState(event.target))
     }
 
     const handleDown = (event: PointerEvent) => {
@@ -138,7 +136,7 @@ export default function CustomCursor() {
 
       pressedRef.current = false
       setPressed(false)
-      syncMode(resolveMode(event.target))
+      syncState(resolveState(event.target))
     }
 
     const handleWindowOut = (event: MouseEvent) => {
@@ -177,44 +175,59 @@ export default function CustomCursor() {
     return null
   }
 
-  const isInteractive = mode === "interactive"
-  const isCard = mode === "card"
+  const { active, emphatic } = state
 
-  const shellSize = pressed ? 24 : isInteractive ? 42 : isCard ? 54 : 18
-  const auraSize = pressed ? 58 : isInteractive ? 94 : isCard ? 116 : 52
-  const shellRotation = pressed ? 0 : isInteractive ? 0 : isCard ? 0 : 45
-  const shellRadius = pressed ? 999 : isInteractive ? 999 : isCard ? 20 : 7
+  const shellSize = pressed ? 22 : active ? (emphatic ? 38 : 34) : 18
+  const shellRotation = pressed ? -6 : active ? -8 : -12
+  const shellRadius = pressed ? 14 : active ? 18 : 10
   const shellColor = pressed ? "var(--bg-primary)" : "var(--accent-val)"
   const shellBorderColor = pressed
     ? "transparent"
-    : isInteractive
-      ? "color-mix(in srgb, var(--accent-val) 72%, transparent)"
-      : isCard
-        ? "color-mix(in srgb, var(--accent-val) 48%, transparent)"
-        : "color-mix(in srgb, var(--accent-val) 58%, transparent)"
+    : active
+      ? "color-mix(in srgb, var(--accent-val) 64%, transparent)"
+      : "color-mix(in srgb, var(--accent-val) 32%, transparent)"
   const shellBackground = pressed
     ? "var(--accent-val)"
-    : isInteractive
-      ? "color-mix(in srgb, var(--accent-val) 20%, transparent)"
-      : isCard
-        ? "color-mix(in srgb, var(--accent-val) 12%, transparent)"
-        : "color-mix(in srgb, var(--accent-val) 10%, transparent)"
+    : active
+      ? "color-mix(in srgb, var(--accent-val) 18%, transparent)"
+      : "color-mix(in srgb, var(--accent-val) 10%, transparent)"
   const shellShadow = pressed
-    ? "0 12px 30px color-mix(in srgb, var(--accent-val) 32%, transparent)"
-    : isInteractive
-      ? "0 10px 28px color-mix(in srgb, var(--accent-val) 18%, transparent)"
-      : isCard
-        ? "0 12px 36px color-mix(in srgb, var(--accent-val) 14%, transparent)"
-        : "0 8px 22px color-mix(in srgb, var(--accent-val) 12%, transparent)"
-  const auraBackground = isInteractive
-    ? "radial-gradient(circle, color-mix(in srgb, var(--accent-val) 22%, transparent) 0%, transparent 68%)"
-    : isCard
-      ? "radial-gradient(circle, color-mix(in srgb, var(--accent-val) 16%, transparent) 0%, transparent 70%)"
-      : "radial-gradient(circle, color-mix(in srgb, var(--accent-val) 14%, transparent) 0%, transparent 70%)"
+    ? "0 14px 32px color-mix(in srgb, var(--accent-val) 28%, transparent)"
+    : active
+      ? "0 16px 34px color-mix(in srgb, var(--accent-val) 18%, transparent)"
+      : "0 10px 24px color-mix(in srgb, var(--accent-val) 10%, transparent)"
+  const washWidth = pressed ? 52 : active ? (emphatic ? 92 : 76) : 34
+  const washHeight = pressed ? 52 : active ? 26 : 16
+  const auraSize = pressed ? 52 : active ? (emphatic ? 118 : 98) : 48
+  const auraBackground = active
+    ? "radial-gradient(circle, color-mix(in srgb, var(--accent-val) 18%, transparent) 0%, transparent 72%)"
+    : "radial-gradient(circle, color-mix(in srgb, var(--accent-val) 12%, transparent) 0%, transparent 72%)"
 
   return (
     <>
       <motion.div
+        data-cursor-wash
+        className="fixed left-0 top-0 z-[9996] pointer-events-none rounded-full blur-[18px]"
+        style={{
+          x: washX,
+          y: washY,
+          translateX: "-50%",
+          translateY: "-50%",
+          background:
+            "linear-gradient(90deg, color-mix(in srgb, var(--accent-val) 0%, transparent), color-mix(in srgb, var(--accent-val) 20%, transparent), color-mix(in srgb, var(--accent-val) 0%, transparent))",
+        }}
+        animate={{
+          width: washWidth,
+          height: washHeight,
+          opacity: visible ? (pressed ? 0.2 : active ? 0.28 : 0.12) : 0,
+          scale: visible ? (pressed ? 0.88 : 1) : 0.68,
+          rotate: shellRotation + 10,
+        }}
+        transition={shellSpring}
+      />
+
+      <motion.div
+        data-cursor-aura
         className="fixed top-0 left-0 pointer-events-none z-[9997] rounded-full blur-[18px]"
         style={{
           x: auraX,
@@ -226,13 +239,14 @@ export default function CustomCursor() {
         animate={{
           width: auraSize,
           height: auraSize,
-          opacity: visible ? (pressed ? 0.24 : isInteractive ? 0.3 : isCard ? 0.22 : 0.16) : 0,
+          opacity: visible ? (pressed ? 0.2 : active ? 0.24 : 0.14) : 0,
           scale: visible ? (pressed ? 0.82 : 1) : 0.7,
         }}
         transition={shellSpring}
       />
 
       <motion.div
+        data-cursor-shell
         className="fixed top-0 left-0 pointer-events-none z-[9999] flex items-center justify-center overflow-hidden border"
         style={{
           x: shellX,
@@ -250,7 +264,7 @@ export default function CustomCursor() {
           scale: visible ? (pressed ? 0.92 : 1) : 0.72,
           rotate: shellRotation,
           borderRadius: shellRadius,
-          borderWidth: pressed ? 0 : isInteractive ? 1.5 : 1,
+          borderWidth: pressed ? 0 : active ? 1.4 : 1,
           borderColor: shellBorderColor,
           backgroundColor: shellBackground,
         }}
@@ -259,56 +273,24 @@ export default function CustomCursor() {
         <motion.span
           className="pointer-events-none absolute inset-x-[22%] top-[18%] h-px rounded-full bg-white/35"
           animate={{
-            opacity: pressed ? 0 : isInteractive ? 0.4 : 0.26,
-            scaleX: isInteractive ? 1 : 0.8,
+            opacity: pressed ? 0 : active ? 0.5 : 0.26,
+            scaleX: active ? 1 : 0.72,
           }}
           transition={glyphSpring}
         />
 
-        <AnimatePresence mode="wait" initial={false}>
-          {pressed ? (
-            <motion.div
-              key="pressed"
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.5 }}
-              transition={glyphSpring}
-              className="h-1.5 w-1.5 rounded-full bg-current"
-            />
-          ) : isInteractive ? (
-            <motion.div
-              key="interactive"
-              initial={{ opacity: 0, scale: 0.65, rotate: -18 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              exit={{ opacity: 0, scale: 0.65, rotate: 18 }}
-              transition={glyphSpring}
-              className="flex items-center justify-center"
-            >
-              <ArrowUpRight size={14} strokeWidth={2.1} />
-            </motion.div>
-          ) : isCard ? (
-            <motion.div
-              key="card"
-              initial={{ opacity: 0, scale: 0.7 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.7 }}
-              transition={glyphSpring}
-            >
-              <CardGlyph />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="default"
-              initial={{ opacity: 0, scale: 0.7, rotate: -12 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              exit={{ opacity: 0, scale: 0.7, rotate: 12 }}
-              transition={glyphSpring}
-              className="-rotate-45"
-            >
-              <DefaultGlyph />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <motion.div
+          className="relative z-10 flex items-center justify-center"
+          animate={{
+            opacity: visible ? 1 : 0,
+            scale: pressed ? 0.86 : active ? 1 : 0.78,
+            x: active ? 0.5 : 0,
+            y: active ? -0.5 : 0,
+          }}
+          transition={glyphSpring}
+        >
+          <CursorGlyph />
+        </motion.div>
       </motion.div>
     </>
   )

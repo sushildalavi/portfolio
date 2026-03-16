@@ -87,7 +87,7 @@ function ExperienceCard({
       </div>
 
       <div
-        className="card-glow group relative p-6 md:p-8 rounded-2xl bg-background/65 border border-foreground/[0.08] hover:border-accent/25 hover:shadow-[0_0_40px_var(--accent-glow-val)] transition-all duration-500 overflow-hidden"
+        className="card-glow group relative p-6 md:p-8 rounded-2xl bg-background/65 border border-foreground/[0.08] hover:border-accent/25 hover:shadow-[0_0_34px_var(--accent-glow-val)] transition-all duration-500 overflow-hidden"
         onMouseMove={(e) => {
           const r = e.currentTarget.getBoundingClientRect()
           e.currentTarget.style.setProperty("--mouse-x", `${((e.clientX - r.left) / r.width) * 100}%`)
