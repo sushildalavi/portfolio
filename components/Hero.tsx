@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import { ArrowDown, ArrowUpRight, Github, Linkedin, Mail } from "lucide-react"
 import { profile } from "@/data/profile"
 
-const HeroScene = dynamic(() => import("./HeroScene"), {
+const HeroVisual = dynamic(() => import("./HeroVisual"), {
   ssr: false,
   loading: () => <div className="w-full h-full" />,
 })
@@ -173,7 +173,7 @@ export default function Hero() {
             <div className="absolute inset-10 rounded-full bg-accent/[0.06] blur-[90px]" />
             <div className="absolute inset-20 rounded-full bg-secondary/[0.08] blur-[110px]" />
           </div>
-          <HeroScene className="relative z-10 w-full h-full" />
+          <HeroVisual className="relative z-10 w-full h-full" />
         </motion.div>
       </div>
 
