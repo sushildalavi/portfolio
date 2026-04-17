@@ -15,30 +15,45 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Sushil Dalavi — AI Research Engineer",
+  title: "Sushil Dalavi — AI Engineer",
   description:
-    "AI Research Engineer building NLP, RAG, and LLM-powered systems for research, healthcare, and social impact. MS in Computer Science at USC.",
+    "AI Engineer at USC Annenberg Norman Lear Center. Architecting AWS data platforms, hybrid retrieval pipelines, and multi-modal ML systems at scale. MS in Computer Science at USC.",
   metadataBase: new URL(absoluteUrl("/")),
   alternates: {
     canonical: absoluteUrl("/"),
   },
   keywords: [
     "AI Engineer",
-    "Machine Learning",
-    "NLP",
+    "Machine Learning Engineer",
+    "LLM Systems",
     "RAG",
-    "LLM",
-    "Research Engineer",
+    "Hybrid Retrieval",
+    "MLOps",
+    "Distributed Workflows",
+    "AWS",
+    "SageMaker",
+    "Bedrock",
     "USC",
     "Portfolio",
   ],
   authors: [{ name: "Sushil Dalavi" }],
   openGraph: {
-    title: "Sushil Dalavi — AI Research Engineer",
+    title: "Sushil Dalavi — AI Engineer",
     description:
-      "Building intelligent systems for research, healthcare, and social impact.",
+      "Architecting AWS data platforms, hybrid retrieval pipelines, and multi-modal ML systems at scale.",
     url: absoluteUrl("/"),
     type: "website",
+    siteName: "Sushil Dalavi",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sushil Dalavi — AI Engineer",
+    description:
+      "Architecting AWS data platforms, hybrid retrieval pipelines, and multi-modal ML systems at scale.",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 }
 

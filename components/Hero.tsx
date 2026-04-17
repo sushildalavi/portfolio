@@ -54,7 +54,7 @@ const codeLines: CodeLine[] = [
   [
     { text: "  role", className: "text-muted-foreground" },
     { text: ": ", className: "text-foreground/40" },
-    { text: '"AI Research Engineer"', className: "text-accent" },
+    { text: '"AI Engineer"', className: "text-accent" },
     { text: ",", className: "text-foreground/40" },
   ],
   [
@@ -66,7 +66,7 @@ const codeLines: CodeLine[] = [
   [
     { text: "  education", className: "text-muted-foreground" },
     { text: ": ", className: "text-foreground/40" },
-    { text: '"MS CS @ USC"', className: "text-accent" },
+    { text: '"MS CS @ USC \'26"', className: "text-accent" },
     { text: ",", className: "text-foreground/40" },
   ],
   [
@@ -74,15 +74,15 @@ const codeLines: CodeLine[] = [
     { text: ": [", className: "text-foreground/40" },
   ],
   [
-    { text: '    "NLP & RAG"', className: "text-accent/80" },
+    { text: '    "RAG & Retrieval"', className: "text-accent/80" },
     { text: ",", className: "text-foreground/40" },
   ],
   [
-    { text: '    "LLM Systems"', className: "text-accent/80" },
+    { text: '    "LLM Inference"', className: "text-accent/80" },
     { text: ",", className: "text-foreground/40" },
   ],
   [
-    { text: '    "Healthcare AI"', className: "text-accent/80" },
+    { text: '    "Data Platforms"', className: "text-accent/80" },
     { text: ",", className: "text-foreground/40" },
   ],
   [{ text: "  ],", className: "text-foreground/40" }],
