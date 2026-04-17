@@ -185,6 +185,10 @@ function EduCard({
             <MapPin size={12} className="shrink-0" />
             <span>{edu.location}</span>
           </motion.div>
+
+          <p className="mt-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-muted/80">
+            {edu.period}
+          </p>
         </div>
       </div>
     </motion.div>
