@@ -13,6 +13,7 @@ import CustomCursor from "@/components/CustomCursor"
 import ScrollToTop from "@/components/ScrollToTop"
 import PageLoader from "@/components/PageLoader"
 import MeshBackground from "@/components/MeshBackground"
+import AuroraBackground from "@/components/AuroraBackground"
 
 export default function Home() {
   return (
@@ -21,6 +22,7 @@ export default function Home() {
       <CustomCursor />
       <ScrollToTop />
       <MeshBackground />
+      <AuroraBackground />
       <Sidebar />
       <div className="relative z-10 lg:ml-[268px]">
         <main>
