@@ -1,9 +1,9 @@
 export const profile = {
   name: "Sushil Dalavi",
-  role: "AI Research Engineer",
-  headline: "Building Intelligent Systems\nfor Research & Impact",
+  role: "AI Engineer",
+  headline: "Production AI Systems\nfor Retrieval, ML & Data",
   description:
-    "AI Research Engineer at USC Annenberg, crafting NLP, RAG, and LLM-powered systems at the intersection of research, healthcare, and social impact.",
+    "AI Engineer at USC Annenberg Norman Lear Center — architecting AWS data platforms, hybrid retrieval pipelines, and multi-modal ML systems at scale.",
   about: {
     paragraphs: [
       "I'm an AI Research Engineer at the USC Annenberg Norman Lear Center and an MS in Computer Science candidate at the University of Southern California. I design and build intelligent systems that bridge cutting-edge AI research with real-world deployment.",
