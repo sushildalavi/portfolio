@@ -62,10 +62,10 @@ export const profile = {
     spotify: "https://open.spotify.com/user/0q7aeehtv582g9ua2qwl2k62g",
   },
   stats: [
-    { value: "2+", label: "Years Research" },
-    { value: "10+", label: "Projects Built" },
-    { value: "3", label: "Publications & IP" },
-    { value: "100K+", label: "Users Impacted" },
+    { value: "1M+", label: "Records Processed" },
+    { value: "99.3%", label: "Alignment F1" },
+    { value: "21.8%", label: "MRR Lift" },
+    { value: "30%", label: "Latency Reduction" },
   ],
   interests: [
     { label: "Football", emoji: "⚽" },
