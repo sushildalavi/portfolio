@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import React, { useState } from "react"
 import dynamic from "next/dynamic"
 import Splite from "./Splite"
 
@@ -11,15 +11,22 @@ const HeroScene = dynamic(() => import("./HeroScene"), {
 
 /**
  * Hero's 3D visual. Primary renderer is Splite (Serafim's Spline
- * wrapper); on load failure we transparently fall back to HeroScene
- * (react-three-fiber icosahedron) so the slot never stays empty.
+ * wrapper) loading the interactive robot scene; if Splite throws
+ * during load/render we transparently fall back to HeroScene
+ * (react-three-fiber icosahedron).
+ *
+ * Swap the `scene` prop to any .splinecode URL exported from
+ * https://spline.design to change the hero visual without touching
+ * other files.
  */
 export default function HeroVisual({
   className = "",
   /**
-   * Default scene is a generic placeholder from Spline. Swap to any
-   * .splinecode URL exported from spline.design to change the hero
-   * visual without touching code elsewhere.
+   * Spline's "Interactive AI / Model Scene" demo. Swap to any
+   * .splinecode URL you export from https://spline.design to pin a
+   * different scene — e.g. the Robot-follows-cursor scene from
+   * Serafim's 21st.dev demo (requires publishing it yourself; the
+   * 21st.dev asset URL is not publicly fetchable across origins).
    */
   scene = "https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode",
 }: {
@@ -27,32 +34,8 @@ export default function HeroVisual({
   scene?: string
 }) {
   const [sceneFailed, setSceneFailed] = useState(false)
-  const [reachable, setReachable] = useState<boolean | null>(null)
 
-  // Pre-flight check — if the .splinecode URL isn't reachable within
-  // 2s, skip straight to the fallback. Avoids a stuck "Loading scene".
-  useEffect(() => {
-    let cancelled = false
-    const ctrl = new AbortController()
-    const timer = setTimeout(() => ctrl.abort(), 2200)
-
-    fetch(scene, { method: "HEAD", mode: "cors", signal: ctrl.signal })
-      .then((r) => {
-        if (!cancelled) setReachable(r.ok)
-      })
-      .catch(() => {
-        if (!cancelled) setReachable(false)
-      })
-      .finally(() => clearTimeout(timer))
-
-    return () => {
-      cancelled = true
-      ctrl.abort()
-      clearTimeout(timer)
-    }
-  }, [scene])
-
-  if (reachable === false || sceneFailed) {
+  if (sceneFailed) {
     return <HeroScene className={className} />
   }
 
@@ -65,8 +48,6 @@ export default function HeroVisual({
   )
 }
 
-/** Minimal class-based error boundary for Splite's lazy chunk. */
-import React from "react"
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode; onError: () => void },
   { hasError: boolean }
