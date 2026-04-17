@@ -20,22 +20,23 @@ export default function SectionHeading({
       viewport={{ once: true, margin: "-80px" }}
       className="mb-10"
     >
-      <motion.span
+      <motion.div
         variants={{
-          hidden: { opacity: 0, x: -20 },
+          hidden: { opacity: 0, x: -12 },
           show: { opacity: 1, x: 0, transition: { duration: 0.5 } },
         }}
-        className="inline-block text-accent text-sm font-mono tracking-widest uppercase"
+        className="flex items-center gap-3 text-accent text-[11px] font-mono tracking-[0.28em] uppercase"
       >
+        <span className="h-px w-8 bg-accent/60" />
         {label}
-      </motion.span>
+      </motion.div>
 
       <motion.h2
         variants={{
-          hidden: { opacity: 0, y: 20 },
-          show: { opacity: 1, y: 0, transition: { duration: 0.5, delay: 0.1 } },
+          hidden: { opacity: 0, y: 16 },
+          show: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.08 } },
         }}
-        className="text-3xl md:text-4xl lg:text-5xl font-bold mt-3 tracking-tight"
+        className="text-4xl md:text-5xl lg:text-[56px] font-bold mt-5 tracking-[-0.025em] leading-[1.02]"
       >
         {title}
       </motion.h2>
@@ -43,30 +44,18 @@ export default function SectionHeading({
       {subtitle && (
         <motion.p
           variants={{
-            hidden: { opacity: 0, y: 15 },
+            hidden: { opacity: 0, y: 12 },
             show: {
               opacity: 1,
               y: 0,
-              transition: { duration: 0.5, delay: 0.2 },
+              transition: { duration: 0.5, delay: 0.18 },
             },
           }}
-          className="text-muted-foreground mt-4 max-w-2xl text-lg"
+          className="text-muted-foreground mt-5 max-w-2xl text-[17px] leading-relaxed"
         >
           {subtitle}
         </motion.p>
       )}
-
-      <motion.div
-        variants={{
-          hidden: { width: 0, opacity: 0 },
-          show: {
-            width: 64,
-            opacity: 1,
-            transition: { duration: 0.8, delay: 0.3, ease: "easeOut" as const },
-          },
-        }}
-        className="h-px bg-gradient-to-r from-accent to-accent-light mt-6"
-      />
     </motion.div>
   )
 }

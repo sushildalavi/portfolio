@@ -1,351 +1,200 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowDown, Github, Linkedin, Mail } from "lucide-react"
+import { ArrowDown, ArrowUpRight, Github, Linkedin, Mail } from "lucide-react"
 import { profile } from "@/data/profile"
-import FloatingParticles from "./FloatingParticles"
 
 const stagger = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+    transition: { staggerChildren: 0.08, delayChildren: 0.15 },
   },
 }
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 22 },
+  hidden: { opacity: 0, y: 24 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.55, ease: "easeOut" as const },
+    transition: { duration: 0.6, ease: "easeOut" as const },
   },
 }
 
-const letterAnimation = {
-  hidden: { opacity: 0, y: 34, rotateX: -32 },
-  show: (index: number) => ({
-    opacity: 1,
-    y: 0,
-    rotateX: 0,
-    transition: {
-      duration: 0.42,
-      delay: 0.38 + index * 0.035,
-      ease: "easeOut" as const,
-    },
-  }),
-}
-
-type CodePart = { text: string; className: string }
-type CodeLine = CodePart[]
-
-const codeLines: CodeLine[] = [
-  [
-    { text: "const ", className: "text-secondary/90" },
-    { text: "engineer", className: "text-foreground/85" },
-    { text: " = {", className: "text-foreground/40" },
-  ],
-  [
-    { text: "  name", className: "text-muted-foreground" },
-    { text: ": ", className: "text-foreground/40" },
-    { text: '"Sushil Dalavi"', className: "text-accent" },
-    { text: ",", className: "text-foreground/40" },
-  ],
-  [
-    { text: "  role", className: "text-muted-foreground" },
-    { text: ": ", className: "text-foreground/40" },
-    { text: '"AI Engineer"', className: "text-accent" },
-    { text: ",", className: "text-foreground/40" },
-  ],
-  [
-    { text: "  based", className: "text-muted-foreground" },
-    { text: ": ", className: "text-foreground/40" },
-    { text: '"Los Angeles, CA"', className: "text-accent" },
-    { text: ",", className: "text-foreground/40" },
-  ],
-  [
-    { text: "  education", className: "text-muted-foreground" },
-    { text: ": ", className: "text-foreground/40" },
-    { text: '"MS CS @ USC \'26"', className: "text-accent" },
-    { text: ",", className: "text-foreground/40" },
-  ],
-  [
-    { text: "  focus", className: "text-muted-foreground" },
-    { text: ": [", className: "text-foreground/40" },
-  ],
-  [
-    { text: '    "RAG & Retrieval"', className: "text-accent/80" },
-    { text: ",", className: "text-foreground/40" },
-  ],
-  [
-    { text: '    "LLM Inference"', className: "text-accent/80" },
-    { text: ",", className: "text-foreground/40" },
-  ],
-  [
-    { text: '    "Data Platforms"', className: "text-accent/80" },
-    { text: ",", className: "text-foreground/40" },
-  ],
-  [{ text: "  ],", className: "text-foreground/40" }],
-  [
-    { text: "  status", className: "text-muted-foreground" },
-    { text: ": ", className: "text-foreground/40" },
-    { text: '"open to work ✓"', className: "text-accent" },
-    { text: ",", className: "text-foreground/40" },
-  ],
-  [{ text: "}", className: "text-foreground/40" }],
-]
-
-function CodeWindow() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 32, scale: 0.96 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" as const }}
-      className="relative w-full max-w-[360px] xl:max-w-[400px]"
-    >
-      {/* Ambient glow */}
-      <div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-accent/8 blur-3xl scale-110" />
-
-      <div className="relative rounded-2xl border border-foreground/10 bg-surface/90 backdrop-blur-2xl overflow-hidden shadow-[0_32px_80px_rgba(0,0,0,0.25)]">
-        {/* Window chrome */}
-        <div className="flex items-center gap-2 px-4 py-3 border-b border-foreground/[0.06] bg-foreground/[0.015]">
-          <div className="w-3 h-3 rounded-full bg-red-400/60" />
-          <div className="w-3 h-3 rounded-full bg-yellow-400/60" />
-          <div className="w-3 h-3 rounded-full bg-green-400/60" />
-          <span className="ml-3 text-[11px] font-mono text-muted tracking-widest select-none">
-            sushil.ts
-          </span>
-        </div>
-
-        {/* Code body */}
-        <div className="px-4 py-5 font-mono text-[12.5px] leading-[1.9]">
-          {codeLines.map((line, lineIndex) => (
-            <motion.div
-              key={lineIndex}
-              className="flex"
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{
-                delay: 0.9 + lineIndex * 0.07,
-                duration: 0.3,
-                ease: "easeOut",
-              }}
-            >
-              <span className="select-none w-5 text-right mr-4 text-muted/25 text-[11px] leading-[1.9] shrink-0">
-                {lineIndex + 1}
-              </span>
-              <span>
-                {line.map((part, partIndex) => (
-                  <span key={partIndex} className={part.className}>
-                    {part.text}
-                  </span>
-                ))}
-              </span>
-            </motion.div>
-          ))}
-
-          {/* Blinking cursor */}
-          <motion.div
-            className="flex"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.9 + codeLines.length * 0.07 + 0.3 }}
-          >
-            <span className="select-none w-5 text-right mr-4 text-muted/25 text-[11px] leading-[1.9] shrink-0">
-              {codeLines.length + 1}
-            </span>
-            <motion.span
-              className="inline-block w-[7px] h-[14px] mt-[5px] bg-accent/75 rounded-sm"
-              animate={{ opacity: [1, 0, 1] }}
-              transition={{ duration: 1.1, repeat: Infinity, ease: "linear" }}
-            />
-          </motion.div>
-        </div>
-      </div>
-    </motion.div>
-  )
-}
-
 export default function Hero() {
-  const firstName = profile.name.split(" ")[0]
-
   return (
     <section
       id="hero"
-      className="relative flex min-h-screen items-center overflow-hidden pt-20 pb-12 lg:h-[min(100svh,920px)] lg:min-h-[820px] lg:items-start lg:pt-20 lg:pb-20"
+      className="relative flex min-h-[100svh] items-center overflow-hidden px-6 py-24 lg:px-12"
     >
-      <FloatingParticles count={22} />
-      <div className="absolute inset-0 bg-grid-pattern opacity-30" />
-      <div className="pointer-events-none absolute -left-32 top-1/4 h-[32rem] w-[32rem] rounded-full bg-accent/6 blur-[160px]" />
-      <div className="pointer-events-none absolute -right-24 bottom-1/4 h-[26rem] w-[26rem] rounded-full bg-secondary/10 blur-[140px]" />
+      {/* Subtle grid overlay — no orbs, no noise */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.35]"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--accent-val) 22%, transparent) 1px, transparent 0)",
+          backgroundSize: "42px 42px",
+          maskImage:
+            "radial-gradient(ellipse 80% 60% at 50% 45%, #000 20%, transparent 70%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse 80% 60% at 50% 45%, #000 20%, transparent 70%)",
+        }}
+      />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-14 px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-16 lg:px-12 xl:grid-cols-[minmax(0,1fr)_400px] xl:gap-20">
-        {/* Left: text */}
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          animate="show"
-          className="max-w-xl space-y-6 lg:pt-6"
-        >
-          <motion.div variants={fadeUp}>
-            <span className="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/8 px-4 py-2 text-[11px] font-mono tracking-[0.26em] text-accent">
-              <motion.span
-                className="w-1.5 h-1.5 rounded-full bg-accent"
-                animate={{ opacity: [1, 0.4, 1] }}
-                transition={{ duration: 1.8, repeat: Infinity }}
-              />
-              {profile.role.toUpperCase()}
+      <motion.div
+        variants={stagger}
+        initial="hidden"
+        animate="show"
+        className="relative z-10 mx-auto w-full max-w-6xl"
+      >
+        {/* Status pill */}
+        <motion.div variants={fadeUp}>
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-foreground/[0.08] bg-background/60 backdrop-blur-xl px-4 py-1.5 text-[11px] font-mono tracking-[0.24em] uppercase">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-70" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
             </span>
-          </motion.div>
-
-          <div className="text-[clamp(2.7rem,5.5vw,5rem)] font-black leading-[0.9] tracking-[-0.05em]">
-            <motion.div variants={fadeUp} className="text-foreground/88 mb-1">
-              Hi, I&apos;m{" "}
-              <span className="inline-flex" style={{ perspective: 600 }}>
-                {firstName.split("").map((char, index) => (
-                  <motion.span
-                    key={index}
-                    custom={index}
-                    variants={letterAnimation}
-                    initial="hidden"
-                    animate="show"
-                    className="animate-gradient-text inline-block bg-gradient-to-r from-accent via-accent-light to-accent bg-clip-text text-transparent"
-                    style={{ display: "inline-block" }}
-                    whileHover={{ scale: 1.08, y: -4, rotate: index % 2 === 0 ? 4 : -4 }}
-                  >
-                    {char}
-                  </motion.span>
-                ))}
-              </span>
-              <span className="text-foreground/88">.</span>
-            </motion.div>
-
-            <motion.div variants={fadeUp} className="text-foreground/72 leading-[0.95]">
-              {profile.headline.split("\n").map((line, i) => (
-                <span key={i} className="block">
-                  {line}
-                </span>
-              ))}
-            </motion.div>
+            <span className="text-muted-foreground">Available</span>
+            <span className="h-3 w-px bg-foreground/10" />
+            <span className="text-accent/90">{profile.role}</span>
           </div>
+        </motion.div>
 
-          <motion.p
+        {/* Name / headline — big and confident */}
+        <div className="mt-10 max-w-5xl">
+          <motion.h1
             variants={fadeUp}
-            className="text-[1.05rem] leading-relaxed text-muted-foreground"
+            className="text-[clamp(2.8rem,8vw,7rem)] font-black leading-[0.92] tracking-[-0.04em] text-foreground/95"
           >
-            {profile.description}
-          </motion.p>
-
-          <motion.div variants={fadeUp} className="flex flex-wrap gap-4 pt-1">
-            <motion.button
-              onClick={() =>
-                document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })
-              }
-              className="group relative overflow-hidden rounded-full bg-accent px-7 py-3.5 font-semibold text-[#0a0e1a] transition-all duration-300 hover:bg-accent-hover hover:shadow-[0_18px_40px_var(--accent-glow-val)]"
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-            >
-              <span className="relative z-10">
-                View Projects
-                <span className="ml-1.5 inline-block transition-transform group-hover:translate-x-1.5">
-                  →
-                </span>
+            Sushil Dalavi.
+          </motion.h1>
+          <motion.h2
+            variants={fadeUp}
+            className="mt-4 text-[clamp(1.6rem,4.2vw,3.25rem)] font-semibold leading-[1.05] tracking-[-0.025em] text-foreground/60"
+          >
+            {profile.headline.split("\n").map((line, i) => (
+              <span
+                key={i}
+                className={`block ${i === 1 ? "text-accent" : ""}`}
+              >
+                {line}
               </span>
-              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-            </motion.button>
+            ))}
+          </motion.h2>
+        </div>
 
-            <motion.button
-              onClick={() =>
-                document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
-              }
-              className="rounded-full border border-foreground/10 bg-background/55 px-7 py-3.5 font-medium text-foreground/75 backdrop-blur-xl transition-all duration-300 hover:border-accent/35 hover:bg-accent/6 hover:text-accent"
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-            >
-              Get in Touch
-            </motion.button>
-          </motion.div>
+        {/* Description */}
+        <motion.p
+          variants={fadeUp}
+          className="mt-10 max-w-2xl text-[17px] leading-[1.65] text-muted-foreground"
+        >
+          {profile.description}
+        </motion.p>
 
-          <motion.div
-            variants={fadeUp}
-            className="flex flex-wrap items-center gap-4 text-sm"
+        {/* CTAs */}
+        <motion.div variants={fadeUp} className="mt-10 flex flex-wrap items-center gap-4">
+          <button
+            onClick={() =>
+              document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })
+            }
+            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-accent px-6 py-3 text-sm font-semibold text-[#0a0e1a] transition-all duration-300 hover:bg-accent-hover hover:shadow-[0_20px_44px_var(--accent-glow-val)]"
           >
-            <div className="flex gap-4">
+            <span className="relative z-10">View selected work</span>
+            <ArrowUpRight
+              size={15}
+              className="relative z-10 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
+            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+          </button>
+          <button
+            onClick={() =>
+              document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
+            }
+            className="inline-flex items-center gap-2 rounded-full border border-foreground/[0.12] bg-background/50 backdrop-blur-xl px-6 py-3 text-sm font-medium text-foreground/80 transition-all duration-300 hover:border-accent/40 hover:bg-accent/5 hover:text-accent"
+          >
+            Get in touch
+          </button>
+          <a
+            href={profile.links.resume}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-1.5 px-2 py-3 text-sm font-medium text-muted-foreground hover:text-accent transition-colors"
+          >
+            <span>Résumé</span>
+            <ArrowUpRight
+              size={13}
+              className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all"
+            />
+          </a>
+        </motion.div>
+
+        {/* Meta row */}
+        <motion.div
+          variants={fadeUp}
+          className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6 pt-8 border-t border-foreground/[0.06]"
+        >
+          {profile.stats.map((stat) => (
+            <div key={stat.label}>
+              <div className="text-[clamp(1.4rem,2.2vw,2rem)] font-bold text-foreground/90 tracking-tight">
+                {stat.value}
+              </div>
+              <div className="mt-1 text-[10px] font-mono uppercase tracking-[0.22em] text-muted">
+                {stat.label}
+              </div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Bottom bar: socials + location */}
+        <motion.div
+          variants={fadeUp}
+          className="mt-14 flex flex-wrap items-center justify-between gap-4"
+        >
+          <div className="flex items-center gap-5 text-sm">
+            <span className="text-[11px] font-mono uppercase tracking-[0.24em] text-muted">
+              Connect
+            </span>
+            <div className="flex items-center gap-4">
               {[
                 { href: profile.links.github, icon: Github, label: "GitHub" },
                 { href: profile.links.linkedin, icon: Linkedin, label: "LinkedIn" },
                 { href: `mailto:${profile.links.email}`, icon: Mail, label: "Email" },
               ].map(({ href, icon: Icon, label }) => (
-                <motion.a
+                <a
                   key={label}
                   href={href}
                   target={label !== "Email" ? "_blank" : undefined}
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="text-foreground/35 transition-colors duration-200 hover:text-accent"
-                  whileHover={{ scale: 1.25, y: -3 }}
-                  whileTap={{ scale: 0.9 }}
+                  className="text-foreground/40 transition-all duration-200 hover:text-accent hover:-translate-y-0.5"
                 >
-                  <Icon size={20} />
-                </motion.a>
+                  <Icon size={18} />
+                </a>
               ))}
             </div>
+          </div>
 
-            <div className="h-4 w-px bg-foreground/10" />
-
-            <span className="text-xs font-mono text-muted">
-              Los Angeles · Open to work
-            </span>
-          </motion.div>
-
-          {/* Stats row */}
-          <motion.div
-            variants={fadeUp}
-            className="flex flex-wrap gap-6 pt-2 border-t border-foreground/[0.06]"
-          >
-            {profile.stats.map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                className="flex flex-col"
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.1 + i * 0.1, duration: 0.45, ease: "easeOut" }}
-              >
-                <span
-                  className="text-xl font-black text-accent leading-none"
-                  style={{ textShadow: "0 0 18px var(--accent-glow-val)" }}
-                >
-                  {stat.value}
-                </span>
-                <span className="text-[11px] text-muted font-mono mt-0.5 tracking-wide">
-                  {stat.label}
-                </span>
-              </motion.div>
-            ))}
-          </motion.div>
+          <div className="flex items-center gap-4 text-[11px] font-mono uppercase tracking-[0.22em] text-muted">
+            <span>Los Angeles, CA</span>
+            <span className="h-3 w-px bg-foreground/10" />
+            <span>USC &apos;26</span>
+          </div>
         </motion.div>
+      </motion.div>
 
-        {/* Right: code window (desktop only) */}
-        <div className="hidden lg:flex justify-end">
-          <CodeWindow />
-        </div>
-      </div>
-
+      {/* Scroll cue */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2.2, duration: 0.8 }}
+        transition={{ delay: 1.8, duration: 0.6 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
         <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{
-            repeat: Infinity,
-            duration: 1.8,
-            ease: "easeInOut" as const,
-          }}
+          animate={{ y: [0, 8, 0] }}
+          transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
         >
-          <ArrowDown className="text-foreground/20" size={20} />
+          <ArrowDown className="text-foreground/20" size={18} />
         </motion.div>
       </motion.div>
     </section>

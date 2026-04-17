@@ -8,64 +8,49 @@ import {
   useTransform,
   useReducedMotion,
 } from "framer-motion"
-import { ExternalLink, Github, ChevronRight } from "lucide-react"
+import { ArrowUpRight, Github } from "lucide-react"
 import type { Project } from "@/data/projects"
 import { getTechIcon } from "@/lib/techIcons"
 import CountUp from "./CountUp"
 
+type Variant = "hero" | "featured" | "compact"
+
 function TechTag({ tech }: { tech: string }) {
   const entry = getTechIcon(tech)
-
   return (
-    <motion.span
-      className="inline-flex items-center gap-1.5 text-[11px] px-2 py-1 rounded-md bg-foreground/[0.04] text-muted-foreground border border-foreground/[0.04] hover:border-accent/25 hover:text-accent hover:bg-accent/5 transition-all duration-200 cursor-default"
-      whileHover={{ scale: 1.1, y: -2 }}
-    >
+    <span className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-md bg-foreground/[0.04] text-muted-foreground border border-foreground/[0.06] group-hover:border-foreground/[0.12] transition-colors duration-200">
       {entry && (
         <entry.icon
-          size={12}
+          size={11}
           style={{ color: entry.color }}
           className="shrink-0"
         />
       )}
       {tech}
-    </motion.span>
+    </span>
   )
 }
 
 export default function ProjectCard({
   project,
   index,
-  inRail = false,
+  variant = "featured",
 }: {
   project: Project
   index: number
-  /** Rendered inside a horizontally-translated rail — skip viewport-trigger animations. */
-  inRail?: boolean
+  variant?: Variant
 }) {
-  const isFeatured = project.featured
   const cardRef = useRef<HTMLElement>(null)
   const reduced = useReducedMotion()
 
-  // Raw mouse position (0..1) inside card
   const mx = useMotionValue(0.5)
   const my = useMotionValue(0.5)
-
-  // Smooth springs for 3D tilt + magnetic translate
-  const spring = { stiffness: 220, damping: 22, mass: 0.6 }
+  const spring = { stiffness: 240, damping: 26, mass: 0.6 }
   const smx = useSpring(mx, spring)
   const smy = useSpring(my, spring)
 
-  // Tilt rotations (centered — subtract 0.5)
-  const rotateY = useTransform(smx, [0, 1], [-8, 8])
-  const rotateX = useTransform(smy, [0, 1], [8, -8])
-  // Magnetic translate — subtle pull toward cursor
-  const translateX = useTransform(smx, [0, 1], [-6, 6])
-  const translateY = useTransform(smy, [0, 1], [-6, 6])
-
-  // Parallax for inner elements (small opposite offset)
-  const innerX = useTransform(smx, [0, 1], [4, -4])
-  const innerY = useTransform(smy, [0, 1], [4, -4])
+  const rotY = useTransform(smx, [0, 1], [-3, 3])
+  const rotX = useTransform(smy, [0, 1], [3, -3])
 
   const handleMove = (e: React.MouseEvent<HTMLElement>) => {
     const el = cardRef.current
@@ -84,191 +69,219 @@ export default function ProjectCard({
     my.set(0.5)
   }
 
-  const entryAnim = inRail
-    ? { initial: { opacity: 1, y: 0 }, animate: { opacity: 1, y: 0 } }
-    : {
-        initial: { opacity: 0, y: 30 },
-        whileInView: { opacity: 1, y: 0 },
-        viewport: { once: true, margin: "-60px" },
-      }
+  const isHero = variant === "hero"
+  const isCompact = variant === "compact"
+
+  const pad = isHero ? "p-8 md:p-12" : isCompact ? "p-6" : "p-7 md:p-8"
 
   return (
     <motion.div
-      {...entryAnim}
-      transition={{ duration: 0.5, delay: inRail ? 0 : index * 0.08 }}
-      style={{
-        perspective: 1200,
-        transformStyle: "preserve-3d",
-      }}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6, delay: Math.min(index * 0.08, 0.4) }}
+      style={{ perspective: 1400 }}
     >
       <motion.article
         ref={cardRef}
-        className={`card-glow card-magnetic group relative rounded-2xl bg-background/62 border hover:border-accent/35 hover:shadow-[0_28px_80px_var(--accent-glow-val)] transition-colors duration-500 overflow-hidden ${
-          isFeatured
-            ? "p-6 md:p-8 border-accent/20 animate-border-glow"
-            : "p-5 md:p-6 border-foreground/[0.08]"
-        }`}
+        className={`card-magnetic group relative overflow-hidden rounded-3xl border border-foreground/[0.08] bg-background/60 backdrop-blur-xl transition-colors duration-500 hover:border-accent/30 ${pad}`}
         onMouseMove={reduced ? undefined : handleMove}
         onMouseLeave={reduced ? undefined : handleLeave}
         style={
           reduced
             ? undefined
             : {
-                rotateX,
-                rotateY,
-                x: translateX,
-                y: translateY,
+                rotateX: rotX,
+                rotateY: rotY,
                 transformStyle: "preserve-3d",
               }
         }
-        whileHover={reduced ? undefined : { scale: 1.015 }}
-        transition={{ type: "spring", stiffness: 260, damping: 24 }}
       >
-        {/* Strong cursor spotlight */}
-        <div className="card-spotlight card-spotlight-strong" />
-        {/* Cursor-trail border glow */}
+        {/* Cursor-trail gradient wash */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          style={{
+            background:
+              "radial-gradient(520px circle at var(--mouse-x,50%) var(--mouse-y,50%), color-mix(in srgb, var(--accent-val) 16%, transparent), transparent 55%)",
+          }}
+        />
+        {/* Border glow ring */}
         <div className="card-border-glow" aria-hidden />
-        <div className="absolute inset-0 bg-gradient-to-br from-accent/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-        <motion.div
-          className="relative z-10"
-          style={
-            reduced
-              ? undefined
-              : {
-                  x: innerX,
-                  y: innerY,
-                  transformStyle: "preserve-3d",
-                }
-          }
-        >
-          <div className="flex flex-wrap items-center gap-2 mb-4">
-            {project.categories.map((cat) => (
-              <motion.span
-                key={cat}
-                className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded-full bg-accent/10 text-accent/80 hover:bg-accent/20 hover:text-accent transition-all duration-200 cursor-default"
-                whileHover={{ scale: 1.12, y: -2 }}
-                style={{ transform: "translateZ(20px)" }}
-              >
-                {cat}
-              </motion.span>
-            ))}
-          </div>
-
-          <h3
-            className={`font-bold tracking-tight group-hover:text-accent transition-colors duration-300 ${
-              isFeatured ? "text-xl md:text-2xl" : "text-lg"
-            }`}
-            style={{ transform: "translateZ(30px)" }}
-          >
-            {project.title}
-          </h3>
-          <p
-            className="text-accent/70 text-sm mt-1 font-medium"
-            style={{ transform: "translateZ(20px)" }}
-          >
-            {project.tagline}
-          </p>
-
-          <p
-            className={`text-muted-foreground leading-relaxed mt-4 ${
-              isFeatured ? "text-[15px]" : "text-sm"
-            }`}
-          >
-            {project.description}
-          </p>
-
-          {isFeatured && project.metrics.length > 0 && (
-            <div className="grid grid-cols-1 gap-3 mt-6 sm:grid-cols-3">
-              {project.metrics.map((metric) => (
-                <motion.div
-                  key={metric.label}
-                  className="px-4 py-3 rounded-xl bg-accent/[0.08] border border-accent/12 hover:border-accent/28 transition-all duration-200"
-                  whileHover={{ scale: 1.06, y: -2 }}
-                  style={{ transform: "translateZ(24px)" }}
+        <div className={`relative z-10 ${isHero ? "grid lg:grid-cols-[1.3fr_1fr] gap-10" : ""}`}>
+          {/* Primary content column */}
+          <div>
+            <div className="flex items-center gap-2 mb-5">
+              <span className="text-[10px] font-mono uppercase tracking-[0.24em] text-accent/80">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span className="h-px w-6 bg-accent/40" />
+              {project.categories.slice(0, 2).map((cat) => (
+                <span
+                  key={cat}
+                  className="text-[10px] font-mono uppercase tracking-[0.18em] text-muted-foreground"
                 >
-                  <CountUp value={metric.value} className="text-lg font-bold text-accent" />
-                  <p className="text-[11px] text-muted mt-0.5">{metric.label}</p>
-                </motion.div>
+                  {cat}
+                </span>
               ))}
             </div>
-          )}
 
-          {isFeatured && (
-            <ul className="mt-6 space-y-2">
-              {project.highlights.slice(0, 3).map((h, i) => (
-                <motion.li
-                  key={i}
-                  className="flex items-start gap-2 text-sm"
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3 + i * 0.08 }}
-                >
-                  <ChevronRight
-                    size={14}
-                    className="text-accent/40 mt-0.5 shrink-0"
-                  />
-                  <span className="text-muted-foreground">{h}</span>
-                </motion.li>
-              ))}
-            </ul>
-          )}
+            <h3
+              className={`font-bold tracking-[-0.02em] text-foreground/95 group-hover:text-accent transition-colors duration-500 ${
+                isHero
+                  ? "text-4xl md:text-5xl lg:text-6xl leading-[0.95]"
+                  : isCompact
+                    ? "text-xl"
+                    : "text-2xl md:text-3xl leading-[1.05]"
+              }`}
+            >
+              {project.title}
+            </h3>
 
-          <div className="flex flex-wrap items-center gap-1.5 mt-6">
-            {project.technologies
-              .slice(0, isFeatured ? 6 : 4)
-              .map((tech) => (
-                <TechTag key={tech} tech={tech} />
-              ))}
-            {project.technologies.length > (isFeatured ? 6 : 4) && (
-              <span className="text-[11px] text-muted">
-                +{project.technologies.length - (isFeatured ? 6 : 4)}
-              </span>
+            <p
+              className={`text-accent/80 font-medium mt-3 ${
+                isHero ? "text-lg md:text-xl" : "text-sm"
+              }`}
+            >
+              {project.tagline}
+            </p>
+
+            <p
+              className={`text-muted-foreground leading-relaxed mt-5 ${
+                isHero ? "text-[15px] md:text-[16px] max-w-[55ch]" : "text-sm max-w-[58ch]"
+              }`}
+            >
+              {project.description}
+            </p>
+
+            {!isCompact && (
+              <ul className="mt-6 space-y-2.5">
+                {project.highlights.slice(0, isHero ? 4 : 2).map((h, i) => (
+                  <motion.li
+                    key={i}
+                    initial={{ opacity: 0, x: -8 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.15 + i * 0.06 }}
+                    className="flex items-start gap-3 text-sm text-muted-foreground"
+                  >
+                    <span className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-accent/60" />
+                    <span className="leading-relaxed">{h}</span>
+                  </motion.li>
+                ))}
+              </ul>
+            )}
+
+            <div className="flex flex-wrap items-center gap-1.5 mt-7">
+              {project.technologies
+                .slice(0, isHero ? 8 : isCompact ? 4 : 6)
+                .map((tech) => (
+                  <TechTag key={tech} tech={tech} />
+                ))}
+              {project.technologies.length > (isHero ? 8 : isCompact ? 4 : 6) && (
+                <span className="text-[11px] text-muted font-mono">
+                  +{project.technologies.length - (isHero ? 8 : isCompact ? 4 : 6)}
+                </span>
+              )}
+            </div>
+
+            {(project.links.github || project.links.live) && (
+              <div className="flex items-center gap-5 mt-8 pt-6 border-t border-foreground/[0.06]">
+                {project.links.github && (
+                  <a
+                    href={project.links.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-accent transition-colors group/link"
+                  >
+                    <Github size={15} />
+                    <span>Source</span>
+                    <ArrowUpRight
+                      size={13}
+                      className="opacity-0 -translate-x-1 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all"
+                    />
+                  </a>
+                )}
+                {project.links.live && (
+                  <a
+                    href={project.links.live}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-accent transition-colors group/link"
+                  >
+                    <span>Live</span>
+                    <ArrowUpRight
+                      size={13}
+                      className="opacity-0 -translate-x-1 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all"
+                    />
+                  </a>
+                )}
+                {project.links.paper && (
+                  <a
+                    href={project.links.paper}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-accent transition-colors group/link"
+                  >
+                    <span>Paper</span>
+                    <ArrowUpRight
+                      size={13}
+                      className="opacity-0 -translate-x-1 group-hover/link:opacity-100 group-hover/link:translate-x-0 transition-all"
+                    />
+                  </a>
+                )}
+              </div>
             )}
           </div>
 
-          {(project.links.github || project.links.live) && (
-            <div className="flex gap-3 mt-6 pt-4 border-t border-foreground/[0.04]">
-              {project.links.github && (
-                <motion.a
-                  href={project.links.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-accent transition-colors"
-                  whileHover={{ x: 3 }}
-                >
-                  <Github size={14} />
-                  Source
-                </motion.a>
-              )}
-              {project.links.live && (
-                <motion.a
-                  href={project.links.live}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-accent transition-colors"
-                  whileHover={{ x: 3 }}
-                >
-                  <ExternalLink size={14} />
-                  Live Demo
-                </motion.a>
-              )}
-              {project.links.paper && (
-                <motion.a
-                  href={project.links.paper}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-accent transition-colors"
-                  whileHover={{ x: 3 }}
-                >
-                  <ExternalLink size={14} />
-                  Paper
-                </motion.a>
-              )}
+          {/* Metrics column — hero variant only */}
+          {isHero && project.metrics.length > 0 && (
+            <div className="relative">
+              <div className="sticky top-8 space-y-4">
+                <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-muted">
+                  Shipped Metrics
+                </p>
+                <div className="grid gap-3">
+                  {project.metrics.map((metric, i) => (
+                    <motion.div
+                      key={metric.label}
+                      initial={{ opacity: 0, y: 12 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.25 + i * 0.08 }}
+                      className="rounded-2xl border border-accent/15 bg-accent/[0.04] p-5"
+                    >
+                      <CountUp
+                        value={metric.value}
+                        className="text-3xl md:text-4xl font-bold text-accent tracking-tight"
+                      />
+                      <p className="text-xs text-muted mt-1">{metric.label}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
-        </motion.div>
+
+          {/* Featured (non-hero) metrics — inline strip */}
+          {!isHero && !isCompact && project.metrics.length > 0 && (
+            <div className="mt-6 grid grid-cols-3 gap-2">
+              {project.metrics.map((metric) => (
+                <div
+                  key={metric.label}
+                  className="rounded-xl border border-foreground/[0.06] bg-foreground/[0.02] px-3 py-2.5"
+                >
+                  <CountUp
+                    value={metric.value}
+                    className="text-sm font-bold text-accent"
+                  />
+                  <p className="text-[10px] text-muted mt-0.5 truncate">{metric.label}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </motion.article>
     </motion.div>
   )

@@ -84,40 +84,37 @@ export default function AuroraBackground() {
         vec2 aspect = vec2(u_resolution.x / u_resolution.y, 1.0);
         vec2 p = (uv - 0.5) * aspect;
 
-        float t = u_time * 0.06;
+        float t = u_time * 0.045;
 
-        // Aurora ribbons — three overlapping warped fields
-        float n1 = fbm(p * 1.4 + vec2(t, t * 0.5));
-        float n2 = fbm(p * 2.2 + vec2(-t * 0.7, t));
-        float n3 = fbm(p * 0.8 + vec2(t * 0.3, -t * 0.4));
+        // Two soft layered noise fields — very restrained
+        float n1 = fbm(p * 1.1 + vec2(t, t * 0.4));
+        float n2 = fbm(p * 1.8 + vec2(-t * 0.55, t * 0.7));
 
-        float aurora = smoothstep(0.05, 0.75, n1 * 0.55 + n2 * 0.35 + n3 * 0.25);
+        float aurora = smoothstep(0.18, 0.82, n1 * 0.6 + n2 * 0.35);
 
-        // Color blend: accent × secondary, modulated by vertical falloff
-        float vFall = smoothstep(0.0, 0.9, uv.y);
-        vec3 col = mix(u_accent, u_secondary, clamp(n2 * 0.6 + 0.4, 0.0, 1.0));
-        col *= aurora * vFall;
+        float vFall = smoothstep(0.0, 0.95, uv.y);
+        vec3 col = mix(u_accent * 0.9, u_secondary * 0.85, clamp(n2 * 0.55 + 0.45, 0.0, 1.0));
+        col *= aurora * vFall * 0.55;
 
-        // Cursor spotlight
+        // Cursor spotlight — small, premium, responsive
         vec2 mouseUv = u_mouse;
         vec2 mp = (mouseUv - 0.5) * aspect;
         float dist = length(p - mp);
-        float spot = smoothstep(0.55, 0.0, dist);
-        col += u_accent * spot * 0.18;
+        float spot = smoothstep(0.45, 0.0, dist);
+        col += u_accent * spot * 0.12;
 
-        // Dot grid (subtle, scales with spotlight intensity)
-        vec2 gridUv = uv * u_resolution / 36.0;
+        // Dot grid — only reveals near cursor, invisible elsewhere
+        vec2 gridUv = uv * u_resolution / 40.0;
         vec2 gv = fract(gridUv) - 0.5;
-        float dot = smoothstep(0.08, 0.04, length(gv));
-        float gridIntensity = mix(0.025, 0.14, spot);
+        float dot = smoothstep(0.07, 0.04, length(gv));
+        float gridIntensity = spot * 0.22;
         col += u_accent * dot * gridIntensity;
 
-        // Vignette
-        float vig = smoothstep(1.2, 0.35, length((uv - 0.5) * aspect));
-        col *= mix(0.85, 1.05, vig);
+        // Vignette to pull focus center
+        float vig = smoothstep(1.25, 0.35, length((uv - 0.5) * aspect));
+        col *= mix(0.78, 1.02, vig);
 
-        // Output with alpha so CSS background bleeds through
-        float alpha = mix(0.55, 0.95, u_isDark);
+        float alpha = mix(0.42, 0.82, u_isDark);
         gl_FragColor = vec4(col, alpha);
       }
     `
