@@ -9,13 +9,13 @@ import { useTheme } from "@/components/ThemeProvider"
 import { asset } from "@/lib/assetPath"
 
 const navLinks = [
-  { label: "Home", href: "#hero" },
-  { label: "About", href: "#about" },
-  { label: "Projects", href: "#projects" },
-  { label: "Experience", href: "#experience" },
-  { label: "Skills", href: "#skills" },
-  { label: "Publications", href: "#publications" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "#hero", num: "01" },
+  { label: "About", href: "#about", num: "02" },
+  { label: "Work", href: "#projects", num: "03" },
+  { label: "Experience", href: "#experience", num: "04" },
+  { label: "Toolchain", href: "#skills", num: "05" },
+  { label: "Research", href: "#publications", num: "06" },
+  { label: "Contact", href: "#contact", num: "07" },
 ]
 
 const socialLinks = [
@@ -64,21 +64,25 @@ function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
         transition={{ duration: 0.5 }}
         className="mb-8"
       >
-        <div className="w-14 h-14 rounded-2xl border-2 border-accent/40 bg-accent/8 flex items-center justify-center mb-4 shadow-[0_0_20px_var(--accent-glow-val)]">
-          <span className="text-xl font-black text-accent font-mono tracking-tighter">SD</span>
+        <div className="flex items-center gap-3">
+          <div className="h-11 w-11 rounded-xl border border-accent/30 bg-accent/[0.06] flex items-center justify-center">
+            <span className="text-sm font-black text-accent font-mono tracking-tight">SD</span>
+          </div>
+          <div className="min-w-0">
+            <h1 className="text-[13px] font-bold tracking-tight text-foreground truncate">
+              {profile.name}
+            </h1>
+            <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{profile.role}</p>
+          </div>
         </div>
 
-        <h1 className="text-sm font-bold tracking-tight text-foreground">{profile.name}</h1>
-        <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{profile.role}</p>
-
-        <motion.span
-          className="inline-flex items-center gap-1.5 mt-3 px-2.5 py-1 rounded-full text-[10px] font-mono bg-accent/8 text-accent border border-accent/20"
-          animate={{ opacity: [1, 0.7, 1] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-          Open to work
-        </motion.span>
+        <div className="mt-4 inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-[10px] font-mono tracking-[0.2em] uppercase border border-emerald-400/20 bg-emerald-400/[0.05] text-emerald-400/90">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-70" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+          </span>
+          Available
+        </div>
       </motion.div>
 
       <div className="h-px bg-foreground/[0.06] mb-6" />
@@ -98,19 +102,27 @@ function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
                 <button
                   onClick={() => scrollTo(link.href)}
                   className={cn(
-                    "w-full text-left text-sm px-3 py-2 rounded-lg transition-all duration-200 flex items-center gap-3 group",
+                    "w-full text-left px-3 py-2 rounded-lg transition-colors duration-200 flex items-center gap-3 group",
                     isActive
-                      ? "text-accent bg-accent/8 border border-accent/15"
-                      : "text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04] border border-transparent"
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground/85"
                   )}
                 >
                   <span
                     className={cn(
-                      "w-0.5 h-4 rounded-full transition-all duration-300 shrink-0",
-                      isActive ? "bg-accent" : "bg-foreground/10 group-hover:bg-foreground/25"
+                      "font-mono text-[10px] tracking-[0.2em] transition-colors duration-200",
+                      isActive ? "text-accent" : "text-muted/60 group-hover:text-muted",
+                    )}
+                  >
+                    {link.num}
+                  </span>
+                  <span
+                    className={cn(
+                      "h-px transition-all duration-300",
+                      isActive ? "w-6 bg-accent" : "w-2 bg-foreground/15 group-hover:w-4 group-hover:bg-foreground/30",
                     )}
                   />
-                  {link.label}
+                  <span className={cn("text-[13px]", isActive && "font-semibold")}>{link.label}</span>
                 </button>
               </motion.li>
             )
