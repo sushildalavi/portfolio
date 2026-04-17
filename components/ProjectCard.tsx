@@ -1,10 +1,15 @@
 "use client"
 
-import { useState } from "react"
-import { motion } from "framer-motion"
+import { useRef } from "react"
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion"
 import { ExternalLink, Github, ChevronRight } from "lucide-react"
 import type { Project } from "@/data/projects"
-import { getTiltTransform } from "@/lib/tilt"
 import { getTechIcon } from "@/lib/techIcons"
 import CountUp from "./CountUp"
 
@@ -36,40 +41,105 @@ export default function ProjectCard({
   index: number
 }) {
   const isFeatured = project.featured
-  const [tilt, setTilt] = useState("")
+  const cardRef = useRef<HTMLElement>(null)
+  const reduced = useReducedMotion()
+
+  // Raw mouse position (0..1) inside card
+  const mx = useMotionValue(0.5)
+  const my = useMotionValue(0.5)
+
+  // Smooth springs for 3D tilt + magnetic translate
+  const spring = { stiffness: 220, damping: 22, mass: 0.6 }
+  const smx = useSpring(mx, spring)
+  const smy = useSpring(my, spring)
+
+  // Tilt rotations (centered — subtract 0.5)
+  const rotateY = useTransform(smx, [0, 1], [-8, 8])
+  const rotateX = useTransform(smy, [0, 1], [8, -8])
+  // Magnetic translate — subtle pull toward cursor
+  const translateX = useTransform(smx, [0, 1], [-6, 6])
+  const translateY = useTransform(smy, [0, 1], [-6, 6])
+
+  // Parallax for inner elements (small opposite offset)
+  const innerX = useTransform(smx, [0, 1], [4, -4])
+  const innerY = useTransform(smy, [0, 1], [4, -4])
+
+  const handleMove = (e: React.MouseEvent<HTMLElement>) => {
+    const el = cardRef.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    const nx = (e.clientX - r.left) / r.width
+    const ny = (e.clientY - r.top) / r.height
+    mx.set(nx)
+    my.set(ny)
+    el.style.setProperty("--mouse-x", `${nx * 100}%`)
+    el.style.setProperty("--mouse-y", `${ny * 100}%`)
+  }
+
+  const handleLeave = () => {
+    mx.set(0.5)
+    my.set(0.5)
+  }
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      transition={{ duration: 0.5, delay: index * 0.08 }}
+      style={{
+        perspective: 1200,
+        transformStyle: "preserve-3d",
+      }}
     >
-      <article
-        className={`card-glow group relative rounded-2xl bg-background/62 border hover:border-accent/30 hover:shadow-[0_0_40px_var(--accent-glow-val)] transition-all duration-500 overflow-hidden ${
+      <motion.article
+        ref={cardRef}
+        className={`card-glow card-magnetic group relative rounded-2xl bg-background/62 border hover:border-accent/35 hover:shadow-[0_28px_80px_var(--accent-glow-val)] transition-colors duration-500 overflow-hidden ${
           isFeatured
-            ? "p-6 md:p-7 border-accent/18 animate-border-glow"
+            ? "p-6 md:p-8 border-accent/20 animate-border-glow"
             : "p-5 md:p-6 border-foreground/[0.08]"
         }`}
-        onMouseMove={(e) => {
-          const r = e.currentTarget.getBoundingClientRect()
-          e.currentTarget.style.setProperty("--mouse-x", `${((e.clientX - r.left) / r.width) * 100}%`)
-          e.currentTarget.style.setProperty("--mouse-y", `${((e.clientY - r.top) / r.height) * 100}%`)
-          setTilt(getTiltTransform(e))
-        }}
-        onMouseLeave={() => setTilt("")}
-        style={{ transform: tilt, transition: "transform 0.15s ease-out" }}
+        onMouseMove={reduced ? undefined : handleMove}
+        onMouseLeave={reduced ? undefined : handleLeave}
+        style={
+          reduced
+            ? undefined
+            : {
+                rotateX,
+                rotateY,
+                x: translateX,
+                y: translateY,
+                transformStyle: "preserve-3d",
+              }
+        }
+        whileHover={reduced ? undefined : { scale: 1.015 }}
+        transition={{ type: "spring", stiffness: 260, damping: 24 }}
       >
-        <div className="card-spotlight" />
+        {/* Strong cursor spotlight */}
+        <div className="card-spotlight card-spotlight-strong" />
+        {/* Cursor-trail border glow */}
+        <div className="card-border-glow" aria-hidden />
         <div className="absolute inset-0 bg-gradient-to-br from-accent/[0.04] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-        <div className="relative z-10">
+        <motion.div
+          className="relative z-10"
+          style={
+            reduced
+              ? undefined
+              : {
+                  x: innerX,
+                  y: innerY,
+                  transformStyle: "preserve-3d",
+                }
+          }
+        >
           <div className="flex flex-wrap items-center gap-2 mb-4">
             {project.categories.map((cat) => (
               <motion.span
                 key={cat}
                 className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-1 rounded-full bg-accent/10 text-accent/80 hover:bg-accent/20 hover:text-accent transition-all duration-200 cursor-default"
                 whileHover={{ scale: 1.12, y: -2 }}
+                style={{ transform: "translateZ(20px)" }}
               >
                 {cat}
               </motion.span>
@@ -77,16 +147,24 @@ export default function ProjectCard({
           </div>
 
           <h3
-            className={`font-bold tracking-tight group-hover:text-accent transition-colors duration-300 ${isFeatured ? "text-xl md:text-2xl" : "text-lg"}`}
+            className={`font-bold tracking-tight group-hover:text-accent transition-colors duration-300 ${
+              isFeatured ? "text-xl md:text-2xl" : "text-lg"
+            }`}
+            style={{ transform: "translateZ(30px)" }}
           >
             {project.title}
           </h3>
-          <p className="text-accent/70 text-sm mt-1 font-medium">
+          <p
+            className="text-accent/70 text-sm mt-1 font-medium"
+            style={{ transform: "translateZ(20px)" }}
+          >
             {project.tagline}
           </p>
 
           <p
-            className={`text-muted-foreground leading-relaxed mt-4 ${isFeatured ? "text-[15px]" : "text-sm"}`}
+            className={`text-muted-foreground leading-relaxed mt-4 ${
+              isFeatured ? "text-[15px]" : "text-sm"
+            }`}
           >
             {project.description}
           </p>
@@ -98,6 +176,7 @@ export default function ProjectCard({
                   key={metric.label}
                   className="px-4 py-3 rounded-xl bg-accent/[0.08] border border-accent/12 hover:border-accent/28 transition-all duration-200"
                   whileHover={{ scale: 1.06, y: -2 }}
+                  style={{ transform: "translateZ(24px)" }}
                 >
                   <CountUp value={metric.value} className="text-lg font-bold text-accent" />
                   <p className="text-[11px] text-muted mt-0.5">{metric.label}</p>
@@ -180,8 +259,8 @@ export default function ProjectCard({
               )}
             </div>
           )}
-        </div>
-      </article>
+        </motion.div>
+      </motion.article>
     </motion.div>
   )
 }
