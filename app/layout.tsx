@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { ThemeProvider } from "@/components/ThemeProvider"
 import { absoluteUrl } from "@/lib/assetPath"
@@ -7,53 +7,157 @@ import "./globals.css"
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 })
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 })
 
+const siteUrl = absoluteUrl("/")
+const title = "Sushil Dalavi — AI Engineer"
+const description =
+  "AI Engineer at USC Annenberg Norman Lear Center architecting production AI systems: AWS data platforms, hybrid retrieval, LLM inference, and multi-modal ML at scale. MS CS at USC, class of 2026."
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
+    { media: "(prefers-color-scheme: dark)", color: "#09090b" },
+  ],
+  colorScheme: "dark light",
+}
+
 export const metadata: Metadata = {
-  title: "Sushil Dalavi — AI Engineer",
-  description:
-    "AI Engineer at USC Annenberg Norman Lear Center. Architecting AWS data platforms, hybrid retrieval pipelines, and multi-modal ML systems at scale. MS in Computer Science at USC.",
-  metadataBase: new URL(absoluteUrl("/")),
+  title: {
+    default: title,
+    template: "%s · Sushil Dalavi",
+  },
+  description,
+  applicationName: "Sushil Dalavi · Portfolio",
+  metadataBase: new URL(siteUrl),
   alternates: {
-    canonical: absoluteUrl("/"),
+    canonical: siteUrl,
   },
   keywords: [
+    "Sushil Dalavi",
     "AI Engineer",
     "Machine Learning Engineer",
     "LLM Systems",
-    "RAG",
+    "Retrieval-Augmented Generation",
     "Hybrid Retrieval",
     "MLOps",
     "Distributed Workflows",
+    "Temporal",
     "AWS",
     "SageMaker",
     "Bedrock",
     "USC",
+    "Norman Lear Center",
     "Portfolio",
   ],
-  authors: [{ name: "Sushil Dalavi" }],
+  authors: [{ name: "Sushil Dalavi", url: siteUrl }],
+  creator: "Sushil Dalavi",
+  publisher: "Sushil Dalavi",
+  referrer: "origin-when-cross-origin",
+  category: "technology",
   openGraph: {
-    title: "Sushil Dalavi — AI Engineer",
-    description:
-      "Architecting AWS data platforms, hybrid retrieval pipelines, and multi-modal ML systems at scale.",
-    url: absoluteUrl("/"),
-    type: "website",
+    title,
+    description,
+    url: siteUrl,
     siteName: "Sushil Dalavi",
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sushil Dalavi — AI Engineer",
-    description:
-      "Architecting AWS data platforms, hybrid retrieval pipelines, and multi-modal ML systems at scale.",
+    title,
+    description,
+    creator: "@sushildalavi",
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+}
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Sushil Dalavi",
+  alternateName: "Sushil",
+  url: siteUrl,
+  image: `${siteUrl}opengraph-image`,
+  jobTitle: "AI Engineer",
+  worksFor: {
+    "@type": "Organization",
+    name: "USC Annenberg Norman Lear Center",
+    url: "https://learcenter.org/",
+  },
+  alumniOf: [
+    {
+      "@type": "CollegeOrUniversity",
+      name: "University of Southern California",
+      url: "https://www.usc.edu/",
+    },
+    {
+      "@type": "CollegeOrUniversity",
+      name: "University of Mumbai",
+    },
+  ],
+  email: "mailto:sdalavi@usc.edu",
+  sameAs: [
+    "https://github.com/sushildalavi",
+    "https://linkedin.com/in/sushildalavi",
+  ],
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Los Angeles",
+    addressRegion: "CA",
+    addressCountry: "US",
+  },
+  description,
+  knowsAbout: [
+    "Artificial Intelligence",
+    "Machine Learning",
+    "Large Language Models",
+    "Retrieval-Augmented Generation",
+    "Distributed Systems",
+    "Natural Language Processing",
+    "MLOps",
+    "Data Engineering",
+    "Python",
+    "AWS",
+  ],
+}
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Sushil Dalavi",
+  url: siteUrl,
+  publisher: {
+    "@type": "Person",
+    name: "Sushil Dalavi",
   },
 }
 
@@ -64,6 +168,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="dark" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >

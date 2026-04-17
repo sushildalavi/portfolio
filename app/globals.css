@@ -1,36 +1,38 @@
 @import "tailwindcss";
 
-/* ── Light theme ── */
+/* ── Light theme (Nebula / paper) ── */
 :root,
 [data-theme="light"] {
-  --bg-primary: #fafaf8;
-  --bg-secondary: #f2f1ec;
-  --text-primary: #0b0d10;
-  --text-secondary: #4a5160;
-  --text-muted: #8a93a3;
-  --accent-val: #9a6400;
-  --accent-hover-val: #b37600;
-  --accent-light-val: #d39c1a;
-  --accent-glow-val: rgba(154, 100, 0, 0.14);
-  --secondary-val: #1e3a66;
-  --surface-hover-val: rgba(154, 100, 0, 0.06);
-  --surface-edge-val: rgba(154, 100, 0, 0.14);
+  --bg-primary: #fafafa;
+  --bg-secondary: #f4f4f5;
+  --text-primary: #09090b;
+  --text-secondary: #3f3f46;
+  --text-muted: #71717a;
+  --accent-val: #7c3aed;           /* violet-600 */
+  --accent-hover-val: #6d28d9;     /* violet-700 */
+  --accent-light-val: #a855f7;     /* violet-500 */
+  --accent-glow-val: rgba(124, 58, 237, 0.14);
+  --secondary-val: #0891b2;        /* cyan-600 */
+  --secondary-light-val: #06b6d4;  /* cyan-500 */
+  --surface-hover-val: rgba(124, 58, 237, 0.05);
+  --surface-edge-val: rgba(124, 58, 237, 0.12);
 }
 
-/* ── Dark theme ── */
+/* ── Dark theme (Nebula / space) ── */
 [data-theme="dark"] {
-  --bg-primary: #060a13;
-  --bg-secondary: #0c1122;
-  --text-primary: #f5f5f5;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --accent-val: #ffd700;
-  --accent-hover-val: #ffe44d;
-  --accent-light-val: #fff1a8;
-  --accent-glow-val: rgba(255, 215, 0, 0.06);
-  --secondary-val: #2563eb;
-  --surface-hover-val: rgba(255, 215, 0, 0.07);
-  --surface-edge-val: rgba(255, 215, 0, 0.16);
+  --bg-primary: #09090b;           /* zinc-950 */
+  --bg-secondary: #18181b;         /* zinc-900 */
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --accent-val: #a855f7;           /* violet-500 */
+  --accent-hover-val: #c084fc;     /* violet-400 */
+  --accent-light-val: #d8b4fe;     /* violet-300 */
+  --accent-glow-val: rgba(168, 85, 247, 0.18);
+  --secondary-val: #22d3ee;        /* cyan-400 */
+  --secondary-light-val: #67e8f9;  /* cyan-300 */
+  --surface-hover-val: rgba(168, 85, 247, 0.08);
+  --surface-edge-val: rgba(168, 85, 247, 0.2);
 }
 
 /* ── Design tokens → Tailwind utilities ── */
@@ -44,6 +46,7 @@
   --color-accent-hover: var(--accent-hover-val);
   --color-accent-light: var(--accent-light-val);
   --color-secondary: var(--secondary-val);
+  --color-secondary-light: var(--secondary-light-val);
   --color-glow: var(--accent-glow-val);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
