@@ -65,8 +65,12 @@ function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
         className="mb-8"
       >
         <div className="flex items-center gap-3">
-          <div className="h-11 w-11 rounded-xl border border-accent/30 bg-accent/[0.06] flex items-center justify-center">
-            <span className="text-sm font-black text-accent font-mono tracking-tight">SD</span>
+          <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-accent/25 bg-[linear-gradient(180deg,#0f1319,#060a13)] flex items-center justify-center shadow-[0_4px_18px_rgba(0,0,0,0.35)]">
+            <span className="pointer-events-none absolute left-1.5 top-1.5 block h-[7px] w-[7px] border-l border-t border-accent/70" />
+            <span className="pointer-events-none absolute right-1.5 bottom-1.5 block h-[7px] w-[7px] border-r border-b border-accent/70" />
+            <span className="text-[13px] font-black tracking-[-0.04em] bg-gradient-to-br from-[#ffe066] to-[#d4a017] bg-clip-text text-transparent">
+              SD
+            </span>
           </div>
           <div className="min-w-0">
             <h1 className="text-[13px] font-bold tracking-tight text-foreground truncate">
