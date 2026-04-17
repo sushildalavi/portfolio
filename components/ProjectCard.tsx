@@ -36,9 +36,12 @@ function TechTag({ tech }: { tech: string }) {
 export default function ProjectCard({
   project,
   index,
+  inRail = false,
 }: {
   project: Project
   index: number
+  /** Rendered inside a horizontally-translated rail — skip viewport-trigger animations. */
+  inRail?: boolean
 }) {
   const isFeatured = project.featured
   const cardRef = useRef<HTMLElement>(null)
@@ -81,12 +84,18 @@ export default function ProjectCard({
     my.set(0.5)
   }
 
+  const entryAnim = inRail
+    ? { initial: { opacity: 1, y: 0 }, animate: { opacity: 1, y: 0 } }
+    : {
+        initial: { opacity: 0, y: 30 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "-60px" },
+      }
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.5, delay: index * 0.08 }}
+      {...entryAnim}
+      transition={{ duration: 0.5, delay: inRail ? 0 : index * 0.08 }}
       style={{
         perspective: 1200,
         transformStyle: "preserve-3d",
