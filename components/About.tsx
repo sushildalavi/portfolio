@@ -70,8 +70,8 @@ export default function About() {
         >
           <SectionHeading
             label="About"
-            title="A short bio"
-            subtitle="Architect-minded AI engineer. Measurable outcomes over ceremony."
+            title="Engineer who ships."
+            subtitle="Architect mindset. Numbers on dashboards. Systems that survive production."
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-[1.25fr_1fr] gap-14 lg:gap-20 mt-2">

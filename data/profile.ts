@@ -6,18 +6,17 @@ export const profile = {
     "AI Engineer at USC Annenberg Norman Lear Center — architecting AWS data platforms, hybrid retrieval pipelines, and multi-modal ML systems at scale.",
   about: {
     paragraphs: [
-      "I'm an AI Engineer at the USC Annenberg Norman Lear Center and an MS in Computer Science candidate at the University of Southern California. I architect production AI systems that span AWS data platforms, hybrid retrieval, and large-scale ML pipelines — with an emphasis on measurable outcomes, reliability, and reproducibility.",
-      "My current work fuses multi-modal signals — audio, speaker diarization, and caption streams — into alignment systems reaching 99.3% F1 across 1M+ multi-region records ingested through S3, Glue, SageMaker, and Bedrock.",
-      "Previously at Reliance Jio, I deployed quantized transformer inference and ResNet/DenseNet vision networks into production, cutting p95 latency by 30% and lifting recall on medical anomaly detection by 35%.",
+      "I build AI systems that actually ship. Currently at the USC Annenberg Norman Lear Center architecting a multi-region data platform on AWS and shipping a multi-modal alignment model that fuses audio, speaker diarization, and caption streams — 99.3% F1, 99.9% coverage, 1M+ records.",
+      "Before USC I was at Reliance Jio deploying quantized transformer inference and ResNet/DenseNet vision networks into production — p95 latency cut 30%, medical-image recall lifted 35%. Along the way I've shipped Temporal-based workflow platforms, hybrid RAG pipelines with measurable retrieval lifts, and compliance-aware inference gateways.",
+      "I care about the parts most teams skip: evaluation harnesses, CI regression gates, observability, and reproducibility. If a number isn't on a dashboard, it didn't happen.",
     ],
     focus: [
-      "Retrieval-Augmented Generation",
-      "Hybrid Retrieval & Reranking",
-      "LLM Inference & Evaluation",
-      "Distributed Workflows",
+      "RAG & Hybrid Retrieval",
+      "LLM Inference · Evaluation · MLOps",
+      "Distributed Workflows · Temporal",
       "AWS Data Platforms",
-      "MLOps & Observability",
       "Multi-Modal ML",
+      "Production ML at Scale",
     ],
   },
   education: [

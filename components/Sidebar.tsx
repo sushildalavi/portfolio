@@ -65,10 +65,10 @@ function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
         className="mb-8"
       >
         <div className="flex items-center gap-3">
-          <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-accent/25 bg-[linear-gradient(180deg,#0f1319,#060a13)] flex items-center justify-center shadow-[0_4px_18px_rgba(0,0,0,0.35)]">
+          <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl border border-accent/25 bg-[linear-gradient(180deg,#0e1011,#050607)] flex items-center justify-center shadow-[0_4px_18px_rgba(0,0,0,0.35)]">
             <span className="pointer-events-none absolute left-1.5 top-1.5 block h-[7px] w-[7px] border-l border-t border-accent/70" />
             <span className="pointer-events-none absolute right-1.5 bottom-1.5 block h-[7px] w-[7px] border-r border-b border-accent/70" />
-            <span className="text-[13px] font-black tracking-[-0.04em] bg-gradient-to-br from-[#ffe066] to-[#d4a017] bg-clip-text text-transparent">
+            <span className="text-[13px] font-black tracking-[-0.04em] bg-gradient-to-br from-[#6ee7b7] to-[#10b981] bg-clip-text text-transparent">
               SD
             </span>
           </div>

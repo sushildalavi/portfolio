@@ -18,8 +18,8 @@ export default async function Image() {
           justifyContent: "space-between",
           padding: "72px 80px",
           background:
-            "radial-gradient(ellipse at top left, #1e0b3a 0%, #09090b 55%)",
-          backgroundColor: "#09090b",
+            "radial-gradient(ellipse at top left, #0a2e22 0%, #050607 55%)",
+          backgroundColor: "#050607",
           color: "#fafafa",
           fontFamily: "sans-serif",
           position: "relative",
@@ -46,14 +46,14 @@ export default async function Image() {
                 width: 56,
                 height: 56,
                 borderRadius: 14,
-                border: "1px solid rgba(168,85,247,0.35)",
-                background: "linear-gradient(180deg,#0f1319,#060a13)",
+                border: "1px solid rgba(16,185,129,0.35)",
+                background: "linear-gradient(180deg,#0e1011,#050607)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 fontWeight: 900,
                 fontSize: 22,
-                color: "#c084fc",
+                color: "#6ee7b7",
                 letterSpacing: "-0.04em",
               }}
             >
@@ -90,7 +90,7 @@ export default async function Image() {
               fontSize: 14,
               letterSpacing: "0.2em",
               textTransform: "uppercase",
-              color: "#22d3ee",
+              color: "#34d399",
             }}
           >
             <div
@@ -98,7 +98,7 @@ export default async function Image() {
                 width: 8,
                 height: 8,
                 borderRadius: 99,
-                background: "#22d3ee",
+                background: "#34d399",
               }}
             />
             Available
@@ -135,7 +135,7 @@ export default async function Image() {
             }}
           >
             <span style={{ color: "#d4d4d8" }}>Production AI systems</span>
-            <span style={{ color: "#c084fc" }}>for retrieval, ML & data.</span>
+            <span style={{ color: "#6ee7b7" }}>for retrieval, ML & data.</span>
           </div>
         </div>
 

@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* ── Light theme (Nebula / paper) ── */
+/* ── Light theme (Terminal / paper) ── */
 :root,
 [data-theme="light"] {
   --bg-primary: #fafafa;
@@ -8,31 +8,31 @@
   --text-primary: #09090b;
   --text-secondary: #3f3f46;
   --text-muted: #71717a;
-  --accent-val: #7c3aed;           /* violet-600 */
-  --accent-hover-val: #6d28d9;     /* violet-700 */
-  --accent-light-val: #a855f7;     /* violet-500 */
-  --accent-glow-val: rgba(124, 58, 237, 0.14);
-  --secondary-val: #0891b2;        /* cyan-600 */
-  --secondary-light-val: #06b6d4;  /* cyan-500 */
-  --surface-hover-val: rgba(124, 58, 237, 0.05);
-  --surface-edge-val: rgba(124, 58, 237, 0.12);
+  --accent-val: #059669;           /* emerald-600 */
+  --accent-hover-val: #047857;     /* emerald-700 */
+  --accent-light-val: #10b981;     /* emerald-500 */
+  --accent-glow-val: rgba(5, 150, 105, 0.14);
+  --secondary-val: #0369a1;        /* sky-700 */
+  --secondary-light-val: #0284c7;  /* sky-600 */
+  --surface-hover-val: rgba(5, 150, 105, 0.05);
+  --surface-edge-val: rgba(5, 150, 105, 0.12);
 }
 
-/* ── Dark theme (Nebula / space) ── */
+/* ── Dark theme (Terminal / space) ── */
 [data-theme="dark"] {
-  --bg-primary: #09090b;           /* zinc-950 */
-  --bg-secondary: #18181b;         /* zinc-900 */
+  --bg-primary: #050607;           /* near black */
+  --bg-secondary: #0e1011;
   --text-primary: #fafafa;
   --text-secondary: #a1a1aa;
   --text-muted: #71717a;
-  --accent-val: #a855f7;           /* violet-500 */
-  --accent-hover-val: #c084fc;     /* violet-400 */
-  --accent-light-val: #d8b4fe;     /* violet-300 */
-  --accent-glow-val: rgba(168, 85, 247, 0.18);
-  --secondary-val: #22d3ee;        /* cyan-400 */
-  --secondary-light-val: #67e8f9;  /* cyan-300 */
-  --surface-hover-val: rgba(168, 85, 247, 0.08);
-  --surface-edge-val: rgba(168, 85, 247, 0.2);
+  --accent-val: #10b981;           /* emerald-500 */
+  --accent-hover-val: #34d399;     /* emerald-400 */
+  --accent-light-val: #6ee7b7;     /* emerald-300 */
+  --accent-glow-val: rgba(16, 185, 129, 0.18);
+  --secondary-val: #38bdf8;        /* sky-400 */
+  --secondary-light-val: #7dd3fc;  /* sky-300 */
+  --surface-hover-val: rgba(16, 185, 129, 0.08);
+  --surface-edge-val: rgba(16, 185, 129, 0.2);
 }
 
 /* ── Design tokens → Tailwind utilities ── */

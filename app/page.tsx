@@ -1,6 +1,7 @@
 import Sidebar from "@/components/Sidebar"
 import Hero from "@/components/Hero"
 import About from "@/components/About"
+import Showcase from "@/components/Showcase"
 import FeaturedProjects from "@/components/FeaturedProjects"
 import Experience from "@/components/Experience"
 import Skills from "@/components/Skills"
@@ -11,7 +12,8 @@ import Footer from "@/components/Footer"
 import CustomCursor from "@/components/CustomCursor"
 import ScrollToTop from "@/components/ScrollToTop"
 import PageLoader from "@/components/PageLoader"
-import AuroraBackground from "@/components/AuroraBackground"
+import ShaderLines from "@/components/ShaderLines"
+import AIAssistant from "@/components/AIAssistant"
 
 export default function Home() {
   return (
@@ -19,12 +21,13 @@ export default function Home() {
       <PageLoader />
       <CustomCursor />
       <ScrollToTop />
-      <AuroraBackground />
+      <ShaderLines />
       <Sidebar />
       <div className="relative z-10 lg:ml-[268px]">
         <main>
           <Hero />
           <About />
+          <Showcase />
           <FeaturedProjects />
           <Experience />
           <Skills />
@@ -34,6 +37,7 @@ export default function Home() {
         </main>
         <Footer />
       </div>
+      <AIAssistant />
     </>
   )
 }

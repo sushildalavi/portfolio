@@ -129,27 +129,10 @@ export default function Hero() {
           </a>
         </motion.div>
 
-        {/* Meta row */}
-        <motion.div
-          variants={fadeUp}
-          className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6 pt-8 border-t border-foreground/[0.06]"
-        >
-          {profile.stats.map((stat) => (
-            <div key={stat.label}>
-              <div className="text-[clamp(1.4rem,2.2vw,2rem)] font-bold text-foreground/90 tracking-tight">
-                {stat.value}
-              </div>
-              <div className="mt-1 text-[10px] font-mono uppercase tracking-[0.22em] text-muted">
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </motion.div>
-
         {/* Bottom bar: socials + location */}
         <motion.div
           variants={fadeUp}
-          className="mt-14 flex flex-wrap items-center justify-between gap-4"
+          className="mt-16 flex flex-wrap items-center justify-between gap-4 pt-8 border-t border-foreground/[0.06]"
         >
           <div className="flex items-center gap-5 text-sm">
             <span className="text-[11px] font-mono uppercase tracking-[0.24em] text-muted">
