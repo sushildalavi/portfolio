@@ -7,7 +7,6 @@ import {
   MeshDistortMaterial,
   Environment,
   Icosahedron,
-  OrbitControls,
 } from "@react-three/drei"
 import * as THREE from "three"
 
@@ -130,12 +129,6 @@ export default function HeroScene({
           <Particles isDark={isDark} />
           <Environment preset="night" />
         </Suspense>
-
-        <OrbitControls
-          enableZoom={false}
-          enablePan={false}
-          enableRotate={false}
-        />
       </Canvas>
     </div>
   )

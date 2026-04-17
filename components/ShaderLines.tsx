@@ -75,37 +75,33 @@ export default function ShaderLines() {
         vec2 aspect = vec2(u_resolution.x / u_resolution.y, 1.0);
         vec2 p = (uv - 0.5) * aspect;
 
-        // Cursor-driven ripple
         vec2 mp = (u_mouse - 0.5) * aspect;
         float md = length(p - mp);
-        float ripple = exp(-md * 3.5) * 0.04;
-        p.y += ripple * sin(u_time * 2.2 + md * 20.0);
 
-        // Layer several ribbons
+        // Thin, sparse ribbons (3 instead of 5), tighter thickness
         float r = 0.0;
-        r += ribbon(p, -0.35, 0.008, 1.2, 0.25) * 0.9;
-        r += ribbon(p, -0.18, 0.006, 3.1, 0.32) * 0.7;
-        r += ribbon(p,  0.02, 0.010, 5.7, 0.18) * 1.0;
-        r += ribbon(p,  0.22, 0.005, 8.4, 0.38) * 0.6;
-        r += ribbon(p,  0.38, 0.007, 11.0, 0.22) * 0.8;
+        r += ribbon(p, -0.38, 0.0025, 1.2, 0.22) * 0.7;
+        r += ribbon(p,  0.04, 0.0032, 5.7, 0.18) * 0.9;
+        r += ribbon(p,  0.36, 0.0025, 11.0, 0.20) * 0.6;
 
-        // Horizontal fade so ribbons don't touch the frame edges
+        // Horizontal fade edges
         float hFade = smoothstep(-0.95, -0.35, p.x) * smoothstep(0.95, 0.35, p.x);
-        r *= mix(0.55, 1.05, hFade);
+        r *= hFade;
 
-        // Color: mix accent + secondary along length
+        // Color mix, gentler saturation
         float mixK = smoothstep(-0.6, 0.6, p.x + 0.1 * sin(u_time * 0.3));
-        vec3 col = mix(u_accent, u_secondary, mixK) * r;
+        vec3 col = mix(u_accent, u_secondary, mixK) * r * 0.85;
 
-        // Cursor spotlight
-        float spot = smoothstep(0.45, 0.0, md);
-        col += u_accent * spot * 0.08;
+        // Cursor spotlight very dim
+        float spot = smoothstep(0.5, 0.0, md);
+        col += u_accent * spot * 0.04;
 
-        // Very subtle vertical vignette
+        // Strong vignette to push ribbons to the edges
         float vig = smoothstep(1.25, 0.35, length((uv - 0.5) * aspect));
-        col *= mix(0.75, 1.02, vig);
+        col *= mix(0.55, 1.0, vig);
 
-        float alpha = mix(0.45, 0.95, u_isDark);
+        // Dramatically lower alpha — ribbons become ambient, not dominant
+        float alpha = mix(0.22, 0.55, u_isDark);
         gl_FragColor = vec4(col, alpha);
       }
     `
@@ -219,7 +215,17 @@ export default function ShaderLines() {
       ref={canvasRef}
       aria-hidden
       className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: 0, mixBlendMode: "screen" }}
+      style={{
+        zIndex: 0,
+        mixBlendMode: "screen",
+        // Mask keeps ribbons to the left/right gutters so they
+        // never cut through the center column where content sits.
+        maskImage:
+          "linear-gradient(to right, #000 0%, #000 16%, transparent 34%, transparent 66%, #000 84%, #000 100%)",
+        WebkitMaskImage:
+          "linear-gradient(to right, #000 0%, #000 16%, transparent 34%, transparent 66%, #000 84%, #000 100%)",
+        opacity: 0.55,
+      }}
     />
   )
 }
