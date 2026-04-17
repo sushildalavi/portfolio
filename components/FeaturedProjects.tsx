@@ -6,9 +6,8 @@ import ProjectCard from "./ProjectCard"
 import { projects } from "@/data/projects"
 
 /**
- * Clean, staff-eng style project showcase.
- * Featured: large hero card on top, remaining featured cards below in a 2-col grid.
- * Rest: simple 2-col grid.
+ * All featured projects share the same case-study layout.
+ * Stacked vertically, each gets full width + metrics column on the right.
  */
 export default function FeaturedProjects() {
   const featured = projects
@@ -18,12 +17,9 @@ export default function FeaturedProjects() {
     .filter((p) => !p.featured)
     .sort((a, b) => a.order - b.order)
 
-  const [hero, ...rest] = featured
-
   return (
     <section id="projects" className="relative py-24 md:py-32 px-6">
-      <div className="pointer-events-none absolute top-1/3 right-0 h-[520px] w-[520px] rounded-full bg-accent/[0.035] blur-[140px]" />
-      <div className="pointer-events-none absolute bottom-1/4 left-0 h-[420px] w-[420px] rounded-full bg-secondary/[0.04] blur-[140px]" />
+      <div className="pointer-events-none absolute top-1/3 right-0 h-[520px] w-[520px] rounded-full bg-accent/[0.03] blur-[140px]" />
 
       <div className="relative max-w-6xl mx-auto">
         <div className="mb-14 md:mb-20 flex items-end justify-between gap-8">
@@ -46,24 +42,16 @@ export default function FeaturedProjects() {
           </motion.div>
         </div>
 
-        {hero && (
-          <div className="mb-6">
-            <ProjectCard project={hero} index={0} variant="hero" />
-          </div>
-        )}
-
-        {rest.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {rest.map((project, i) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                index={i + 1}
-                variant="featured"
-              />
-            ))}
-          </div>
-        )}
+        <div className="space-y-6 md:space-y-8">
+          {featured.map((project, i) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              index={i}
+              variant="case-study"
+            />
+          ))}
+        </div>
 
         {other.length > 0 && (
           <div className="mt-20 pt-14 border-t border-foreground/[0.06]">

@@ -3,18 +3,18 @@
 /* ── Light theme ── */
 :root,
 [data-theme="light"] {
-  --bg-primary: #f6efe1;
-  --bg-secondary: #ecdfc7;
-  --text-primary: #1f2233;
-  --text-secondary: #596174;
-  --text-muted: #818aa0;
-  --accent-val: #b77806;
-  --accent-hover-val: #cf8f16;
-  --accent-light-val: #e8b84b;
-  --accent-glow-val: rgba(183, 120, 6, 0.16);
-  --secondary-val: #27486f;
-  --surface-hover-val: rgba(183, 120, 6, 0.08);
-  --surface-edge-val: rgba(183, 120, 6, 0.18);
+  --bg-primary: #fafaf8;
+  --bg-secondary: #f2f1ec;
+  --text-primary: #0b0d10;
+  --text-secondary: #4a5160;
+  --text-muted: #8a93a3;
+  --accent-val: #9a6400;
+  --accent-hover-val: #b37600;
+  --accent-light-val: #d39c1a;
+  --accent-glow-val: rgba(154, 100, 0, 0.14);
+  --secondary-val: #1e3a66;
+  --surface-hover-val: rgba(154, 100, 0, 0.06);
+  --surface-edge-val: rgba(154, 100, 0, 0.14);
 }
 
 /* ── Dark theme ── */
@@ -66,11 +66,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  background-image:
-    radial-gradient(circle at 14% 16%, color-mix(in srgb, var(--accent-val) 10%, transparent) 0%, transparent 28%),
-    radial-gradient(circle at 84% 18%, color-mix(in srgb, var(--secondary-val) 12%, transparent) 0%, transparent 26%),
-    radial-gradient(circle at 50% 100%, color-mix(in srgb, var(--accent-val) 7%, transparent) 0%, transparent 34%);
-  background-attachment: fixed;
   transition:
     background-color 0.4s ease,
     color 0.4s ease;
