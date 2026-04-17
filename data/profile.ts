@@ -6,18 +6,18 @@ export const profile = {
     "AI Engineer at USC Annenberg Norman Lear Center — architecting AWS data platforms, hybrid retrieval pipelines, and multi-modal ML systems at scale.",
   about: {
     paragraphs: [
-      "I'm an AI Research Engineer at the USC Annenberg Norman Lear Center and an MS in Computer Science candidate at the University of Southern California. I design and build intelligent systems that bridge cutting-edge AI research with real-world deployment.",
-      "My work spans natural language processing, retrieval-augmented generation, large language model systems, and applied machine learning — with a product-minded engineering approach that prioritizes measurable outcomes, reliability, and scale.",
-      "I've collaborated with researchers from Oxford, UPenn, and the World Bank on multilingual media analytics, and built production ML services at one of the world's largest telecommunications platforms.",
+      "I'm an AI Engineer at the USC Annenberg Norman Lear Center and an MS in Computer Science candidate at the University of Southern California. I architect production AI systems that span AWS data platforms, hybrid retrieval, and large-scale ML pipelines — with an emphasis on measurable outcomes, reliability, and reproducibility.",
+      "My current work fuses multi-modal signals — audio, speaker diarization, and caption streams — into alignment systems reaching 99.3% F1 across 1M+ multi-region records ingested through S3, Glue, SageMaker, and Bedrock.",
+      "Previously at Reliance Jio, I deployed quantized transformer inference and ResNet/DenseNet vision networks into production, cutting p95 latency by 30% and lifting recall on medical anomaly detection by 35%.",
     ],
     focus: [
-      "Natural Language Processing",
       "Retrieval-Augmented Generation",
-      "Large Language Model Systems",
-      "Applied Machine Learning",
-      "Research Infrastructure",
-      "Healthcare AI",
-      "Social Impact AI",
+      "Hybrid Retrieval & Reranking",
+      "LLM Inference & Evaluation",
+      "Distributed Workflows",
+      "AWS Data Platforms",
+      "MLOps & Observability",
+      "Multi-Modal ML",
     ],
   },
   education: [
