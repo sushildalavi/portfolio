@@ -21,8 +21,8 @@ export default function FeaturedProjects() {
           <div className="max-w-2xl">
             <SectionHeading
               label="Selected Work"
-              title="Systems I've shipped"
-              subtitle="Production AI, retrieval, and distributed workflow platforms — architected end-to-end."
+              title="Selected engineering work"
+              subtitle="Backend, observability, workflow, and AI infrastructure projects built end-to-end, with clear reliability, latency, and throughput outcomes."
             />
           </div>
           <motion.div
