@@ -184,7 +184,7 @@ export default function ProjectCard({
               ))}
             </div>
 
-            <h3 className="mt-6 text-4xl md:text-5xl lg:text-[56px] font-bold leading-[0.96] tracking-[-0.025em] text-foreground/95 group-hover:text-accent transition-colors duration-500">
+            <h3 className="headline-cool mt-6 text-4xl md:text-5xl lg:text-[56px] font-bold leading-[0.96] tracking-[-0.025em] group-hover:text-accent transition-colors duration-500">
               {project.title}
             </h3>
 
@@ -230,7 +230,7 @@ export default function ProjectCard({
                     href={project.links.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-accent transition-colors group/link"
+                    className="animated-underline inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-accent transition-colors group/link"
                   >
                     <Github size={15} />
                     <span>Source</span>
@@ -245,7 +245,7 @@ export default function ProjectCard({
                     href={project.links.live}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-accent transition-colors group/link"
+                    className="animated-underline inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-accent transition-colors group/link"
                   >
                     <span>Live</span>
                     <ArrowUpRight
@@ -259,7 +259,7 @@ export default function ProjectCard({
                     href={project.links.paper}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-accent transition-colors group/link"
+                    className="animated-underline inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-accent transition-colors group/link"
                   >
                     <span>Paper</span>
                     <ArrowUpRight
@@ -287,7 +287,7 @@ export default function ProjectCard({
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.25 + i * 0.07 }}
-                    className="rounded-2xl border border-accent/15 bg-accent/[0.04] p-5"
+                    className="breathe-soft rounded-2xl border border-accent/15 bg-accent/[0.04] p-5"
                   >
                     <CountUp
                       value={metric.value}
