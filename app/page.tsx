@@ -1,19 +1,11 @@
 import Sidebar from "@/components/Sidebar"
-import Hero from "@/components/Hero"
-import About from "@/components/About"
-import Showcase from "@/components/Showcase"
-import FeaturedProjects from "@/components/FeaturedProjects"
-import Experience from "@/components/Experience"
-import Skills from "@/components/Skills"
-import Publications from "@/components/Publications"
-import BeyondTheCode from "@/components/BeyondTheCode"
-import Contact from "@/components/Contact"
 import Footer from "@/components/Footer"
 import CustomCursor from "@/components/CustomCursor"
 import ScrollToTop from "@/components/ScrollToTop"
 import PageLoader from "@/components/PageLoader"
 import ShaderLines from "@/components/ShaderLines"
 import AIAssistant from "@/components/AIAssistant"
+import MainSequence from "@/components/MainSequence"
 
 export default function Home() {
   return (
@@ -24,17 +16,7 @@ export default function Home() {
       <ShaderLines />
       <Sidebar />
       <div className="relative z-10 lg:ml-[268px]">
-        <main>
-          <Hero />
-          <About />
-          <Showcase />
-          <FeaturedProjects />
-          <Experience />
-          <Skills />
-          <Publications />
-          <BeyondTheCode />
-          <Contact />
-        </main>
+        <MainSequence />
         <Footer />
       </div>
       <AIAssistant />
