@@ -14,7 +14,7 @@ export default function Footer() {
                 Sushil Dalavi
               </span>
               <span className="text-[11px] font-mono uppercase tracking-[0.22em] text-muted">
-                AI Engineer · USC
+                Software Engineer · USC MS CS
               </span>
             </div>
             <p className="mt-2 text-sm text-muted-foreground">
