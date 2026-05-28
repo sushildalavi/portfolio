@@ -64,15 +64,14 @@ export default function CustomCursor() {
   const x = useMotionValue(-200)
   const y = useMotionValue(-200)
 
-  const shellX = useSpring(x, { damping: 32, stiffness: 1100, mass: 0.14 })
-  const shellY = useSpring(y, { damping: 32, stiffness: 1100, mass: 0.14 })
-  const washX = useSpring(x, { damping: 26, stiffness: 620, mass: 0.2 })
-  const washY = useSpring(y, { damping: 26, stiffness: 620, mass: 0.2 })
-  const auraX = useSpring(x, { damping: 22, stiffness: 500, mass: 0.24 })
-  const auraY = useSpring(y, { damping: 22, stiffness: 500, mass: 0.24 })
+  const shellX = x
+  const shellY = y
+  const auraX = useSpring(x, { damping: 34, stiffness: 1600, mass: 0.08 })
+  const auraY = useSpring(y, { damping: 34, stiffness: 1600, mass: 0.08 })
 
   const hoveredStateRef = useRef(defaultState)
   const pressedRef = useRef(false)
+  const visibleRef = useRef(false)
 
   useEffect(() => {
     if (!window.matchMedia("(pointer: fine)").matches) {
@@ -95,6 +94,7 @@ export default function CustomCursor() {
     }
 
     const hideCursor = () => {
+      visibleRef.current = false
       setVisible(false)
       hoveredStateRef.current = defaultState
       if (!pressedRef.current) {
@@ -107,7 +107,10 @@ export default function CustomCursor() {
         return
       }
 
-      setVisible(true)
+      if (!visibleRef.current) {
+        visibleRef.current = true
+        setVisible(true)
+      }
       x.set(event.clientX)
       y.set(event.clientY)
     }
@@ -196,8 +199,6 @@ export default function CustomCursor() {
     : active
       ? "0 16px 34px color-mix(in srgb, var(--accent-val) 18%, transparent)"
       : "0 10px 24px color-mix(in srgb, var(--accent-val) 10%, transparent)"
-  const washWidth = pressed ? 52 : active ? (emphatic ? 92 : 76) : 34
-  const washHeight = pressed ? 52 : active ? 26 : 16
   const auraSize = pressed ? 52 : active ? (emphatic ? 118 : 98) : 48
   const auraBackground = active
     ? "radial-gradient(circle, color-mix(in srgb, var(--accent-val) 18%, transparent) 0%, transparent 72%)"
@@ -206,29 +207,8 @@ export default function CustomCursor() {
   return (
     <>
       <motion.div
-        data-cursor-wash
-        className="fixed left-0 top-0 z-[9996] pointer-events-none rounded-full blur-[18px]"
-        style={{
-          x: washX,
-          y: washY,
-          translateX: "-50%",
-          translateY: "-50%",
-          background:
-            "linear-gradient(90deg, color-mix(in srgb, var(--accent-val) 0%, transparent), color-mix(in srgb, var(--accent-val) 20%, transparent), color-mix(in srgb, var(--accent-val) 0%, transparent))",
-        }}
-        animate={{
-          width: washWidth,
-          height: washHeight,
-          opacity: visible ? (pressed ? 0.2 : active ? 0.28 : 0.12) : 0,
-          scale: visible ? (pressed ? 0.88 : 1) : 0.68,
-          rotate: shellRotation + 10,
-        }}
-        transition={shellSpring}
-      />
-
-      <motion.div
         data-cursor-aura
-        className="fixed top-0 left-0 pointer-events-none z-[9997] rounded-full blur-[18px]"
+        className="fixed top-0 left-0 pointer-events-none z-[9997] rounded-full blur-[12px]"
         style={{
           x: auraX,
           y: auraY,
@@ -239,7 +219,7 @@ export default function CustomCursor() {
         animate={{
           width: auraSize,
           height: auraSize,
-          opacity: visible ? (pressed ? 0.2 : active ? 0.24 : 0.14) : 0,
+          opacity: visible ? (pressed ? 0.16 : active ? 0.2 : 0.1) : 0,
           scale: visible ? (pressed ? 0.82 : 1) : 0.7,
         }}
         transition={shellSpring}
@@ -255,7 +235,6 @@ export default function CustomCursor() {
           translateY: "-50%",
           color: shellColor,
           boxShadow: shellShadow,
-          backdropFilter: "blur(14px)",
         }}
         animate={{
           width: shellSize,
