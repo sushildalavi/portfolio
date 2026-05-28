@@ -205,7 +205,7 @@ export default function AIAssistant() {
       }
       setMessages((prev) => [...prev, reply])
       setPending(false)
-    }, 320 + Math.random() * 240)
+    }, 420)
   }
 
   const reset = () => {
