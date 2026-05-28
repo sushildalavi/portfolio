@@ -36,7 +36,7 @@ export default function SectionHeading({
           hidden: { opacity: 0, y: 16 },
           show: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.08 } },
         }}
-        className="text-4xl md:text-5xl lg:text-[56px] font-bold mt-5 tracking-[-0.025em] leading-[1.02]"
+        className="headline-cool animate-gradient-text text-4xl md:text-5xl lg:text-[56px] font-bold mt-5 tracking-[-0.025em] leading-[1.02]"
       >
         {title}
       </motion.h2>
