@@ -53,15 +53,15 @@ export default function Contact() {
               <span className="h-px w-8 bg-accent/60" />
               Contact
             </div>
-            <h2 className="mt-5 text-5xl md:text-6xl lg:text-7xl font-bold tracking-[-0.03em] leading-[0.98]">
-              Let&apos;s build
+            <h2 className="headline-cool mt-5 text-5xl md:text-6xl lg:text-7xl font-bold tracking-[-0.03em] leading-[0.98]">
+              Let&apos;s talk
               <br />
-              <span className="text-accent">something real.</span>
+              <span className="text-accent">engineering.</span>
             </h2>
             <p className="mt-6 max-w-lg text-[16px] leading-[1.7] text-muted-foreground">
-              I&apos;m open to full-time SDE / AI engineering roles, research
-              collaborations, and serious engineering conversations. Reach out
-              and I&apos;ll reply within a day.
+              I&apos;m open to 2026 New Grad Software Engineer, Backend Engineer,
+              Platform Engineer, and AI Infrastructure roles focused on reliable
+              backend systems, data infrastructure, and practical AI tooling.
             </p>
 
             <a
@@ -78,7 +78,7 @@ export default function Contact() {
             </a>
 
             <div className="mt-10 flex flex-wrap gap-1.5">
-              {["AI Engineering", "Retrieval Systems", "ML Platforms", "Open to SDE roles"].map(
+              {["Backend Engineering", "Data Platforms", "AI Infrastructure", "Open to 2026 roles"].map(
                 (t) => (
                   <span
                     key={t}
