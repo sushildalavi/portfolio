@@ -8,12 +8,16 @@ import { getTechIcon } from "@/lib/techIcons"
 function SkillChip({ skill }: { skill: string }) {
   const tech = getTechIcon(skill)
   return (
-    <span className="group/chip inline-flex items-center gap-1.5 text-[12px] px-2.5 py-1.5 rounded-md bg-foreground/[0.03] text-muted-foreground border border-foreground/[0.06] hover:border-foreground/[0.16] hover:text-foreground/90 transition-colors">
+    <motion.span
+      whileHover={{ y: -2, scale: 1.03 }}
+      whileTap={{ scale: 0.98 }}
+      className="group/chip inline-flex items-center gap-1.5 text-[12px] px-2.5 py-1.5 rounded-md bg-foreground/[0.03] text-muted-foreground border border-foreground/[0.06] hover:border-foreground/[0.16] hover:text-foreground/90 transition-colors"
+    >
       {tech && (
         <tech.icon size={12} style={{ color: tech.color }} className="shrink-0" />
       )}
       {skill}
-    </span>
+    </motion.span>
   )
 }
 
@@ -40,7 +44,7 @@ export default function Skills() {
               className="grid grid-cols-[140px_1fr] gap-6 items-start pb-8 border-b border-foreground/[0.05] last:border-b-0 md:last:border-b md:[&:nth-last-child(-n+2)]:border-b-0"
             >
               <div>
-                <p className="text-[10px] font-mono uppercase tracking-[0.28em] text-accent/80">
+                <p className="breathe-soft inline-block text-[10px] font-mono uppercase tracking-[0.28em] text-accent/80">
                   0{i + 1}
                 </p>
                 <p className="mt-2 text-[15px] font-semibold text-foreground/92 tracking-tight leading-snug">
