@@ -1,6 +1,7 @@
 "use client"
 
-import { motion, useScroll, useSpring } from "framer-motion"
+import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion"
+import { useEffect, useState } from "react"
 import Hero from "@/components/Hero"
 import About from "@/components/About"
 import Showcase from "@/components/Showcase"
@@ -24,12 +25,24 @@ const sections = [
 ]
 
 export default function MainSequence() {
+  const reduced = useReducedMotion()
+  const [isMobile, setIsMobile] = useState(false)
   const { scrollYProgress } = useScroll()
   const progress = useSpring(scrollYProgress, {
     stiffness: 130,
     damping: 28,
     mass: 0.35,
   })
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1024px)")
+    const update = () => setIsMobile(mq.matches)
+    update()
+    mq.addEventListener("change", update)
+    return () => mq.removeEventListener("change", update)
+  }, [])
+
+  const heavyMotion = !reduced && !isMobile
 
   return (
     <>
@@ -39,16 +52,36 @@ export default function MainSequence() {
           style={{ scaleY: progress, height: "100%" }}
         />
       </div>
+      {heavyMotion && <motion.div
+        aria-hidden
+        className="pointer-events-none fixed left-[290px] top-24 z-30 hidden h-28 w-28 rounded-full bg-accent/[0.12] blur-3xl lg:block"
+        animate={{ y: [0, 22, 0], x: [0, 10, 0], opacity: [0.4, 0.75, 0.4] }}
+        transition={{ duration: 6.2, repeat: Infinity, ease: "easeInOut" }}
+      />}
+      {heavyMotion && <motion.div
+        aria-hidden
+        className="pointer-events-none fixed right-20 bottom-20 z-30 hidden h-24 w-24 rounded-full bg-secondary/[0.14] blur-3xl lg:block"
+        animate={{ y: [0, -18, 0], x: [0, -8, 0], opacity: [0.35, 0.68, 0.35] }}
+        transition={{ duration: 5.4, repeat: Infinity, ease: "easeInOut" }}
+      />}
 
       <main>
         {sections.map((Comp, i) => (
           <motion.div
             key={i}
-            initial={{ opacity: 0, y: 48, scale: 0.988 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            initial={heavyMotion ? { opacity: 0, y: 72, scale: 0.975, filter: "blur(8px)" } : { opacity: 0, y: 24 }}
+            whileInView={heavyMotion ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" } : { opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-120px" }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: i * 0.03 }}
+            transition={{ duration: heavyMotion ? 1.05 : 0.55, ease: [0.22, 1, 0.36, 1], delay: i * (heavyMotion ? 0.04 : 0.015) }}
           >
+            {heavyMotion && <motion.div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-[8%] top-0 h-px bg-gradient-to-r from-transparent via-accent/35 to-transparent"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: [0, 1, 0] }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.2, delay: 0.08 }}
+            />}
             <Comp />
           </motion.div>
         ))}
