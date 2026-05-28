@@ -6,6 +6,7 @@ import PageLoader from "@/components/PageLoader"
 import ShaderLines from "@/components/ShaderLines"
 import AIAssistant from "@/components/AIAssistant"
 import MainSequence from "@/components/MainSequence"
+import CinematicOverlay from "@/components/CinematicOverlay"
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <CustomCursor />
       <ScrollToTop />
       <ShaderLines />
+      <CinematicOverlay />
       <Sidebar />
       <div className="relative z-10 lg:ml-[268px]">
         <MainSequence />
