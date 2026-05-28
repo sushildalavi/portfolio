@@ -146,6 +146,8 @@ export default function ProjectCard({
       <motion.article
         ref={cardRef}
         className="card-magnetic group relative overflow-hidden rounded-3xl border border-foreground/[0.08] bg-background/55 backdrop-blur-xl transition-colors duration-500 hover:border-accent/25"
+        whileHover={reduced ? undefined : { y: -8, scale: 1.01 }}
+        transition={{ type: "spring", stiffness: 180, damping: 18 }}
         onMouseMove={reduced ? undefined : handleMove}
         onMouseLeave={reduced ? undefined : handleLeave}
         style={

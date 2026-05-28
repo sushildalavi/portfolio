@@ -14,7 +14,13 @@ export default function FeaturedProjects() {
 
   return (
     <section id="projects" className="relative py-24 md:py-32 px-6">
-      <div className="pointer-events-none absolute top-1/3 right-0 h-[520px] w-[520px] rounded-full bg-accent/[0.03] blur-[140px]" />
+      <div className="pointer-events-none absolute top-1/3 right-0 h-[520px] w-[520px] rounded-full bg-accent/[0.03] blur-[140px] bg-blob" />
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute -left-16 bottom-24 h-56 w-56 rounded-full bg-secondary/[0.09] blur-[110px]"
+        animate={{ x: [0, 20, 0], y: [0, -18, 0], opacity: [0.2, 0.45, 0.2] }}
+        transition={{ duration: 7.4, repeat: Infinity, ease: "easeInOut" }}
+      />
 
       <div className="relative max-w-6xl mx-auto">
         <div className="mb-14 md:mb-20 flex items-end justify-between gap-8">

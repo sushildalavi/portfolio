@@ -47,7 +47,7 @@ function TechTag({ tech }: { tech: string }) {
 export default function Experience() {
   return (
     <section id="experience" className="relative py-24 md:py-32 px-6">
-      <div className="pointer-events-none absolute top-1/4 left-0 h-[380px] w-[380px] rounded-full bg-accent/[0.03] blur-[140px]" />
+      <div className="pointer-events-none absolute top-1/4 left-0 h-[380px] w-[380px] rounded-full bg-accent/[0.03] blur-[140px] bg-blob" />
 
       <div className="relative max-w-6xl mx-auto">
         <div className="mb-14 flex items-end justify-between gap-8">
@@ -70,6 +70,7 @@ export default function Experience() {
                 key={exp.id}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{ y: -3 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.55, delay: i * 0.1 }}
                 className="relative grid grid-cols-[24px_1fr] md:grid-cols-[148px_1fr] gap-6 md:gap-10"

@@ -8,7 +8,7 @@ import { profile } from "@/data/profile"
 export default function BeyondTheCode() {
   return (
     <section id="beyond" className="relative py-24 md:py-32 px-6">
-      <div className="pointer-events-none absolute top-0 left-1/3 h-[380px] w-[380px] rounded-full bg-accent/[0.03] blur-[130px]" />
+      <div className="pointer-events-none absolute top-0 left-1/3 h-[380px] w-[380px] rounded-full bg-accent/[0.03] blur-[130px] bg-blob" />
 
       <div className="relative max-w-6xl mx-auto">
         <SectionHeading
@@ -31,13 +31,15 @@ export default function BeyondTheCode() {
             </p>
             <div className="flex flex-wrap gap-2">
               {profile.interests.map(({ label, emoji }) => (
-                <span
+                <motion.span
                   key={label}
                   className="inline-flex items-center gap-1.5 rounded-full border border-foreground/[0.08] bg-foreground/[0.02] px-3 py-1.5 text-xs text-muted-foreground hover:border-accent/30 hover:text-accent hover:bg-accent/[0.04] transition-colors"
+                  whileHover={{ y: -2, scale: 1.04 }}
+                  transition={{ duration: 0.2 }}
                 >
                   <span>{emoji}</span>
                   {label}
-                </span>
+                </motion.span>
               ))}
             </div>
           </motion.div>

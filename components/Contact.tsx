@@ -38,7 +38,7 @@ const links = [
 export default function Contact() {
   return (
     <section id="contact" className="relative py-24 md:py-32 px-6">
-      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[560px] w-[560px] rounded-full bg-accent/[0.04] blur-[140px]" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[560px] w-[560px] rounded-full bg-accent/[0.04] blur-[140px] bg-blob" />
 
       <div className="relative max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-14 lg:gap-20 items-start">
@@ -79,13 +79,18 @@ export default function Contact() {
 
             <div className="mt-10 flex flex-wrap gap-1.5">
               {["Backend Engineering", "Data Platforms", "AI Infrastructure", "Open to 2026 roles"].map(
-                (t) => (
-                  <span
+                (t, i) => (
+                  <motion.span
                     key={t}
                     className="inline-flex items-center rounded-md border border-foreground/[0.08] bg-foreground/[0.02] px-2.5 py-1 text-[11px] text-muted-foreground"
+                    initial={{ opacity: 0, y: 8 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    whileHover={{ y: -2, scale: 1.03 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.25 + i * 0.05, duration: 0.35 }}
                   >
                     {t}
-                  </span>
+                  </motion.span>
                 ),
               )}
             </div>
@@ -119,6 +124,7 @@ export default function Contact() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: 0.15 + i * 0.06 }}
                   className="group flex items-center justify-between gap-5 px-6 py-4 hover:bg-foreground/[0.02] transition-colors"
+                  whileHover={{ x: 4 }}
                 >
                   <div className="flex items-center gap-4 min-w-0">
                     <div className="h-9 w-9 rounded-lg bg-accent/10 grid place-items-center shrink-0">
