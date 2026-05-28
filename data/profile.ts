@@ -3,13 +3,13 @@ export const profile = {
   role: "Software Engineer · AI Infrastructure",
   headline: "Scalable Backend Systems\nfor AI, Data & Reliability",
   description:
-    "SDE-AI engineer building backend platforms, observability-first data systems, and production AI infrastructure that hold up under real traffic.",
+    "Software engineer building backend platforms, data systems, and AI tooling that hold up under real traffic.",
   about: {
     paragraphs: [
-      "I build software systems that make AI usable in production: fast APIs, reliable data pipelines, resilient async workflows, and strong observability.",
-      "At USC Annenberg, I delivered 1M+ validated multilingual records across three country datasets on AWS and reduced manual validation by 85% with schema-checked FastAPI orchestration and fallback routing.",
-      "At Reliance Jio, I cut p99 latency from 2.8s to 480ms at 1,500+ RPS using indexing and Redis caching, and redesigned a large document pipeline to eliminate OOM failures via Kafka-backed chunked streaming to S3.",
-      "I focus on measurable engineering outcomes: throughput, latency, failure recovery, and reproducibility.",
+      "I like building systems that stay calm when traffic gets messy.",
+      "My work usually sits where backend and AI meet: API orchestration, data pipelines, async workers, validation layers, and observability that actually helps during incidents.",
+      "At USC Annenberg, I helped turn a noisy multilingual ingestion flow into a reliable pipeline: 1M+ validated records across 3 country datasets, plus an 85% drop in manual validation through schema-checked FastAPI routing and model fallback logic.",
+      "Before that at Reliance Jio, I focused on backend speed and stability - p99 dropped from 2.8s to 480ms at 1,500+ RPS, and a failure-prone document pipeline was rebuilt into Kafka-backed chunked streaming to S3 to remove OOM crashes.",
     ],
     focus: [
       "Backend Engineering · FastAPI · Spring Boot",
@@ -22,7 +22,7 @@ export const profile = {
   },
   education: [
     {
-      degree: "MS in Computer Science",
+      degree: "Master of Science in Computer Science",
       school: "University of Southern California",
       shortName: "USC",
       location: "Los Angeles, CA",
@@ -33,20 +33,20 @@ export const profile = {
         "Information Retrieval",
         "Applied Cryptography",
       ],
-      logo: "/logos/usc-official.svg",
+      logo: "/logos/usc.png",
       accentColor: "#ffffff",
     },
     {
-      degree: "BE in Computer Engineering",
+      degree: "Bachelor of Engineering in Computer Engineering",
       school: "University of Mumbai",
       shortName: "MU",
       location: "Mumbai, India",
-      period: "Jun 2019 — May 2023",
+      period: "Aug 2019 — May 2023",
       coursework: [
+        "Data Structures",
         "Operating Systems",
-        "Distributed Systems",
-        "Computer Networks",
-        "Data Structures & Algorithms",
+        "Database Management Systems",
+        "Distributed Computing",
       ],
       logo: "/logos/mumbai.jpeg",
       accentColor: "#ffffff",
