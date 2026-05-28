@@ -149,6 +149,25 @@ body {
   }
 }
 
+@media (max-width: 1024px) {
+  .shine-sweep,
+  .breathe-soft,
+  .float-soft,
+  .bg-blob,
+  .tilt-float,
+  .animate-gradient-text {
+    animation: none !important;
+  }
+
+  .headline-cool {
+    text-shadow: none;
+  }
+
+  .card-magnetic {
+    transform: none !important;
+  }
+}
+
 /* Shimmer sweep for buttons */
 @keyframes shimmer-sweep {
   0% {
@@ -226,6 +245,25 @@ body {
   background-size: 220% 100%;
   animation: gradient-shift 3.6s ease-in-out infinite;
   opacity: 0.7;
+}
+
+@keyframes blob-shift {
+  0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: .3; }
+  30% { transform: translate3d(16px,-14px,0) scale(1.08); opacity: .5; }
+  65% { transform: translate3d(-18px,12px,0) scale(.94); opacity: .36; }
+}
+
+@keyframes tilt-float {
+  0%,100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-6px) rotate(-0.35deg); }
+}
+
+.bg-blob {
+  animation: blob-shift 7.5s ease-in-out infinite;
+}
+
+.tilt-float {
+  animation: tilt-float 4.8s ease-in-out infinite;
 }
 
 /* Large display heading treatment */
