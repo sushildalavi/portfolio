@@ -29,9 +29,11 @@ export default function Hero() {
       className="relative flex min-h-[100svh] items-center overflow-hidden px-6 py-24 lg:px-12"
     >
       {/* Masked dot grid */}
-      <div
+      <motion.div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.3]"
+        animate={{ opacity: [0.22, 0.36, 0.22], scale: [1, 1.02, 1] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         style={{
           backgroundImage:
             "radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--accent-val) 20%, transparent) 1px, transparent 0)",
@@ -61,7 +63,7 @@ export default function Hero() {
           <div className="mt-8">
             <motion.h1
               variants={fadeUp}
-              className="text-[clamp(2.4rem,7vw,5.5rem)] font-black leading-[0.94] tracking-[-0.04em] text-foreground/95"
+              className="headline-cool animate-gradient-text text-[clamp(2.4rem,7vw,5.5rem)] font-black leading-[0.94] tracking-[-0.04em]"
             >
               Sushil Dalavi.
             </motion.h1>
@@ -96,7 +98,7 @@ export default function Hero() {
                 size={15}
                 className="relative z-10 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
               />
-              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+              <span className="absolute inset-0 shine-sweep bg-gradient-to-r from-transparent via-white/25 to-transparent" />
             </button>
             <button
               onClick={() =>
@@ -162,7 +164,7 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.8, duration: 0.6 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 float-soft"
       >
         <motion.div
           animate={{ y: [0, 8, 0] }}
