@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 /**
  * Animated shader lines background — an alternative to the aurora.
@@ -9,10 +9,22 @@ import { useEffect, useRef } from "react"
  */
 export default function ShaderLines() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [enabled, setEnabled] = useState(false)
   const mouse = useRef({ x: 0.5, y: 0.5, tx: 0.5, ty: 0.5 })
   const rafRef = useRef(0)
 
   useEffect(() => {
+    const mobile = window.matchMedia("(max-width: 1024px)").matches
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    if (mobile || reduced) {
+      setEnabled(false)
+      return
+    }
+    setEnabled(true)
+  }, [])
+
+  useEffect(() => {
+    if (!enabled) return
     const canvas = canvasRef.current
     if (!canvas) return
     const gl = canvas.getContext("webgl", {
@@ -208,7 +220,9 @@ export default function ShaderLines() {
       window.removeEventListener("resize", resize)
       window.removeEventListener("mousemove", onMove)
     }
-  }, [])
+  }, [enabled])
+
+  if (!enabled) return null
 
   return (
     <canvas
