@@ -110,7 +110,7 @@ function Header({
           <span className="h-px w-8 bg-accent/60" />
         </div>
       )}
-      <h2 className="mt-5 text-4xl md:text-5xl lg:text-[56px] font-bold tracking-[-0.03em] leading-[1.02]">
+      <h2 className="headline-cool mt-5 text-4xl md:text-5xl lg:text-[56px] font-bold tracking-[-0.03em] leading-[1.02]">
         {title}
       </h2>
       {subtitle && (
