@@ -15,7 +15,7 @@ const navLinks = [
   { label: "Work", href: "#projects", num: "03" },
   { label: "Experience", href: "#experience", num: "04" },
   { label: "Toolchain", href: "#skills", num: "05" },
-  { label: "Research", href: "#publications", num: "06" },
+  { label: "Publications & IP", href: "#publications", num: "06" },
   { label: "Contact", href: "#contact", num: "07" },
 ]
 
@@ -107,7 +107,7 @@ function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
                 <button
                   onClick={() => scrollTo(link.href)}
                   className={cn(
-                    "w-full text-left px-3 py-2 rounded-lg transition-colors duration-200 flex items-center gap-3 group",
+                    "w-full text-left px-3 py-2 rounded-lg transition-all duration-250 flex items-center gap-3 group hover:translate-x-0.5",
                     isActive
                       ? "text-foreground"
                       : "text-muted-foreground hover:text-foreground/85"
@@ -127,7 +127,7 @@ function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
                       isActive ? "w-6 bg-accent" : "w-2 bg-foreground/15 group-hover:w-4 group-hover:bg-foreground/30",
                     )}
                   />
-                  <span className={cn("text-[13px]", isActive && "font-semibold")}>{link.label}</span>
+                  <span className={cn("text-[13px]", isActive && "font-semibold animated-underline")}>{link.label}</span>
                 </button>
               </motion.li>
             )
