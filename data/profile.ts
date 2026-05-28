@@ -1,22 +1,23 @@
 export const profile = {
   name: "Sushil Dalavi",
-  role: "AI Engineer",
-  headline: "Production AI Systems\nfor Retrieval, ML & Data",
+  role: "Software Engineer · AI Infrastructure",
+  headline: "Scalable Backend Systems\nfor AI, Data & Reliability",
   description:
-    "AI Engineer at USC Annenberg Norman Lear Center — architecting AWS data platforms, hybrid retrieval pipelines, and multi-modal ML systems at scale.",
+    "SDE-AI engineer building backend platforms, observability-first data systems, and production AI infrastructure that hold up under real traffic.",
   about: {
     paragraphs: [
-      "I build AI systems that actually ship. Currently at the USC Annenberg Norman Lear Center architecting a multi-region data platform on AWS and shipping a multi-modal alignment model that fuses audio, speaker diarization, and caption streams — 99.3% F1, 99.9% coverage, 1M+ records.",
-      "Before USC I was at Reliance Jio deploying quantized transformer inference and ResNet/DenseNet vision networks into production — p95 latency cut 30%, medical-image recall lifted 35%. Along the way I've shipped Temporal-based workflow platforms, hybrid RAG pipelines with measurable retrieval lifts, and compliance-aware inference gateways.",
-      "I care about the parts most teams skip: evaluation harnesses, CI regression gates, observability, and reproducibility. If a number isn't on a dashboard, it didn't happen.",
+      "I build software systems that make AI usable in production: fast APIs, reliable data pipelines, resilient async workflows, and strong observability.",
+      "At USC Annenberg, I delivered 1M+ validated multilingual records across three country datasets on AWS and reduced manual validation by 85% with schema-checked FastAPI orchestration and fallback routing.",
+      "At Reliance Jio, I cut p99 latency from 2.8s to 480ms at 1,500+ RPS using indexing and Redis caching, and redesigned a large document pipeline to eliminate OOM failures via Kafka-backed chunked streaming to S3.",
+      "I focus on measurable engineering outcomes: throughput, latency, failure recovery, and reproducibility.",
     ],
     focus: [
-      "RAG & Hybrid Retrieval",
-      "LLM Inference · Evaluation · MLOps",
-      "Distributed Workflows · Temporal",
-      "AWS Data Platforms",
-      "Multi-Modal ML",
-      "Production ML at Scale",
+      "Backend Engineering · FastAPI · Spring Boot",
+      "Distributed Systems · Async Workflows · Replay",
+      "Data Infrastructure · AWS · Streaming",
+      "API Contracts · Reliability · Observability",
+      "AI Infrastructure · Inference Platforms",
+      "Performance Engineering · Load & Latency",
     ],
   },
   education: [
@@ -27,13 +28,12 @@ export const profile = {
       location: "Los Angeles, CA",
       period: "Aug 2024 — May 2026",
       coursework: [
-        "Machine Learning",
-        "Deep Learning",
-        "Distributed Systems",
+        "Analysis of Algorithms",
+        "Database Systems",
         "Information Retrieval",
-        "Natural Language Processing",
+        "Applied Cryptography",
       ],
-      logo: "/logos/usc.png",
+      logo: "/logos/usc-official.svg",
       accentColor: "#ffffff",
     },
     {

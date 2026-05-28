@@ -21,15 +21,15 @@ const SURFACE_SELECTOR = ".card-glow, [data-hover='card'], [data-hover='surface'
 
 const shellSpring = {
   type: "spring",
-  damping: 24,
-  stiffness: 420,
-  mass: 0.34,
+  damping: 30,
+  stiffness: 720,
+  mass: 0.22,
 } as const
 
 const glyphSpring = {
-  damping: 22,
-  stiffness: 360,
-  mass: 0.28,
+  damping: 26,
+  stiffness: 520,
+  mass: 0.2,
 } as const
 
 function resolveState(target: EventTarget | null): CursorState {
@@ -64,12 +64,12 @@ export default function CustomCursor() {
   const x = useMotionValue(-200)
   const y = useMotionValue(-200)
 
-  const shellX = useSpring(x, { damping: 24, stiffness: 520, mass: 0.22 })
-  const shellY = useSpring(y, { damping: 24, stiffness: 520, mass: 0.22 })
-  const washX = useSpring(x, { damping: 20, stiffness: 300, mass: 0.5 })
-  const washY = useSpring(y, { damping: 20, stiffness: 300, mass: 0.5 })
-  const auraX = useSpring(x, { damping: 18, stiffness: 220, mass: 0.7 })
-  const auraY = useSpring(y, { damping: 18, stiffness: 220, mass: 0.7 })
+  const shellX = useSpring(x, { damping: 32, stiffness: 1100, mass: 0.14 })
+  const shellY = useSpring(y, { damping: 32, stiffness: 1100, mass: 0.14 })
+  const washX = useSpring(x, { damping: 26, stiffness: 620, mass: 0.2 })
+  const washY = useSpring(y, { damping: 26, stiffness: 620, mass: 0.2 })
+  const auraX = useSpring(x, { damping: 22, stiffness: 500, mass: 0.24 })
+  const auraY = useSpring(y, { damping: 22, stiffness: 500, mass: 0.24 })
 
   const hoveredStateRef = useRef(defaultState)
   const pressedRef = useRef(false)

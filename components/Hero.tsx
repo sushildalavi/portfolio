@@ -1,14 +1,9 @@
 "use client"
 
-import dynamic from "next/dynamic"
 import { motion } from "framer-motion"
 import { ArrowDown, ArrowUpRight, Github, Linkedin, Mail } from "lucide-react"
 import { profile } from "@/data/profile"
-
-const HeroVisual = dynamic(() => import("./HeroVisual"), {
-  ssr: false,
-  loading: () => <div className="w-full h-full" />,
-})
+import RotatingRole from "./RotatingRole"
 
 const stagger = {
   hidden: { opacity: 0 },
@@ -47,8 +42,7 @@ export default function Hero() {
             "radial-gradient(ellipse 80% 60% at 50% 45%, #000 20%, transparent 70%)",
         }}
       />
-
-      <div className="relative z-10 mx-auto w-full max-w-6xl grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] gap-12 lg:gap-16 items-center">
+      <div className="relative z-10 mx-auto w-full max-w-6xl grid grid-cols-1 gap-12 items-center">
         {/* Left — text column */}
         <motion.div variants={stagger} initial="hidden" animate="show">
           {/* Status pill */}
@@ -60,7 +54,7 @@ export default function Hero() {
               </span>
               <span className="text-muted-foreground">Available</span>
               <span className="h-3 w-px bg-foreground/10" />
-              <span className="text-accent/90">{profile.role}</span>
+              <RotatingRole className="text-accent/90" />
             </div>
           </motion.div>
 
@@ -162,19 +156,6 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Right — 3D morphing shape */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.1, delay: 0.3, ease: "easeOut" }}
-          className="hidden lg:block relative h-[460px] xl:h-[520px]"
-        >
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute inset-10 rounded-full bg-accent/[0.06] blur-[90px]" />
-            <div className="absolute inset-20 rounded-full bg-secondary/[0.08] blur-[110px]" />
-          </div>
-          <HeroVisual className="relative z-10 w-full h-full" />
-        </motion.div>
       </div>
 
       <motion.div

@@ -324,7 +324,7 @@ export default function AIAssistant() {
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="relative h-9 w-9 rounded-xl border border-accent/30 bg-[linear-gradient(180deg,#0e1011,#050607)] flex items-center justify-center">
                     <Sparkles size={14} className="text-accent" />
-                    <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-emerald-400 border border-background" />
+                    <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-accent border border-background" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-[14px] font-bold tracking-tight text-foreground/92 truncate">

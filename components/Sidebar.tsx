@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 import { profile } from "@/data/profile"
 import { useTheme } from "@/components/ThemeProvider"
 import { asset } from "@/lib/assetPath"
+import RotatingRole from "./RotatingRole"
 
 const navLinks = [
   { label: "Home", href: "#hero", num: "01" },
@@ -76,7 +77,7 @@ function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
             <h1 className="text-[13px] font-bold tracking-tight text-foreground truncate">
               {profile.name}
             </h1>
-            <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{profile.role}</p>
+            <RotatingRole className="text-[11px] text-muted-foreground mt-0.5 truncate block" intervalMs={2100} />
           </div>
         </div>
 

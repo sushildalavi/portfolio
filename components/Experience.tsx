@@ -9,7 +9,7 @@ import { asset } from "@/lib/assetPath"
 
 const ORG_LOGOS: Record<string, { logo: string; bg: string }> = {
   "USC Annenberg Norman Lear Center": {
-    logo: "/logos/usc-annenberg.jpeg",
+    logo: "/logos/usc-annenberg.svg",
     bg: "#ffffff",
   },
   "Reliance Jio Platforms": {
@@ -27,7 +27,7 @@ function OrgLogo({ company }: { company: string }) {
       style={{ backgroundColor: config.bg }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={asset(config.logo)} alt={company} className="h-full w-full object-cover" />
+      <img src={asset(config.logo)} alt={company} className="h-full w-full object-contain p-1" />
     </div>
   )
 }

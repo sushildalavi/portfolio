@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* ── Light theme (Terminal / paper) ── */
+/* ── Light theme ── */
 :root,
 [data-theme="light"] {
   --bg-primary: #fafafa;
@@ -8,29 +8,29 @@
   --text-primary: #09090b;
   --text-secondary: #3f3f46;
   --text-muted: #71717a;
-  --accent-val: #059669;           /* emerald-600 */
-  --accent-hover-val: #047857;     /* emerald-700 */
-  --accent-light-val: #10b981;     /* emerald-500 */
+  --accent-val: #059669;
+  --accent-hover-val: #047857;
+  --accent-light-val: #10b981;
   --accent-glow-val: rgba(5, 150, 105, 0.14);
-  --secondary-val: #0369a1;        /* sky-700 */
-  --secondary-light-val: #0284c7;  /* sky-600 */
+  --secondary-val: #0369a1;
+  --secondary-light-val: #0284c7;
   --surface-hover-val: rgba(5, 150, 105, 0.05);
   --surface-edge-val: rgba(5, 150, 105, 0.12);
 }
 
-/* ── Dark theme (Terminal / space) ── */
+/* ── Dark theme ── */
 [data-theme="dark"] {
-  --bg-primary: #050607;           /* near black */
+  --bg-primary: #050607;
   --bg-secondary: #0e1011;
   --text-primary: #fafafa;
   --text-secondary: #a1a1aa;
   --text-muted: #71717a;
-  --accent-val: #10b981;           /* emerald-500 */
-  --accent-hover-val: #34d399;     /* emerald-400 */
-  --accent-light-val: #6ee7b7;     /* emerald-300 */
+  --accent-val: #10b981;
+  --accent-hover-val: #34d399;
+  --accent-light-val: #6ee7b7;
   --accent-glow-val: rgba(16, 185, 129, 0.18);
-  --secondary-val: #38bdf8;        /* sky-400 */
-  --secondary-light-val: #7dd3fc;  /* sky-300 */
+  --secondary-val: #38bdf8;
+  --secondary-light-val: #7dd3fc;
   --surface-hover-val: rgba(16, 185, 129, 0.08);
   --surface-edge-val: rgba(16, 185, 129, 0.2);
 }
