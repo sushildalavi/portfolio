@@ -187,6 +187,60 @@ body {
   animation: gradient-shift 4s ease-in-out infinite;
 }
 
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.75; transform: scale(1.06); }
+}
+
+@keyframes shine-sweep {
+  0% { transform: translateX(-130%); opacity: 0; }
+  15% { opacity: 0.28; }
+  50% { opacity: 0.14; }
+  100% { transform: translateX(130%); opacity: 0; }
+}
+
+@keyframes dash-flow {
+  to { stroke-dashoffset: -24; }
+}
+
+.float-soft { animation: float-soft 5.2s ease-in-out infinite; }
+.breathe-soft { animation: breathe 4.4s ease-in-out infinite; }
+.shine-sweep { animation: shine-sweep 4.8s ease-in-out infinite; }
+
+.animated-underline {
+  position: relative;
+}
+.animated-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, var(--accent-val), transparent);
+  background-size: 220% 100%;
+  animation: gradient-shift 3.6s ease-in-out infinite;
+  opacity: 0.7;
+}
+
+/* Large display heading treatment */
+.headline-cool {
+  color: transparent !important;
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, #ffffff 92%, var(--accent-light-val) 8%) 0%,
+    color-mix(in srgb, #ffffff 70%, var(--accent-val) 30%) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 0 10px 32px color-mix(in srgb, var(--accent-val) 18%, transparent);
+}
+
 .theme-toggle-icons {
   position: relative;
   display: block;
