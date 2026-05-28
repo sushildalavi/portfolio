@@ -10,7 +10,7 @@ export default function Publications() {
     <section id="publications" className="relative py-24 md:py-32 px-6">
       <div className="relative max-w-6xl mx-auto">
         <SectionHeading
-          label="Research"
+          label="Publications & IP"
           title="Publications & IP"
           subtitle="Peer-reviewed papers and registered intellectual property."
         />
@@ -23,6 +23,7 @@ export default function Publications() {
                 key={pub.id}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{ y: -2 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
               >
