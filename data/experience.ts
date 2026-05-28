@@ -17,7 +17,7 @@ export const experiences: Experience[] = [
     period: "Jun 2025 — May 2026",
     location: "Los Angeles, CA",
     description:
-      "Built production-grade AI data infrastructure, ingestion automation, and validation services for large-scale multilingual social and media datasets.",
+      "Built production-style AI data infrastructure, ingestion automation, and validation services for large-scale multilingual social and media datasets.",
     achievements: [
       "Delivered 1M+ validated multilingual records across 3 country datasets through an AWS pipeline (S3, Glue, Athena, Lambda) with schema-versioned outputs",
       "Reduced manual validation workload by 85% by automating LLM-output checks via FastAPI orchestration, OpenAI/Gemini fallback routing, Pydantic schema validation, JSON repair, and retry logic",
