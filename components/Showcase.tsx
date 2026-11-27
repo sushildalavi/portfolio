@@ -5,8 +5,8 @@ import ContainerScroll from "./ContainerScroll"
 
 const terminalLines = [
   { text: "$ cat ~/work/manifest.yaml", color: "text-muted" },
-  { text: "role: Software Engineer · AI Infrastructure · USC Annenberg NLC", color: "text-foreground/80" },
-  { text: "current_work:", color: "text-foreground/80" },
+  { text: "last_role: AI Infrastructure · USC Annenberg NLC · 2025–26", color: "text-foreground/80" },
+  { text: "recent_work:", color: "text-foreground/80" },
   { text: "  - multi_modal_alignment:  F1=0.993 · cov=0.999", color: "text-accent" },
   { text: "  - aws_data_platform:      records=1M+ · countries=3", color: "text-accent" },
   { text: "  - distributed_workflows:  tools=12 · retries=auto", color: "text-accent" },
@@ -26,7 +26,7 @@ export default function Showcase() {
       titleEyebrow="The short version"
       title={
         <>
-          Current work,
+          Recent work,
           <br />
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-accent via-accent-light to-secondary">summarized.</span>
         </>

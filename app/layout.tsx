@@ -17,9 +17,9 @@ const geistMono = Geist_Mono({
 })
 
 const siteUrl = absoluteUrl("/")
-const title = "Sushil Dalavi — AI Engineer"
+const title = "Sushil Dalavi — Software Engineer"
 const description =
-  "AI Engineer at USC Annenberg Norman Lear Center architecting production AI systems: AWS data platforms, hybrid retrieval, LLM inference, and multi-modal ML at scale. MS CS at USC, class of 2026."
+  "Software engineer working on backend, data and AI systems. MS in Computer Science from USC, May 2026. Previously at the USC Annenberg Norman Lear Center and Reliance Jio."
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -107,12 +107,7 @@ const personJsonLd = {
   alternateName: "Sushil",
   url: siteUrl,
   image: `${siteUrl}opengraph-image`,
-  jobTitle: "AI Engineer",
-  worksFor: {
-    "@type": "Organization",
-    name: "USC Annenberg Norman Lear Center",
-    url: "https://learcenter.org/",
-  },
+  jobTitle: "Software Engineer",
   alumniOf: [
     {
       "@type": "CollegeOrUniversity",

@@ -48,7 +48,7 @@ export const projects: Project[] = [
     ],
     links: {
       github:
-        "https://github.com/sushildalavi/QueryLens-PostgreSQL-Query-Performance-Monitor",
+        "https://github.com/sushildalavi/plantrace",
     },
     featured: true,
     order: 1,
@@ -83,7 +83,7 @@ export const projects: Project[] = [
     ],
     links: {
       github:
-        "https://github.com/sushildalavi/ReplayForge-Async-Workflow-Replay-Failure-Debugging-Platform",
+        "https://github.com/sushildalavi/converge",
     },
     featured: true,
     order: 2,
@@ -119,7 +119,7 @@ export const projects: Project[] = [
     ],
     links: {
       github:
-        "https://github.com/sushildalavi/SchemaPilot-API-Contract-Drift-Monitor",
+        "https://github.com/sushildalavi/driftgate",
     },
     featured: true,
     order: 3,
@@ -223,7 +223,7 @@ export const projects: Project[] = [
     ],
     links: {
       github:
-        "https://github.com/sushildalavi/SOAPFlow-Clinical-Transcript-to-SOAP-Note-Platform",
+        "https://github.com/sushildalavi/soapflow",
     },
     featured: false,
     order: 6,
@@ -258,7 +258,7 @@ export const projects: Project[] = [
       { label: "Ledger", value: "Hash-Chained" },
     ],
     links: {
-      github: "https://github.com/sushildalavi/MedLedger",
+      github: "https://github.com/sushildalavi/medledger",
     },
     featured: false,
     order: 7,

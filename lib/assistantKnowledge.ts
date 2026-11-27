@@ -30,9 +30,9 @@ export const facts: Fact[] = [
     keywords: ["who", "hi", "hello", "hey", "introduction", "about", "yourself"],
     title: "Who is Sushil?",
     body:
-      "**Sushil Dalavi** — AI Engineer at the USC Annenberg Norman Lear Center and MS Computer Science candidate at USC (2024 – 2026).\n\nHe architects production AI systems end-to-end: AWS data platforms, hybrid retrieval pipelines, distributed workflow engines, and multi-modal ML. Bias toward measurable outcomes and reproducibility — *if a number isn't on a dashboard, it didn't happen*.",
+      "**Sushil Dalavi** — Software engineer with an MS in Computer Science from USC (May 2026), previously at the USC Annenberg Norman Lear Center.\n\nHe architects production AI systems end-to-end: AWS data platforms, hybrid retrieval pipelines, distributed workflow engines, and multi-modal ML. Bias toward measurable outcomes and reproducibility — *if a number isn't on a dashboard, it didn't happen*.",
     followUps: [
-      "What's he working on now?",
+      "What did he do at USC Annenberg?",
       "Walk me through his projects",
       "How do I reach him?",
     ],
@@ -40,9 +40,9 @@ export const facts: Fact[] = [
   {
     id: "role-current",
     keywords: ["role", "current", "job", "position", "now", "working", "usc", "annenberg", "lear", "norman"],
-    title: "Current role · USC Annenberg NLC",
+    title: "Most recent role · USC Annenberg NLC",
     body:
-      "**AI Engineer** at USC Annenberg Norman Lear Center (Los Angeles, CA) since **June 2025**.\n\nShipped so far:\n- **AWS data platform** (S3, Glue, SageMaker, Bedrock) ingesting **1M+ multi-region records**, deduplicated and normalized for downstream ML.\n- **Multi-modal alignment system** fusing audio, speaker diarization, and caption streams — **99.3% F1**, **99.9% coverage** on ground-truth eval.\n- **Batch pipelines** for long-form video/audio: Whisper ASR → pyannote diarization → model-based refinement.\n- **Dataset QA** automation (Unicode normalization, dedup) lifting analysis-ready yield from **10,819 → 9,735 records**.",
+      "**Software Engineer, AI Infrastructure** at USC Annenberg Norman Lear Center (Los Angeles, CA), **June 2025 to May 2026**.\n\nShipped there:\n- **AWS data platform** (S3, Glue, SageMaker, Bedrock) ingesting **1M+ multi-region records**, deduplicated and normalized for downstream ML.\n- **Multi-modal alignment system** fusing audio, speaker diarization, and caption streams — **99.3% F1**, **99.9% coverage** on ground-truth eval.\n- **Batch pipelines** for long-form video/audio: Whisper ASR → pyannote diarization → model-based refinement.\n- **Dataset QA** automation (Unicode normalization, dedup) lifting analysis-ready yield from **10,819 → 9,735 records**.",
     followUps: ["What stack did he use?", "What's before USC?", "Who's he collaborating with?"],
   },
   {
@@ -208,7 +208,7 @@ export function match(query: string, limit = 2): MatchedAnswer[] {
         id: "start",
         title: "Ask about…",
         body:
-          "Try one of these:\n- What is Sushil working on right now?\n- Walk me through **JobSense**\n- What are the retrieval numbers?\n- How do I reach him?",
+          "Try one of these:\n- What did Sushil do at USC Annenberg?\n- Walk me through **JobSense**\n- What are the retrieval numbers?\n- How do I reach him?",
         score: 1,
       },
     ]
@@ -236,9 +236,9 @@ export function match(query: string, limit = 2): MatchedAnswer[] {
         id: "unknown",
         title: "Not in my notes yet",
         body:
-          "I can talk about his **current role** at USC Annenberg, past work at **Reliance Jio**, shipped projects (**JobSense**, **ScribeAI**, **ScholarRAG**), technical stack, publications, metrics, or how to reach him. What sounds interesting?",
+          "I can talk about his **most recent role** at USC Annenberg, past work at **Reliance Jio**, shipped projects (**JobSense**, **ScribeAI**, **ScholarRAG**), technical stack, publications, metrics, or how to reach him. What sounds interesting?",
         followUps: [
-          "What's he working on now?",
+          "What did he do at USC Annenberg?",
           "Show me his best metrics",
           "How do I contact him?",
         ],

@@ -27,7 +27,7 @@ const INTRO: Message = {
         "Ask me anything about his work, shipped projects, technical stack, or how to get in touch.\n\nI'm trained on his résumé, experience, and project case studies.",
       score: 1,
       followUps: [
-        "What's he working on now?",
+        "What did he do at USC Annenberg?",
         "Walk me through JobSense",
         "Retrieval numbers?",
         "How do I reach him?",
@@ -37,7 +37,7 @@ const INTRO: Message = {
 }
 
 const DEFAULT_SUGGESTIONS = [
-  "What is Sushil working on now?",
+  "What did Sushil do at USC Annenberg?",
   "Tell me about JobSense",
   "ScholarRAG numbers",
   "What's his stack?",
