@@ -1,4 +1,4 @@
-# Sushil Dalavi — Portfolio
+# portfolio
 
 A personal portfolio built with Next.js 16, React Three Fiber, and Framer Motion. Features a 3D animated coding character, custom cursor, 60+ branded tech logos, and extensive micro-interactions.
 

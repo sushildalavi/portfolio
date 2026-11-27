@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og"
 
 export const dynamic = "force-static"
 export const runtime = "nodejs"
-export const alt = "Sushil Dalavi — AI Engineer"
+export const alt = "Sushil Dalavi — Software Engineer"
 export const size = { width: 1200, height: 630 }
 export const contentType = "image/png"
 
@@ -122,7 +122,7 @@ export default async function Image() {
               color: "#fafafa",
             }}
           >
-            AI Engineer.
+            Software Engineer.
           </div>
           <div
             style={{
@@ -163,7 +163,7 @@ export default async function Image() {
                 USC Annenberg
               </span>
               <span style={{ fontSize: 13, letterSpacing: "0.18em", textTransform: "uppercase" }}>
-                Norman Lear Center
+                Norman Lear Center, 2025–26
               </span>
             </div>
             <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.25 }}>
